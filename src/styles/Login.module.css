@@ -1,0 +1,279 @@
+/* Main Container */
+.container {
+    display: flex;
+    height: 100vh;
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(120deg, #f3f4f6, #dfe3ee);
+}
+
+/* Left Section */
+.leftSection {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 3rem;
+    background: linear-gradient(120deg, #f5f7fa, #ffffff);
+    box-shadow: inset -5px 0 20px rgba(0, 0, 0, 0.05);
+}
+
+.brandContainer h1 {
+    font-size: 2.5rem;
+    margin: 1rem 0;
+    color: #2d3e50;
+    animation: fadeIn 1s ease-in-out;
+}
+
+.brandContainer p {
+    font-size: 1rem;
+    color: #0e0e0e;
+    line-height: 1.6;
+    max-width: 400px;
+    margin-top: 1rem;
+    animation: fadeIn 1.5s ease-in-out;
+}
+
+.highlight {
+    color: #4917c9;
+}
+
+.illustration {
+    margin-top: 2rem;
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+    animation: zoomIn 1.5s ease-in-out;
+}
+
+/* Keyframe Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes zoomIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Right Section */
+.rightSection {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem;
+    background: linear-gradient(120deg, #ffffff, #f9faff);
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Logo Circle */
+.logoCircle {
+    width: 150px;
+    height: 150px;
+    background: linear-gradient(135deg, #4917c9, #7352e3);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: -75px; /* Overlap with form */
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+    animation: bounceIn 1s ease;
+}
+
+@keyframes bounceIn {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    60% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Login Form */
+.loginFormContainer {
+    width: 100%;
+    max-width: 400px;
+    padding: 2rem;
+    border-radius: 15px;
+    background: #fff;
+    box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.2);
+    position: relative;
+    margin-top: 75px;
+    animation: slideUp 1s ease-in-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.loginFormContainer h2 {
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    color: #2d3e50;
+    text-align: center;
+}
+
+/* Form Styling */
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.inputGroup label {
+    font-size: 0.9rem;
+    color: #0e0e0e;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.inputGroup input {
+    width: 100%;
+    padding: 0.8rem;
+    font-size: 1rem;
+    color: #2d3e50;
+    border: 1px solid #dcdcdc;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.inputGroup input:hover {
+    border-color: #4917c9;
+    box-shadow: 0 0 5px rgba(73, 23, 201, 0.5);
+}
+
+.inputGroup input:focus {
+    border-color: #4917c9;
+    outline: none;
+    box-shadow: 0 0 5px rgba(73, 23, 201, 0.8);
+}
+
+/* Placeholder Animation */
+.inputGroup input::placeholder {
+    color: #6b6b6b;
+    transition: all 0.3s ease;
+}
+
+.inputGroup input:focus::placeholder {
+    color: #4917c9;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+/* Forgot Password */
+.forgotPassword {
+    text-align: right;
+    animation: fadeIn 1.5s ease-in-out;
+}
+
+.forgotPassword a {
+    font-size: 0.9rem;
+    color: #3700ff;
+    text-decoration: none;
+}
+
+.forgotPassword a:hover {
+    text-decoration: underline;
+}
+
+/* Login Button */
+.loginButton {
+    background: linear-gradient(135deg, #4917c9, #7352e3);
+    color: #ffffff;
+    padding: 1rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.loginButton:hover {
+    background: linear-gradient(135deg, #3700ff, #4917c9);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(73, 23, 201, 0.4);
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    color: #6b6b6b;
+    opacity: 0; /* Start invisible */
+    animation: footerFadeIn 2s ease-in-out forwards; /* Apply animation */
+}
+
+.footer a {
+    color: #7352e3;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer a:hover {
+    color: #4917c9;
+    text-decoration: underline;
+}
+
+/* Keyframe Animation for Footer */
+@keyframes footerFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px); /* Start from below */
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0); /* End at normal position */
+    }
+}
+
+
+/* Logo Circle */
+.logoCircle {
+    width: 150px; /* Circle size */
+    height: 150px; /* Circle size */
+    background: linear-gradient(135deg, #4917c9, #7352e3); /* Gradient background */
+    border-radius: 50%; /* Circular shape */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: -75px; /* Overlap with the form */
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+    z-index: 1;
+    overflow: hidden; /* Ensures the logo doesn't overflow outside the circle */
+}
+
+.logoCircle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the logo is centered and fits properly */
+}
