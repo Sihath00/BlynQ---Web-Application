@@ -1,10 +1,21 @@
 /* Main Container */
 .container {
     display: flex;
-    flex-wrap: wrap; /* Enable wrapping for smaller screens */
     height: 100vh;
     font-family: 'Arial', sans-serif;
     background: linear-gradient(120deg, #f3f4f6, #dfe3ee);
+    animation: fadeInBackground 0.8s ease-in-out; /* Background fade-in animation */
+    flex-wrap: wrap; /* Ensure wrapping for smaller screens */
+}
+
+/* Background Fade-in Animation */
+@keyframes fadeInBackground {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 /* Left Section */
@@ -18,13 +29,14 @@
     padding: 3rem;
     background: linear-gradient(120deg, #f5f7fa, #ffffff);
     box-shadow: inset -5px 0 20px rgba(0, 0, 0, 0.05);
+    animation: slideLeft 1s ease-in-out; /* Left section animation */
 }
 
 .brandContainer h1 {
     font-size: 2.5rem;
     margin: 1rem 0;
     color: #2d3e50;
-    animation: fadeIn 1s ease-in-out;
+    animation: fadeInText 0.8s ease-in-out;
 }
 
 .brandContainer p {
@@ -33,11 +45,12 @@
     line-height: 1.6;
     max-width: 400px;
     margin-top: 1rem;
-    animation: fadeIn 1.5s ease-in-out;
+    animation: fadeInText 1s ease-in-out;
 }
 
 .highlight {
     color: #4917c9;
+    animation: bounceHighlight 1.2s ease-in-out infinite; /* Bounce highlight */
 }
 
 .illustration {
@@ -45,7 +58,7 @@
     width: 100%;
     max-width: 500px;
     height: auto;
-    animation: zoomIn 1.5s ease-in-out;
+    animation: zoomIn 1s ease-in-out;
 }
 
 /* Right Section */
@@ -58,6 +71,7 @@
     padding: 3rem;
     background: linear-gradient(120deg, #ffffff, #f9faff);
     box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+    animation: slideRight 1s ease-in-out;
 }
 
 /* Logo Circle */
@@ -72,7 +86,7 @@
     margin-bottom: -75px;
     box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
     overflow: hidden;
-    animation: bounceIn 1s ease;
+    animation: popIn 0.8s ease-out;
 }
 
 .logoCircle img {
@@ -87,11 +101,13 @@
     max-width: 400px;
     padding: 2rem;
     border-radius: 15px;
-    background: #fff;
+    background: rgba(255, 255, 255, 0.85);
     box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(12px); /* Frosted glass effect */
+    border: 1px solid rgba(255, 255, 255, 0.2);
     position: relative;
     margin-top: 75px;
-    animation: slideUp 1s ease-in-out;
+    animation: scaleUp 0.8s ease-in-out;
 }
 
 .loginFormContainer h2 {
@@ -99,6 +115,7 @@
     font-size: 2rem;
     color: #2d3e50;
     text-align: center;
+    animation: fadeInText 0.6s ease-in-out;
 }
 
 /* Form Styling */
@@ -106,6 +123,7 @@
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    animation: fadeInText 0.8s ease-in-out;
 }
 
 .inputGroup label {
@@ -113,6 +131,7 @@
     color: #0e0e0e;
     margin-bottom: 0.5rem;
     display: block;
+    animation: fadeInText 0.9s ease-in-out;
 }
 
 .inputGroup input {
@@ -123,6 +142,9 @@
     border: 1px solid #dcdcdc;
     border-radius: 5px;
     transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.6);
+    box-shadow: inset 0px 2px 5px rgba(0, 0, 0, 0.1);
+    animation: zoomIn 1s ease-in-out;
 }
 
 .inputGroup input:hover {
@@ -151,13 +173,14 @@
 /* Forgot Password */
 .forgotPassword {
     text-align: right;
-    animation: fadeIn 1.5s ease-in-out;
+    animation: fadeInText 1s ease-in-out;
 }
 
 .forgotPassword a {
     font-size: 0.9rem;
     color: #3700ff;
     text-decoration: none;
+    animation: fadeInText 1.2s ease-in-out;
 }
 
 .forgotPassword a:hover {
@@ -174,7 +197,8 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
+    animation: fadeInText 1.3s ease-in-out;
 }
 
 .loginButton:hover {
@@ -189,19 +213,75 @@
     margin-top: 2rem;
     font-size: 0.9rem;
     color: #6b6b6b;
-    opacity: 0; /* Start invisible */
-    animation: footerFadeIn 2s ease-in-out forwards; /* Apply animation */
+    opacity: 0;
+    animation: footerFadeIn 1.5s ease-in-out forwards;
 }
 
 .footer a {
     color: #7352e3;
     text-decoration: none;
-    transition: color 0.3s ease;
+    transition: color 0.2s ease;
 }
 
 .footer a:hover {
     color: #4917c9;
     text-decoration: underline;
+}
+
+/* Keyframe Animations */
+@keyframes slideLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes popIn {
+    0% {
+        transform: scale(0.7);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes scaleUp {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes footerFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Responsive Design */
