@@ -1,6 +1,7 @@
 /* Main Container */
 .container {
     display: flex;
+    flex-wrap: wrap; /* Enable wrapping for smaller screens */
     height: 100vh;
     font-family: 'Arial', sans-serif;
     background: linear-gradient(120deg, #f3f4f6, #dfe3ee);
@@ -47,29 +48,6 @@
     animation: zoomIn 1.5s ease-in-out;
 }
 
-/* Keyframe Animations */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes zoomIn {
-    from {
-        opacity: 0;
-        transform: scale(0.8);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
 /* Right Section */
 .rightSection {
     flex: 1;
@@ -91,23 +69,16 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: -75px; /* Overlap with form */
+    margin-bottom: -75px;
     box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
     animation: bounceIn 1s ease;
 }
 
-@keyframes bounceIn {
-    0% {
-        transform: scale(0.8);
-        opacity: 0;
-    }
-    60% {
-        transform: scale(1.1);
-        opacity: 1;
-    }
-    100% {
-        transform: scale(1);
-    }
+.logoCircle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 /* Login Form */
@@ -121,17 +92,6 @@
     position: relative;
     margin-top: 75px;
     animation: slideUp 1s ease-in-out;
-}
-
-@keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(50px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
 }
 
 .loginFormContainer h2 {
@@ -244,36 +204,46 @@
     text-decoration: underline;
 }
 
-/* Keyframe Animation for Footer */
-@keyframes footerFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(30px); /* Start from below */
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .logoCircle {
+        width: 120px;
+        height: 120px;
+        top: -50px;
     }
-    to {
-        opacity: 1;
-        transform: translateY(0); /* End at normal position */
+
+    .loginFormContainer {
+        max-width: 350px;
+    }
+
+    .leftSection {
+        padding: 2rem;
     }
 }
 
+@media (max-width: 767px) {
+    .container {
+        flex-direction: column;
+        height: auto;
+    }
 
-/* Logo Circle */
-.logoCircle {
-    width: 150px; /* Circle size */
-    height: 150px; /* Circle size */
-    background: linear-gradient(135deg, #4917c9, #7352e3); /* Gradient background */
-    border-radius: 50%; /* Circular shape */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: -75px; /* Overlap with the form */
-    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2); /* Shadow for depth */
-    z-index: 1;
-    overflow: hidden; /* Ensures the logo doesn't overflow outside the circle */
-}
+    .leftSection {
+        display: none; /* Hide the left section on smaller screens */
+    }
 
-.logoCircle img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Ensures the logo is centered and fits properly */
+    .rightSection {
+        width: 100%;
+        padding: 2rem;
+    }
+
+    .logoCircle {
+        width: 100px;
+        height: 100px;
+        top: -40px;
+    }
+
+    .loginFormContainer {
+        max-width: 300px;
+        padding: 1.5rem;
+    }
 }
