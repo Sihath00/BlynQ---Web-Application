@@ -5,14 +5,14 @@ export default function LoginPage() {
   return (
       <div className={styles.container}>
         {/* Left Section */}
-        <div className={styles.leftSection}>
+        <div className={`${styles.leftSection} ${styles.slideIn}`}>
           <div className={styles.brandContainer}>
-            <h1>
+            <h1 className={styles.heading}>
               Welcome to <span className={styles.highlight}>BlynQ</span>
             </h1>
-            <p>git
+            <p className={styles.subtext}>
               Streamline your service center operations with advanced tools for tracking,
-              scheduling, and managing vehicles.
+              scheduling, and managing vehicles efficiently.
             </p>
           </div>
           <Image
@@ -20,25 +20,25 @@ export default function LoginPage() {
               alt="Service Center Illustration"
               width={500}
               height={500}
-              className={styles.illustration}
+              className={`${styles.illustration}`}
+              priority
           />
         </div>
 
         {/* Right Section */}
-        <div className={styles.rightSection}>
-          {/* Logo Circle */}
+        <div className={`${styles.rightSection} ${styles.fadeIn}`}>
           <div className={styles.logoCircle}>
             <Image
                 src="/img.png"
                 alt="BlynQ Logo"
-                width={150}
-                height={150}
+                width={120}
+                height={120}
+                className={styles.logoImage}
             />
           </div>
 
-          {/* Login Form */}
           <div className={styles.loginFormContainer}>
-            <h2>Login</h2>
+            <h2 className={styles.formHeading}>Login to Your Service Center</h2>
             <form className={styles.form}>
               <div className={styles.inputGroup}>
                 <label htmlFor="email">Email</label>
@@ -57,9 +57,10 @@ export default function LoginPage() {
             </form>
           </div>
 
-          {/* Footer */}
           <footer className={styles.footer}>
-            Designed & Developed by <a href="#">BlynQ Technologies 2024</a> All rights reserved.
+            <p>
+              Designed & Developed by <a href="#">BlynQ Technologies 2024</a>. All rights reserved.
+            </p>
           </footer>
         </div>
       </div>
