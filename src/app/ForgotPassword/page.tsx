@@ -18,9 +18,9 @@ const ForgotPassword = () => {
       <div className="absolute bottom-[-120px] right-[-80px] w-[600px] h-[600px] bg-gradient-to-br from-blue-500 to-indigo-700 rounded-full blur-[200px] opacity-40"></div>
 
       {/* Main Card */}
-      <div className="relative flex w-[90%] max-w-5xl bg-white/20 backdrop-blur-md rounded-3xl shadow-2xl overflow-hidden transform transition duration-500 hover:scale-105 hover:shadow-3xl border border-white/30">
+      <div className="relative flex flex-col md:flex-row w-[90%] max-w-5xl bg-white/20 backdrop-blur-md rounded-3xl shadow-2xl overflow-hidden transform transition-all duration-500 hover:scale-105 hover:shadow-3xl border border-white/30">
         {/* Left Section (Illustration) */}
-        <div className="w-1/2 bg-gradient-to-b from-blue-200/50 to-blue-400/50 p-8 flex flex-col items-center justify-center relative">
+        <div className="w-full md:w-1/2 bg-gradient-to-b from-blue-200/50 to-blue-400/50 p-8 flex flex-col items-center justify-center relative">
           <img
             src="/forgotpassword.png" // Replace with your illustration path
             alt="Forgot Password Illustration"
@@ -30,38 +30,38 @@ const ForgotPassword = () => {
             Forgot Your Password?
           </h1>
           <p className="text-lg text-white mt-4 text-center">
-            No worries! Let's get you back on track.
+            No worries! Let’s get you back on track.
           </p>
         </div>
 
         {/* Right Section (Form) */}
-        <div className="w-1/2 p-10 md:p-16 flex flex-col justify-center bg-white/40 backdrop-blur-lg">
+        <div className="w-full md:w-1/2 p-6 md:p-12 flex flex-col justify-center bg-white/40 backdrop-blur-lg">
           <h2 className="text-3xl font-extrabold text-center text-gray-800">
             Reset Password
           </h2>
           <p className="text-sm text-center text-gray-500 mt-2">
-            Enter your email address, and we’ll send you instructions to reset your password.
+            Enter your registered email address, and we’ll send you instructions to reset your password.
           </p>
 
           {/* Forgot Password Form */}
           <form onSubmit={handleSubmit} className="space-y-6 mt-8">
-            {/* Email Input */}
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Email Address
-              </label>
+            {/* Animated Email Input */}
+            <div className="relative">
               <input
                 type="email"
                 id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-5 py-3 mt-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200"
-                placeholder="Enter your email address"
+                className="block w-full px-4 py-3 text-sm text-gray-900 bg-transparent border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 peer"
+                placeholder=" "
               />
+              <label
+                htmlFor="email"
+                className="absolute text-sm text-gray-500 bg-white px-2 left-3 -top-2 scale-75 transition-all duration-200 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-gray-400 peer-focus:top-[-10px] peer-focus:scale-75 peer-focus:text-blue-500"
+              >
+                Email Address
+              </label>
             </div>
 
             {/* Submit Button */}

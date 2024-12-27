@@ -22,7 +22,7 @@ const Login = () => {
       {/* Glassmorphism Layer */}
       <div className="absolute inset-0 bg-white/10 backdrop-blur-md"></div>
 
-      {/* Main Card */}
+      {/* Main Card */}  
       <div className="relative flex flex-col md:flex-row w-[90%] max-w-5xl bg-white/30 backdrop-blur-md rounded-3xl shadow-2xl overflow-hidden transform transition-all duration-500 hover:scale-[1.01] hover:shadow-3xl border border-white/20">
         {/* Left Section */}
         <div className="w-full md:w-1/2 bg-gradient-to-b from-blue-200/40 to-blue-500/40 p-8 flex flex-col items-center justify-center relative">
