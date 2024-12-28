@@ -16,8 +16,6 @@ const Login = () => {
     router.push("/Home");
   };
 
-  
-
   return (
     <div className="relative flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-500 via-blue-700 to-indigo-800 overflow-hidden">
       {/* Decorative Blurred Background Elements */}
@@ -45,7 +43,7 @@ const Login = () => {
         </div>
 
         {/* Right Section */}
-        <div className="w-full md:w-1/2 p-6 md:p-12 flex flex-col justify-center bg-white/40 backdrop-blur-lg">
+        <div className="w-full md:w-1/2 p-6 md:p-12 flex flex-col justify-center bg-white">
           {/* Circular Logo */}
           <div className="flex justify-center mb-6 md:mb-8">
             <div className="rounded-full shadow-lg h-28 w-28 md:h-36 md:w-36 flex items-center justify-center overflow-hidden">
@@ -61,7 +59,7 @@ const Login = () => {
           <h2 className="text-2xl md:text-3xl font-extrabold text-center text-gray-800">
             Login
           </h2>
-          <p className="text-sm text-center text-gray-500 mt-2">
+          <p className="text-sm text-center text-gray-600 mt-2">
             Enter your credentials to continue
           </p>
 
@@ -75,12 +73,12 @@ const Login = () => {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
-                className="block w-full px-4 py-3 text-sm text-gray-900 bg-transparent border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 peer"
-                placeholder=" "
+                className="block w-full px-4 py-3 text-sm text-gray-800 bg-transparent border border-gray-400 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 peer placeholder-transparent"
+                placeholder="Username"
               />
               <label
                 htmlFor="username"
-                className="absolute text-sm text-gray-500 bg-white px-2 left-3 -top-2 scale-75 transition-all duration-200 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-gray-400 peer-focus:top-[-10px] peer-focus:scale-75 peer-focus:text-blue-500"
+                className="absolute left-4 -top-3 bg-white text-gray-800 text-sm px-1 transition-all duration-300 ease-in-out peer-placeholder-shown:top-3 peer-placeholder-shown:bg-white peer-placeholder-shown:text-gray-500 peer-placeholder-shown:px-1 peer-focus:-top-3 peer-focus:bg-white peer-focus:px-1 peer-focus:text-gray-800"
               >
                 Username
               </label>
@@ -94,12 +92,12 @@ const Login = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="block w-full px-4 py-3 text-sm text-gray-900 bg-transparent border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 peer"
-                placeholder=" "
+                className="block w-full px-4 py-3 text-sm text-gray-800 bg-transparent border border-gray-400 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 peer placeholder-transparent"
+                placeholder="Password"
               />
               <label
                 htmlFor="password"
-                className="absolute text-sm text-gray-500 bg-white px-2 left-3 -top-2 scale-75 transition-all duration-200 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-gray-400 peer-focus:top-[-10px] peer-focus:scale-75 peer-focus:text-blue-500"
+                className="absolute left-4 -top-3 bg-white text-gray-800 text-sm px-1 transition-all duration-300 ease-in-out peer-placeholder-shown:top-3 peer-placeholder-shown:bg-white peer-placeholder-shown:text-gray-500 peer-placeholder-shown:px-1 peer-focus:-top-3 peer-focus:bg-white peer-focus:px-1 peer-focus:text-gray-800"
               >
                 Password
               </label>
