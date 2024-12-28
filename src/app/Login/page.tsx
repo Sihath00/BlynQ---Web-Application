@@ -22,31 +22,28 @@ const Login = () => {
       <div className="absolute top-10 left-10 w-96 h-96 bg-gradient-to-r from-purple-400 to-blue-500 rounded-full blur-3xl opacity-30"></div>
       <div className="absolute bottom-10 right-10 w-96 h-96 bg-gradient-to-br from-blue-400 to-indigo-600 rounded-full blur-3xl opacity-30"></div>
 
-      {/* Glassmorphism Layer */}
-      <div className="absolute inset-0 bg-white/10 backdrop-blur-md"></div>
-
       {/* Main Card */}
-      <div className="relative flex flex-col md:flex-row w-[90%] max-w-5xl bg-white/30 backdrop-blur-md rounded-3xl shadow-2xl overflow-hidden transform transition-all duration-500 hover:scale-[1.01] hover:shadow-3xl border border-white/20">
+      <div className="relative flex flex-col md:flex-row w-[90%] max-w-5xl md:h-[80%] lg:h-[70%] h-auto bg-white/30 backdrop-blur-md rounded-3xl shadow-2xl overflow-hidden border border-white/20">
         {/* Left Section */}
-        <div className="w-full md:w-1/2 bg-gradient-to-b from-blue-200/40 to-blue-500/40 p-8 flex flex-col items-center justify-center relative">
+        <div className="w-full md:w-1/2 bg-gradient-to-b from-blue-200/40 to-blue-500/40 p-8 md:p-12 flex flex-col items-center justify-center">
           <img
             src="/login.png"
             alt="Login Illustration"
-            className="w-[60%] md:w-[80%] h-auto z-10 mb-6"
+            className="w-[60%] md:w-[70%] h-auto mb-4"
           />
-          <h1 className="text-2xl md:text-4xl font-extrabold text-white mt-4 z-10 text-center">
+          <h1 className="text-xl md:text-2xl font-extrabold text-white text-center">
             Welcome Back!
           </h1>
-          <p className="text-sm md:text-lg text-white mt-2 z-10 text-center">
+          <p className="text-sm md:text-base text-white mt-2 text-center">
             Sign in to access your account.
           </p>
         </div>
 
         {/* Right Section */}
-        <div className="w-full md:w-1/2 p-6 md:p-12 flex flex-col justify-center bg-white">
+        <div className="w-full md:w-1/2 p-6 md:p-10 bg-white flex flex-col justify-center">
           {/* Circular Logo */}
-          <div className="flex justify-center mb-6 md:mb-8">
-            <div className="rounded-full shadow-lg h-28 w-28 md:h-36 md:w-36 flex items-center justify-center overflow-hidden">
+          <div className="flex justify-center mb-6">
+            <div className="rounded-full shadow-lg h-16 w-16 md:h-20 md:w-20 lg:h-24 lg:w-24 flex items-center justify-center overflow-hidden">
               <img
                 src="/BlynqLogo.png"
                 alt="Blynq Logo"
@@ -56,7 +53,7 @@ const Login = () => {
           </div>
 
           {/* Form Header */}
-          <h2 className="text-2xl md:text-3xl font-extrabold text-center text-gray-800">
+          <h2 className="text-lg md:text-2xl font-extrabold text-center text-gray-800">
             Login
           </h2>
           <p className="text-sm text-center text-gray-600 mt-2">
@@ -64,7 +61,7 @@ const Login = () => {
           </p>
 
           {/* Login Form */}
-          <form onSubmit={handleSubmit} className="space-y-6 mt-8">
+          <form onSubmit={handleSubmit} className="space-y-6 mt-6">
             {/* Username Input */}
             <div className="relative">
               <input
@@ -73,12 +70,11 @@ const Login = () => {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
-                className="block w-full px-4 py-3 text-sm text-gray-800 bg-transparent border border-gray-400 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 peer placeholder-transparent"
-                placeholder="Username"
+                className="block w-full px-4 py-3 text-base text-gray-800 bg-transparent border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 peer"
               />
               <label
                 htmlFor="username"
-                className="absolute left-4 -top-3 bg-white text-gray-800 text-sm px-1 transition-all duration-300 ease-in-out peer-placeholder-shown:top-3 peer-placeholder-shown:bg-white peer-placeholder-shown:text-gray-500 peer-placeholder-shown:px-1 peer-focus:-top-3 peer-focus:bg-white peer-focus:px-1 peer-focus:text-gray-800"
+                className="absolute left-4 top-4 text-gray-500 text-sm transition-all duration-300 ease-in-out bg-white px-2 peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:bg-transparent peer-focus:-top-3 peer-focus:text-blue-500 peer-focus:bg-white"
               >
                 Username
               </label>
@@ -92,12 +88,11 @@ const Login = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="block w-full px-4 py-3 text-sm text-gray-800 bg-transparent border border-gray-400 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 peer placeholder-transparent"
-                placeholder="Password"
+                className="block w-full px-4 py-3 text-base text-gray-800 bg-transparent border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 peer"
               />
               <label
                 htmlFor="password"
-                className="absolute left-4 -top-3 bg-white text-gray-800 text-sm px-1 transition-all duration-300 ease-in-out peer-placeholder-shown:top-3 peer-placeholder-shown:bg-white peer-placeholder-shown:text-gray-500 peer-placeholder-shown:px-1 peer-focus:-top-3 peer-focus:bg-white peer-focus:px-1 peer-focus:text-gray-800"
+                className="absolute left-4 top-4 text-gray-500 text-sm transition-all duration-300 ease-in-out bg-white px-2 peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:bg-transparent peer-focus:-top-3 peer-focus:text-blue-500 peer-focus:bg-white"
               >
                 Password
               </label>
@@ -161,16 +156,13 @@ const Login = () => {
           </form>
 
           {/* Footer */}
-          <p className="mt-6 text-center text-sm text-gray-500">
+          <p className="mt-4 text-center text-sm text-gray-500">
             Don’t have an account?{" "}
-            <a
-              href="#"
-              className="text-blue-500 hover:underline font-medium"
-            >
+            <a href="#" className="text-blue-500 hover:underline font-medium">
               Create an account
             </a>
           </p>
-          <p className="mt-6 text-center text-sm text-gray-500">
+          <p className="mt-4 text-center text-sm text-gray-500">
             Designed & Developed by{" "}
             <span className="text-blue-500 font-semibold">Team BlynQ</span> 2024 © All rights reserved.
           </p>
