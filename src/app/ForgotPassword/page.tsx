@@ -1,13 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
+  const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent) => {
+    router.push("/ResetPassword");
     e.preventDefault();
+    
     if (!email || !validateEmail(email)) {
       setError("Please enter a valid email address.");
       return;

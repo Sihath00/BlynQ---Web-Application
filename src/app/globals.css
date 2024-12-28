@@ -1,6 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
 /* Fade In */
 @keyframes fade-in {
     0% {
