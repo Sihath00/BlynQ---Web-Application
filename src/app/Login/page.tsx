@@ -74,7 +74,9 @@ const Login = () => {
               />
               <label
                 htmlFor="username"
-                className="absolute left-4 top-4 text-gray-500 text-sm transition-all duration-300 ease-in-out bg-white px-2 peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:bg-transparent peer-focus:-top-3 peer-focus:text-blue-500 peer-focus:bg-white"
+                className={`absolute left-4 bg-white px-2 text-gray-500 text-sm transition-all duration-300 ease-in-out ${
+                  username ? "-top-3 text-blue-500" : "top-4"
+                } peer-focus:-top-3 peer-focus:text-blue-500 peer-focus:bg-white`}
               >
                 Username
               </label>
@@ -92,7 +94,9 @@ const Login = () => {
               />
               <label
                 htmlFor="password"
-                className="absolute left-4 top-4 text-gray-500 text-sm transition-all duration-300 ease-in-out bg-white px-2 peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:bg-transparent peer-focus:-top-3 peer-focus:text-blue-500 peer-focus:bg-white"
+                className={`absolute left-4 bg-white px-2 text-gray-500 text-sm transition-all duration-300 ease-in-out ${
+                  password ? "-top-3 text-blue-500" : "top-4"
+                } peer-focus:-top-3 peer-focus:text-blue-500 peer-focus:bg-white`}
               >
                 Password
               </label>
