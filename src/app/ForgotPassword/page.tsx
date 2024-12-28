@@ -4,11 +4,22 @@ import { useState } from "react";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!email || !validateEmail(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+    setError(""); // Clear error if valid
     console.log("Email:", email);
     // Add your logic to handle password reset
+  };
+
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   };
 
   return (
@@ -18,11 +29,11 @@ const ForgotPassword = () => {
       <div className="absolute bottom-[-120px] right-[-80px] w-[600px] h-[600px] bg-gradient-to-br from-blue-500 to-indigo-700 rounded-full blur-[200px] opacity-40"></div>
 
       {/* Main Card */}
-      <div className="relative flex flex-col md:flex-row w-[90%] max-w-5xl bg-white/20 backdrop-blur-md rounded-3xl shadow-2xl overflow-hidden transform transition-all duration-500 hover:scale-105 hover:shadow-3xl border border-white/30">
+      <div className="relative flex flex-col md:flex-row w-[90%] max-w-5xl bg-white/20 backdrop-blur-md rounded-3xl shadow-2xl overflow-hidden border border-white/30">
         {/* Left Section (Illustration) */}
         <div className="w-full md:w-1/2 bg-gradient-to-b from-blue-200/50 to-blue-400/50 p-8 flex flex-col items-center justify-center relative">
           <img
-            src="/forgotpassword.png" // Replace with your illustration path
+            src="/forgotpassword.png"
             alt="Forgot Password Illustration"
             className="w-[80%] h-auto"
           />
@@ -35,7 +46,7 @@ const ForgotPassword = () => {
         </div>
 
         {/* Right Section (Form) */}
-        <div className="w-full md:w-1/2 p-6 md:p-12 flex flex-col justify-center bg-white/40 backdrop-blur-lg">
+        <div className="w-full md:w-1/2 p-6 md:p-12 flex flex-col justify-center bg-white">
           <h2 className="text-3xl font-extrabold text-center text-gray-800">
             Reset Password
           </h2>
@@ -53,16 +64,25 @@ const ForgotPassword = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="block w-full px-4 py-3 text-sm text-gray-900 bg-transparent border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 peer"
+                className={`block w-full px-4 py-3 text-sm text-gray-900 bg-transparent border rounded-lg appearance-none focus:outline-none focus:ring-2 peer ${
+                  error ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
+                }`}
                 placeholder=" "
               />
               <label
                 htmlFor="email"
-                className="absolute text-sm text-gray-500 bg-white px-2 left-3 -top-2 scale-75 transition-all duration-200 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-gray-400 peer-focus:top-[-10px] peer-focus:scale-75 peer-focus:text-blue-500"
+                className={`absolute text-sm ${
+                  error ? "text-red-500" : "text-gray-500"
+                } bg-white px-2 left-3 -top-2 scale-75 transition-all duration-200 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-gray-400 peer-focus:top-[-10px] peer-focus:scale-75 ${
+                  error ? "peer-focus:text-red-500" : "peer-focus:text-blue-500"
+                }`}
               >
                 Email Address
               </label>
             </div>
+            {error && (
+              <p className="text-sm text-red-500 mt-1">{error}</p>
+            )}
 
             {/* Submit Button */}
             <button

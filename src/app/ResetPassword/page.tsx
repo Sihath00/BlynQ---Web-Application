@@ -31,41 +31,35 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="relative flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-600 via-blue-700 to-indigo-900 overflow-hidden">
+    <div className="relative flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-500 via-blue-700 to-indigo-800 overflow-hidden">
       {/* Background Ornaments */}
-      <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-tr from-purple-400 to-blue-500 rounded-full blur-[120px] opacity-50"></div>
-      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-gradient-to-br from-blue-400 to-indigo-700 rounded-full blur-[150px] opacity-50"></div>
+      <div className="absolute top-[-80px] left-[-100px] w-[400px] h-[400px] bg-gradient-to-r from-purple-400 to-blue-600 rounded-full blur-[150px] opacity-50"></div>
+      <div className="absolute bottom-[-120px] right-[-80px] w-[600px] h-[600px] bg-gradient-to-br from-blue-500 to-indigo-700 rounded-full blur-[200px] opacity-40"></div>
 
       {/* Reset Password Card */}
-      <div className="relative w-full max-w-3xl bg-white/10 backdrop-blur-lg rounded-3xl shadow-xl transform transition-transform hover:scale-[1.02] hover:shadow-2xl">
-        <div className="p-10">
-          {/* Icon */}
-          <div className="flex justify-center">
-            <div className="bg-gradient-to-br from-blue-500 to-purple-600 p-5 rounded-full shadow-lg">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="2"
-                stroke="currentColor"
-                className="w-10 h-10 text-white"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M3 8l7.89-3.421c.42-.182.92-.182 1.34 0L21 8m-9 11v-8m0 0l-8-4m8 4l8-4"
-                />
-              </svg>
-            </div>
-          </div>
-
-          {/* Header */}
-          <h1 className="text-center text-3xl font-extrabold text-white mt-6">
-            Request Sent Successfully!
+      <div className="relative flex flex-col md:flex-row w-[90%] max-w-5xl bg-white/30 backdrop-blur-md rounded-3xl shadow-2xl overflow-hidden border border-white/20">
+        {/* Left Section */}
+        <div className="w-full md:w-1/2 bg-gradient-to-b from-blue-200/50 to-blue-400/50 p-8 flex flex-col items-center justify-center relative">
+          <img
+            src="/OTP.png"
+            alt="Reset Password Illustration"
+            className="w-[80%] h-auto"
+          />
+          <h1 className="text-3xl font-extrabold text-white mt-8 text-center">
+            Reset Your Password
           </h1>
-          <p className="text-center text-sm text-gray-200 mt-2">
-            We've sent a 6-digit confirmation code to your email. Please enter
-            it below to verify your email and reset your password.
+          <p className="text-lg text-white mt-4 text-center">
+            Enter your new password below to regain access.
+          </p>
+        </div>
+
+        {/* Right Section */}
+        <div className="w-full md:w-1/2 p-6 md:p-12 flex flex-col justify-center bg-white">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-center text-gray-800">
+            Create New Password
+          </h2>
+          <p className="text-sm text-center text-gray-600 mt-2">
+            Enter your registered email and the verification code sent to you.
           </p>
 
           {/* Form */}
@@ -80,11 +74,11 @@ const ResetPassword = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="peer w-full px-4 py-3 text-sm text-white bg-transparent border border-gray-300 rounded-lg placeholder-transparent focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="peer w-full px-4 py-3 text-sm bg-transparent border border-gray-300 rounded-lg placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder=" "
               />
               <label
-                className="absolute left-4 top-3 text-sm text-gray-300 transition-all duration-200 peer-placeholder-shown:top-3 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:scale-100 peer-focus:top-[-10px] peer-focus:scale-90 peer-focus:text-purple-500"
+                className="absolute left-4 top-4 text-sm text-gray-500 transition-all duration-200 peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-focus:top-[-10px] peer-focus:scale-75 peer-focus:text-blue-500 bg-white px-2"
                 htmlFor="email"
               >
                 Email Address
@@ -101,7 +95,7 @@ const ResetPassword = () => {
                   maxLength={1}
                   value={value}
                   onChange={(e) => handleCodeChange(e.target.value, index)}
-                  className="w-12 h-12 text-center text-lg text-white bg-transparent border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-12 h-12 text-center text-lg bg-transparent border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               ))}
             </div>
@@ -113,44 +107,15 @@ const ResetPassword = () => {
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 required
-                className="peer w-full px-4 py-3 text-sm text-white bg-transparent border border-gray-300 rounded-lg placeholder-transparent focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="peer w-full px-4 py-3 text-sm bg-transparent border border-gray-300 rounded-lg placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder=" "
               />
               <label
-                className="absolute left-4 top-3 text-sm text-gray-300 transition-all duration-200 peer-placeholder-shown:top-3 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:scale-100 peer-focus:top-[-10px] peer-focus:scale-90 peer-focus:text-purple-500"
+                className="absolute left-4 top-4 text-sm text-gray-500 transition-all duration-200 peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-focus:top-[-10px] peer-focus:scale-75 peer-focus:text-blue-500 bg-white px-2"
                 htmlFor="new-password"
               >
                 New Password
               </label>
-              <button
-                type="button"
-                onClick={() => setPasswordVisible(!passwordVisible)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-purple-500 focus:outline-none"
-              >
-                {passwordVisible ? (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 16 16"
-                  >
-                    <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z" />
-                    <path
-                      fillRule="evenodd"
-                      d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8z"
-                    />
-                  </svg>
-                ) : (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 16 16"
-                  >
-                    <path d="M13.359 11.238A5.978 5.978 0 0 1 8 12c-2.07 0-3.945-1.042-5.359-2.762a.75.75 0 0 1 1.143-.984C4.248 9.903 5.992 11 8 11c1.966 0 3.65-.955 4.933-2.724a.75.75 0 1 1 1.153.96z" />
-                  </svg>
-                )}
-              </button>
             </div>
 
             {/* Confirm Password Input */}
@@ -160,11 +125,11 @@ const ResetPassword = () => {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
-                className="peer w-full px-4 py-3 text-sm text-white bg-transparent border border-gray-300 rounded-lg placeholder-transparent focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="peer w-full px-4 py-3 text-sm bg-transparent border border-gray-300 rounded-lg placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder=" "
               />
               <label
-                className="absolute left-4 top-3 text-sm text-gray-300 transition-all duration-200 peer-placeholder-shown:top-3 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:scale-100 peer-focus:top-[-10px] peer-focus:scale-90 peer-focus:text-purple-500"
+                className="absolute left-4 top-4 text-sm text-gray-500 transition-all duration-200 peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-focus:top-[-10px] peer-focus:scale-75 peer-focus:text-blue-500 bg-white px-2"
                 htmlFor="confirm-password"
               >
                 Confirm Password
@@ -174,26 +139,11 @@ const ResetPassword = () => {
             {/* Update Password Button */}
             <button
               type="submit"
-              className="w-full max-w-sm py-3 bg-gradient-to-r from-purple-500 to-blue-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300"
+              className="w-full max-w-sm py-3 bg-gradient-to-r from-blue-600 to-purple-500 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300"
             >
               Update Password
             </button>
           </form>
-
-          {/* Footer Links */}
-          <div className="text-center mt-6 text-sm text-gray-300">
-            <p>
-              Don’t have a code?{" "}
-              <a href="#" className="text-purple-400 hover:underline">
-                Resend code
-              </a>
-            </p>
-            <p>
-              <a href="/Login" className="text-purple-400 hover:underline">
-                &lt; Return to sign in
-              </a>
-            </p>
-          </div>
         </div>
       </div>
     </div>
