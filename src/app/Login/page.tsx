@@ -1,17 +1,22 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Username:", username);
     console.log("Password:", password);
+    router.push("/Home");
   };
+
+  
 
   return (
     <div className="relative flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-500 via-blue-700 to-indigo-800 overflow-hidden">
@@ -22,7 +27,7 @@ const Login = () => {
       {/* Glassmorphism Layer */}
       <div className="absolute inset-0 bg-white/10 backdrop-blur-md"></div>
 
-      {/* Main Card */}  
+      {/* Main Card */}
       <div className="relative flex flex-col md:flex-row w-[90%] max-w-5xl bg-white/30 backdrop-blur-md rounded-3xl shadow-2xl overflow-hidden transform transition-all duration-500 hover:scale-[1.01] hover:shadow-3xl border border-white/20">
         {/* Left Section */}
         <div className="w-full md:w-1/2 bg-gradient-to-b from-blue-200/40 to-blue-500/40 p-8 flex flex-col items-center justify-center relative">
@@ -71,7 +76,7 @@ const Login = () => {
                 onChange={(e) => setUsername(e.target.value)}
                 required
                 className="block w-full px-4 py-3 text-sm text-gray-900 bg-transparent border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 peer"
-                placeholder=" " // Ensures the label animation works properly
+                placeholder=" "
               />
               <label
                 htmlFor="username"
@@ -104,7 +109,6 @@ const Login = () => {
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-blue-500 focus:outline-none"
               >
                 {passwordVisible ? (
-                  // Open Eye SVG (Password Visible)
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -117,7 +121,6 @@ const Login = () => {
                     <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
                   </svg>
                 ) : (
-                  // Closed Eye SVG (Password Hidden)
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -132,7 +135,6 @@ const Login = () => {
                 )}
               </button>
             </div>
-
 
             {/* Remember Me and Forgot Password */}
             <div className="flex justify-between items-center">
@@ -170,17 +172,13 @@ const Login = () => {
               Create an account
             </a>
           </p>
-          {/* Footer */}
           <p className="mt-6 text-center text-sm text-gray-500">
             Designed & Developed by{" "}
-            <span className="text-blue-500 font-semibold">
-              Team BlynQ
-            </span>{" "}
-            2024 © All rights reserved.
+            <span className="text-blue-500 font-semibold">Team BlynQ</span> 2024 © All rights reserved.
           </p>
         </div>
-        </div>
       </div>
+    </div>
   );
 };
 
