@@ -4,16 +4,43 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 const Login = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [errors, setErrors] = useState({ email: "", password: "" });
   const router = useRouter();
+
+  // Helper to validate email
+  const isValidEmail = (email: string) => /\S+@\S+\.\S+/.test(email);
+
+  const validateForm = () => {
+    let isValid = true;
+    const newErrors = { email: "", password: "" };
+
+    if (!email) {
+      newErrors.email = "Email address is required.";
+      isValid = false;
+    } else if (!isValidEmail(email)) {
+      newErrors.email = "Please enter a valid email address.";
+      isValid = false;
+    }
+
+    if (!password) {
+      newErrors.password = "Password is required.";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Username:", username);
-    console.log("Password:", password);
-    router.push("/Home");
+    if (validateForm()) {
+      console.log("Email:", email);
+      console.log("Password:", password);
+      router.push("/Home");
+    }
   };
 
   return (
@@ -62,24 +89,29 @@ const Login = () => {
 
           {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-6 mt-6">
-            {/* Username Input */}
+            {/* Email Input */}
             <div className="relative">
               <input
-                type="text"
-                id="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
-                className="block w-full px-4 py-3 text-base text-gray-800 bg-transparent border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 peer"
+                className={`block w-full px-4 py-3 text-base text-gray-800 bg-transparent border ${
+                  errors.email ? "border-red-500" : "border-gray-300"
+                } rounded-lg appearance-none focus:outline-none focus:ring-2 ${
+                  errors.email ? "focus:ring-red-500" : "focus:ring-blue-500"
+                } peer`}
               />
               <label
-                htmlFor="username"
-                className={`absolute left-4 bg-white px-2 text-gray-500 text-sm transition-all duration-300 ease-in-out ${
-                  username ? "-top-3 text-blue-500" : "top-4"
+                htmlFor="email"
+                className={`absolute left-4 bg-white px-2 text-sm transition-all duration-300 ${
+                  email ? "-top-3 text-blue-500" : "top-4 text-gray-500"
                 } peer-focus:-top-3 peer-focus:text-blue-500 peer-focus:bg-white`}
               >
-                Username
+                Email Address
               </label>
+              {errors.email && <span className="text-xs text-red-500">{errors.email}</span>}
             </div>
 
             {/* Password Input */}
@@ -90,12 +122,16 @@ const Login = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="block w-full px-4 py-3 text-base text-gray-800 bg-transparent border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 peer"
+                className={`block w-full px-4 py-3 text-base text-gray-800 bg-transparent border ${
+                  errors.password ? "border-red-500" : "border-gray-300"
+                } rounded-lg appearance-none focus:outline-none focus:ring-2 ${
+                  errors.password ? "focus:ring-red-500" : "focus:ring-blue-500"
+                } peer`}
               />
               <label
                 htmlFor="password"
-                className={`absolute left-4 bg-white px-2 text-gray-500 text-sm transition-all duration-300 ease-in-out ${
-                  password ? "-top-3 text-blue-500" : "top-4"
+                className={`absolute left-4 bg-white px-2 text-sm transition-all duration-300 ${
+                  password ? "-top-3 text-blue-500" : "top-4 text-gray-500"
                 } peer-focus:-top-3 peer-focus:text-blue-500 peer-focus:bg-white`}
               >
                 Password
@@ -131,6 +167,7 @@ const Login = () => {
                   </svg>
                 )}
               </button>
+              {errors.password && <span className="text-xs text-red-500">{errors.password}</span>}
             </div>
 
             {/* Remember Me and Forgot Password */}
