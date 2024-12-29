@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -43,7 +44,11 @@ const Login = () => {
     }
   };
 
+
   return (
+
+
+
     <div className="relative flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-500 via-blue-700 to-indigo-800 overflow-hidden">
       {/* Decorative Blurred Background Elements */}
       <div className="absolute top-10 left-10 w-96 h-96 bg-gradient-to-r from-purple-400 to-blue-500 rounded-full blur-3xl opacity-30"></div>
@@ -209,6 +214,7 @@ const Login = () => {
           </p>
         </div>
       </div>
+
     </div>
   );
 };
