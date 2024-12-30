@@ -186,7 +186,6 @@ const EmployeeManagementPage = () => {
           <Button
             variant="text"
             color="error"
-            startIcon={<Clear />}
             onClick={() => setSearchValue("")}
             sx={{ fontSize: "0.8rem" }}
           >

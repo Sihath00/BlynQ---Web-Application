@@ -48,16 +48,21 @@ const AddEmployeePage = () => {
 
   return (
     <Box sx={{ p: 4, backgroundColor: "#f5f7fb", minHeight: "100vh" }}>
-      {/* Header */}
-      <Box sx={{ mb: 4 }}>
-        <Typography
-          variant="h5"
-          fontWeight="bold"
-          sx={{ fontSize: "1.5rem" }} // Same font size as Employee List header
-        >
-          Add Employee
-        </Typography>
-      </Box>
+      {/* Page Header */}
+  <Box
+    sx={{
+      mb: 4,
+      pb: 2,
+    }}
+  >
+    <Typography
+      variant="h4"
+      fontWeight="bold"
+      sx={{ fontSize: "1.5rem", color: "#212121" }}
+    >
+      Add Employee
+    </Typography>
+  </Box>
 
       {/* Outer Box */}
       <Box
