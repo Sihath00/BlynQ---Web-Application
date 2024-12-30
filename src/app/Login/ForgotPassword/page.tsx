@@ -1,40 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
-import {
-  DataGrid,
-  GridColDef,
-  GridToolbarQuickFilter,
-} from "@mui/x-data-grid";
-import {
-  Box,
-  Button,
-  FormControl,
-  Select,
-  MenuItem,
-  InputBase,
-  Tabs,
-  Tab,
-  Typography,
-  Tooltip,
-  IconButton,
-} from "@mui/material";
-import { Edit, Delete, Visibility, Clear } from "@mui/icons-material";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-const EmployeeManagementPage = () => {
-  const [employees] = useState([
-    { id: 1, firstName: "Sihath", lastName: "Senarath", email: "test1@gmail.com", mobile: "07795870697", status: "Approved" },
-    { id: 2, firstName: "Ynah", lastName: "Bueno", email: "yj.bueno98@gmail.com", mobile: "074326599578", status: "Approved" },
-    { id: 3, firstName: "Ynah", lastName: "Bueno", email: "ynahb@iecc-care.co.uk", mobile: "07432659957", status: "Approved" },
-    { id: 4, firstName: "Willy", lastName: "Okey", email: "Wokey71@gmail.com", mobile: "07492090826", status: "Archived" },
-    { id: 5, firstName: "Yilmaz", lastName: "Asik", email: "yilmazasik17@hotmail.co.uk", mobile: "07570145866", status: "Approved" },
-    { id: 6, firstName: "Gaindu", lastName: "Amarasingha", email: "test1@gmail.com", mobile: "07795870697", status: "Approved" },
-    { id: 7, firstName: "Santhul", lastName: "Senarath", email: "test1@gmail.com", mobile: "07795870697", status: "Approved" },
-  ]);
-  const [activeTab, setActiveTab] = useState(0);
-  const [searchFilter, setSearchFilter] = useState("All");
-  const [searchValue, setSearchValue] = useState("");
-
+const ForgotPassword = () => {
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
+  const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent) => {
     router.push("/Login/ResetPassword");
@@ -47,95 +19,44 @@ const EmployeeManagementPage = () => {
     setError(""); // Clear error if valid
     console.log("Email:", email);
     // Add your logic to handle password reset
-
   };
 
-  const columns: GridColDef[] = [
-    { field: "firstName", headerName: "First Name", flex: 1 },
-    { field: "lastName", headerName: "Last Name", flex: 1 },
-    { field: "mobile", headerName: "Mobile", flex: 1 },
-    { field: "email", headerName: "Email", flex: 1.5 },
-    {
-      field: "status",
-      headerName: "Status",
-      flex: 0.8,
-      renderCell: (params) => (
-        <Typography
-          sx={{
-            display: "inline-block",
-            padding: "4px 12px",
-            fontSize: "12px",
-            fontWeight: "500",
-            borderRadius: "12px",
-            textAlign: "center",
-            backgroundColor:
-              params.value === "Approved" ? "rgba(102, 187, 106, 0.15)" : "rgba(158, 158, 158, 0.1)",
-            color: params.value === "Approved" ? "#4CAF50" : "#9E9E9E",
-            minWidth: "80px",
-          }}
-        >
-          {params.value}
-        </Typography>
-      ),
-    },
-    {
-      field: "actions",
-      headerName: "Actions",
-      flex: 1,
-      renderCell: () => (
-        <Box sx={{ display: "flex", gap: 1 }}>
-          <Tooltip title="Edit">
-            <IconButton color="primary">
-              <Edit />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Delete">
-            <IconButton color="error">
-              <Delete />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="View">
-            <IconButton color="success">
-              <Visibility />
-            </IconButton>
-          </Tooltip>
-        </Box>
-      ),
-    },
-  ];
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
   return (
-    <Box sx={{ p: 3, backgroundColor: "#f5f5f5", minHeight: "100vh" }}>
-      {/* Header */}
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          mb: 3,
-        }}
-      >
-        <Typography variant="h5" fontWeight="bold">
-          Employee List
-        </Typography>
-        <Button
-          variant="contained"
-          sx={{
-            background: "linear-gradient(to right, #4caf50, #81c784)",
-            color: "white",
-            px: 3,
-            textTransform: "capitalize",
-            borderRadius: 2,
-            boxShadow: 2,
-            ":hover": {
-              background: "linear-gradient(to right, #66bb6a, #a5d6a7)",
-            },
-          }}
-        >
-          Add Employee
-        </Button>
-      </Box>
+    <div className="relative flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-500 via-blue-700 to-indigo-800 overflow-hidden">
+      {/* Decorative Blurred Background Elements */}
+      <div className="absolute top-[-80px] left-[-100px] w-[400px] h-[400px] bg-gradient-to-r from-purple-400 to-blue-600 rounded-full blur-[150px] opacity-50"></div>
+      <div className="absolute bottom-[-120px] right-[-80px] w-[600px] h-[600px] bg-gradient-to-br from-blue-500 to-indigo-700 rounded-full blur-[200px] opacity-40"></div>
 
+      {/* Main Card */}
+      <div className="relative flex flex-col md:flex-row w-[90%] max-w-5xl bg-white/20 backdrop-blur-md rounded-3xl shadow-2xl overflow-hidden border border-white/30">
+        {/* Left Section (Illustration) */}
+        <div className="w-full md:w-1/2 bg-gradient-to-b from-blue-200/50 to-blue-400/50 p-8 flex flex-col items-center justify-center relative">
+          <img
+            src="/forgotpassword.png"
+            alt="Forgot Password Illustration"
+            className="w-[80%] h-auto"
+          />
+          <h1 className="text-3xl font-extrabold text-white mt-8 text-center">
+            Forgot Your Password?
+          </h1>
+          <p className="text-lg text-white mt-4 text-center">
+            No worries! Let’s get you back on track.
+          </p>
+        </div>
+
+        {/* Right Section (Form) */}
+        <div className="w-full md:w-1/2 p-6 md:p-12 flex flex-col justify-center bg-white">
+          <h2 className="text-3xl font-extrabold text-center text-gray-800">
+            Reset Password
+          </h2>
+          <p className="text-sm text-center text-gray-500 mt-2">
+            Enter your registered email address, and we’ll send you instructions to reset your password.
+          </p>
 
           {/* Forgot Password Form */}
           <form onSubmit={handleSubmit} className="space-y-6 mt-8">
@@ -171,73 +92,25 @@ const EmployeeManagementPage = () => {
             <button
             type="submit"
               className="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl hover:from-blue-700 hover:to-blue-800 focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-300"
-
             >
-              <MenuItem value="All">All</MenuItem>
-              <MenuItem value="First Name">First Name</MenuItem>
-              <MenuItem value="Last Name">Last Name</MenuItem>
-              <MenuItem value="Mobile">Mobile</MenuItem>
-              <MenuItem value="Email">Email</MenuItem>
-              <MenuItem value="Status">Status</MenuItem>
-            </Select>
-          </FormControl>
-          <InputBase
-            placeholder="Search..."
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-            sx={{
-              flex: 1,
-              px: 2,
-              py: 1,
-              border: "1px solid #ddd",
-              borderRadius: "8px",
-              backgroundColor: "#f9f9f9",
-              fontSize: "0.9rem",
-            }}
-          />
-          <Button
-            variant="text"
-            color="error"
-            startIcon={<Clear />}
-            onClick={() => setSearchValue("")}
-            sx={{ fontSize: "0.8rem" }}
-          >
-            Clear
-          </Button>
-        </Box>
-      </Box>
+              Reset Password
+            </button>
+          </form>
 
-      {/* Data Grid */}
-      <Box
-        sx={{
-          height: 500,
-          backgroundColor: "white",
-          boxShadow: 2,
-          borderRadius: 2,
-        }}
-      >
-        <DataGrid
-          rows={employees}
-          columns={columns}
-          disableColumnMenu
-          components={{
-            Toolbar: GridToolbarQuickFilter,
-          }}
-          pagination
-          pageSize={5}
-          rowsPerPageOptions={[1, 5, 25]}
-          sx={{
-            "& .MuiDataGrid-row:hover": { backgroundColor: "#f5f5f5" },
-            "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: "#e3f2fd",
-              fontWeight: "bold",
-            },
-            "& .MuiDataGrid-row:nth-of-type(odd)": { backgroundColor: "#fafafa" },
-          }}
-        />
-      </Box>
-    </Box>
+          {/* Back to Login */}
+          <p className="mt-6 text-center text-sm text-gray-500">
+            Remember your password?{" "}
+            <a
+              href="/Login"
+              className="text-blue-500 hover:underline font-medium"
+            >
+              Back to Login
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
   );
 };
 
-export default EmployeeManagementPage;
+export default ForgotPassword;
