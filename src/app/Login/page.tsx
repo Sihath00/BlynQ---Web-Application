@@ -3,6 +3,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -185,7 +186,7 @@ const Login = () => {
                 Remember me
               </label>
               <a
-                href="/ForgotPassword"
+                href="/Login/ForgotPassword"
                 className="text-sm text-blue-500 hover:underline"
               >
                 Forgotten password?
@@ -199,6 +200,7 @@ const Login = () => {
             >
               Login
             </button>
+       
           </form>
 
           {/* Footer */}

@@ -9,7 +9,7 @@ const ForgotPassword = () => {
   const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent) => {
-    router.push("/ResetPassword");
+    router.push("/Login/ResetPassword");
     e.preventDefault();
     
     if (!email || !validateEmail(email)) {
@@ -90,7 +90,7 @@ const ForgotPassword = () => {
 
             {/* Submit Button */}
             <button
-              type="submit"
+            type="submit"
               className="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl hover:from-blue-700 hover:to-blue-800 focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-300"
             >
               Reset Password
