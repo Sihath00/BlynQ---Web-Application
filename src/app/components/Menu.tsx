@@ -56,7 +56,7 @@ const menuItems = [
       {
         icon: "/MenuBar/logout-512.png",
         label: "Logout",
-        href: "",
+        href: "/",
       },
     ],
   },
