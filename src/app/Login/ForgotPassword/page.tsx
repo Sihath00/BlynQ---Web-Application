@@ -35,8 +35,19 @@ const EmployeeManagementPage = () => {
   const [searchFilter, setSearchFilter] = useState("All");
   const [searchValue, setSearchValue] = useState("");
 
-  const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
-    setActiveTab(newValue);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    router.push("/Login/ResetPassword");
+    e.preventDefault();
+    
+    if (!email || !validateEmail(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+    setError(""); // Clear error if valid
+    console.log("Email:", email);
+    // Add your logic to handle password reset
+
   };
 
   const columns: GridColDef[] = [
@@ -125,39 +136,42 @@ const EmployeeManagementPage = () => {
         </Button>
       </Box>
 
-      {/* Tabs and Filters */}
-      <Box
-        sx={{
-          backgroundColor: "white",
-          boxShadow: 1,
-          borderRadius: 2,
-          p: 2,
-          mb: 3,
-        }}
-      >
-        <Tabs
-          value={activeTab}
-          onChange={handleTabChange}
-          textColor="primary"
-          indicatorColor="primary"
-          sx={{
-            "& .MuiTab-root": {
-              textTransform: "capitalize",
-              fontWeight: "bold",
-              minWidth: "100px",
-            },
-          }}
-        >
-          <Tab label="All" />
-          <Tab label="Active" />
-          <Tab label="Archives" />
-        </Tabs>
-        <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
-          <FormControl size="small" sx={{ minWidth: 150 }}>
-            <Select
-              value={searchFilter}
-              onChange={(e) => setSearchFilter(e.target.value)}
-              displayEmpty
+
+          {/* Forgot Password Form */}
+          <form onSubmit={handleSubmit} className="space-y-6 mt-8">
+            {/* Animated Email Input */}
+            <div className="relative">
+              <input
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className={`block w-full px-4 py-3 text-sm text-gray-900 bg-transparent border rounded-lg appearance-none focus:outline-none focus:ring-2 peer ${
+                  error ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
+                }`}
+                placeholder=" "
+              />
+              <label
+                htmlFor="email"
+                className={`absolute text-sm ${
+                  error ? "text-red-500" : "text-gray-500"
+                } bg-white px-2 left-3 -top-2 scale-75 transition-all duration-200 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-gray-400 peer-focus:top-[-10px] peer-focus:scale-75 ${
+                  error ? "peer-focus:text-red-500" : "peer-focus:text-blue-500"
+                }`}
+              >
+                Email Address
+              </label>
+            </div>
+            {error && (
+              <p className="text-sm text-red-500 mt-1">{error}</p>
+            )}
+
+            {/* Submit Button */}
+            <button
+            type="submit"
+              className="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl hover:from-blue-700 hover:to-blue-800 focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-300"
+
             >
               <MenuItem value="All">All</MenuItem>
               <MenuItem value="First Name">First Name</MenuItem>
