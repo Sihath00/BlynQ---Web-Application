@@ -1,0 +1,29 @@
+.fc-timegrid {
+    font-family: Arial, sans-serif;
+  }
+  
+  .fc-timegrid-slot {
+    border-top: 1px solid #ddd;
+    height: 40px;
+  }
+  
+  .fc-timegrid-axis {
+    background-color: #f4f4f4;
+    font-weight: bold;
+    text-align: center;
+    padding: 5px;
+    border-right: 1px solid #ddd;
+  }
+  
+  .fc-timegrid-event {
+    background-color: #f33;
+    color: white;
+    border-radius: 4px;
+    padding: 5px;
+    font-size: 12px;
+  }
+  
+  .fc-timegrid-event:hover {
+    background-color: #c00;
+  }
+  

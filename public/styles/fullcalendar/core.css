@@ -1,0 +1,40 @@
+.fc {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  
+  .fc-toolbar {
+    background-color: #f4f4f4;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .fc-toolbar-title {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  .fc-button {
+    background-color: #0070f3;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .fc-button:hover {
+    background-color: #005bb5;
+  }
+  
+  .fc-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .fc-view-harness {
+    background-color: white;
+  }
+  
