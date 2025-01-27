@@ -1,0 +1,29 @@
+.fc-daygrid {
+    font-family: Arial, sans-serif;
+  }
+  
+  .fc-daygrid-day {
+    border: 1px solid #ddd;
+  }
+  
+  .fc-daygrid-day-number {
+    font-size: 14px;
+    padding: 5px;
+  }
+  
+  .fc-daygrid-event {
+    background-color: #0070f3;
+    color: white;
+    border-radius: 4px;
+    padding: 5px;
+    cursor: pointer;
+  }
+  
+  .fc-daygrid-event:hover {
+    background-color: #005bb5;
+  }
+  
+  .fc-daygrid-week-number {
+    font-weight: bold;
+  }
+  
