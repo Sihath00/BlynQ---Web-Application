@@ -11,7 +11,7 @@ const menuItems = [
       {
         icon: "/MenuBar/homeIcon.png",
         label: "Dashboard",
-        href: "/MainDashboard",
+        href: "/admin",
       },
       {
         icon: "/MenuBar/employeeIcon.png",
@@ -64,7 +64,7 @@ const menuItems = [
 const Menu = () => {
     const pathname =usePathname();
   return (
-    <div className="mt-4 text-sm">
+    <div className="mt-4 text-sm drop-shadow-md">
       {menuItems.map((i) => (
         <div className="relative flex flex-col gap-2"  key={i.title}>
           <span className="ml-2 hidden lg:block text-gray-700 font-light my-4">{i.title}</span>
