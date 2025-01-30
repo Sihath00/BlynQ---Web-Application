@@ -184,6 +184,13 @@ const EmployeeManagementPage = () => {
           <Select
             value={rowsPerPage}
             onChange={(e) => setRowsPerPage(Number(e.target.value))}
+            sx={{
+              ml: 1,
+              backgroundColor: "#f9f9f9",
+              border: "none",
+              outline: "none",
+              "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+            }}
           >
             <MenuItem value={5}>5</MenuItem>
             <MenuItem value={10}>10</MenuItem>
