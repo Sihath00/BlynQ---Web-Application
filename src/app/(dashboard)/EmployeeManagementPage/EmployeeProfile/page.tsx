@@ -205,11 +205,7 @@ const EmployeeProfile = () => {
       pb: 2,
     }}
   >
-    <Typography
-      variant="h4"
-      fontWeight="bold"
-      sx={{ fontSize: "1.5rem", color: "#212121" }}
-    >
+    <Typography variant="h5" fontWeight="bold" sx={{ fontSize: "1.5rem", color: "#1a237e" }}>
       Employee Profile
     </Typography>
   </Box>

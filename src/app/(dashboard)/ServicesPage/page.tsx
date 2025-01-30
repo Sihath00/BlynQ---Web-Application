@@ -41,7 +41,7 @@ const ServicePage = () => {
   const [open, setOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [currentService, setCurrentService] = useState({
-    id: null,
+    id: 0,
     name: "",
     description: "",
     price: "",
@@ -50,13 +50,13 @@ const ServicePage = () => {
   });
 
   // Open Dialog for Add or Edit
-  const handleOpen = (service = null) => {
+  const handleOpen = (service: { id: number; name: string; description: string; price: string; duration: string; active: boolean } | null = null) => {
     if (service) {
       setEditMode(true);
       setCurrentService(service);
     } else {
       setEditMode(false);
-      setCurrentService({ id: null, name: "", description: "", price: "", duration: "", active: true });
+      setCurrentService({ id: 0, name: "", description: "", price: "", duration: "", active: true });
     }
     setOpen(true);
   };
@@ -87,14 +87,14 @@ const ServicePage = () => {
     });
 
     // Reset state and close modal
-    setCurrentService({ id: null, name: "", description: "", price: "", duration: "", active: true });
+    setCurrentService({ id: 0, name: "", description: "", price: "", duration: "", active: true });
     setEditMode(false);
     setOpen(false);
   }
 
 
       // Reset state and close modal
-      setCurrentService({ id: null, name: "", description: "", price: "", duration: "", active: true });
+      setCurrentService({ id: 0, name: "", description: "", price: "", duration: "", active: true });
       setEditMode(false);
       setOpen(false);
     }

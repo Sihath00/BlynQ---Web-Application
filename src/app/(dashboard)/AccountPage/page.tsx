@@ -87,7 +87,7 @@ const UserList = () => {
   return (
     <Box sx={{ backgroundColor: "#f9f9f9", minHeight: "100vh", p: 4 }}>
       {/* Page Header */}
-      <Typography variant="h5" fontWeight="bold" sx={{ fontSize: "1.5rem", mb: 2, color: "#1a1a1a" }}>
+      <Typography variant="h5" fontWeight="bold" sx={{ fontSize: "1.5rem", mb: 2, color: "#1a237e" }}>
         User List
       </Typography>
 

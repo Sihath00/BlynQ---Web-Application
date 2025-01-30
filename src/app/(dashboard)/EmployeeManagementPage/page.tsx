@@ -27,6 +27,7 @@ import {
   PersonAdd,
   Delete as DeleteIcon,
   Archive,
+  Add,
 } from "@mui/icons-material";
 
 const EmployeeManagementPage = () => {
@@ -52,24 +53,42 @@ const EmployeeManagementPage = () => {
     currentPage * rowsPerPage + rowsPerPage
   );
 
+  function handleOpen(): void {
+    throw new Error("Function not implemented.");
+  }
+
   return (
     <Box sx={{ p: 3, backgroundColor: "#f4f6f8", minHeight: "100vh" }}>
       {/* Page Header */}
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-        <Typography variant="h5" fontWeight="bold">
+        <Typography variant="h5" fontWeight="bold" sx={{ fontSize: "1.5rem", color: "#1a237e" }}>
           Employee List
         </Typography>
 
         {/* Register Employee Button */}
-        <Button 
-          component={Link} 
-          href="/EmployeeManagementPage/RegEmployee" 
-          variant="contained" 
-          startIcon={<PersonAdd />} 
-          sx={{ px: 3, borderRadius: 2 }}
-        >
-          Add Employee
-        </Button>
+        <Button
+                  component={Link} 
+                  href="/EmployeeManagementPage/RegEmployee" 
+                  variant="contained"
+                  startIcon={<Add />}
+                  onClick={() => handleOpen()}
+                  sx={{
+                    background: "linear-gradient(to right, #007bff, #00c6ff)",
+                    color: "white",
+                    px: 4,
+                    py: 1.2,
+                    fontSize: "1rem",
+                    borderRadius: "30px",
+                    textTransform: "capitalize",
+                    fontWeight: "bold",
+                    boxShadow: "0px 5px 15px rgba(0, 123, 255, 0.3)",
+                    ":hover": {
+                      background: "linear-gradient(to right, #0056b3, #0099cc)",
+                    },
+                  }}
+                >
+                  Add Employee
+                </Button>
       </Box>
 
       {/* Search & Filters */}
