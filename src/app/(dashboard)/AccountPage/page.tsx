@@ -138,11 +138,11 @@ const UserList = () => {
         <Table>
           <TableHead sx={{ backgroundColor: "#f5f5f5" }}>
             <TableRow>
-              <TableCell>Full Name</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Username</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Full Name</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Email</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Username</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Status</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -274,7 +274,6 @@ const UserList = () => {
         fontSize: "0.95rem",
       }}
     >
-      Set a new password for <strong>{selectedUser}</strong>
     </Typography>
 
     {/* New Password Field */}

@@ -45,7 +45,7 @@ const menuItems = [
     items: [
 
       {
-        icon: "/MenuBar/Settings.png",
+        icon: "/MenuBar/repair-shop.png",
         label: "Service Center Profile",
         href: "/ProfilePage",
       },
