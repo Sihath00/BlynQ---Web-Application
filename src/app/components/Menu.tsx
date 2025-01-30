@@ -11,7 +11,7 @@ const menuItems = [
       {
         icon: "/MenuBar/homeIcon.png",
         label: "Dashboard",
-        href: "/admin",
+        href: "/Dashboard",
       },
       {
         icon: "/MenuBar/employeeIcon.png",

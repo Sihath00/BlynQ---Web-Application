@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import React, { useState } from "react";
 import {
   Box,
@@ -35,10 +36,7 @@ const EmployeeManagementPage = () => {
     { id: 3, firstName: "Test Employee", lastName: "One Dom", mobile: "0777492455", email: "testemployeeonedom@gmail.com", status: "Approved" },
     { id: 4, firstName: "Amarachi", lastName: "Eziama", mobile: "07491898664", email: "eziamaamarachi@gmail.com", status: "Approved" },
     { id: 5, firstName: "Rasa", lastName: "Tintere", mobile: "7538831270", email: "rasatintere@googlemail.com", status: "Approved" },
-    { id: 6, firstName: "Rasa", lastName: "Tintere", mobile: "7538831270", email: "rasatintere@googlemail.com", status: "Approved" },
   ]);
-    
-  
 
   const [searchBy, setSearchBy] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
@@ -58,7 +56,15 @@ const EmployeeManagementPage = () => {
         <Typography variant="h5" fontWeight="bold">
           Employee List
         </Typography>
-        <Button variant="contained" startIcon={<PersonAdd />} sx={{ px: 3, borderRadius: 2 }}>
+
+        {/* Register Employee Button */}
+        <Button 
+          component={Link} 
+          href="/dashboard/RegEmployee" 
+          variant="contained" 
+          startIcon={<PersonAdd />} 
+          sx={{ px: 3, borderRadius: 2 }}
+        >
           Add Employee
         </Button>
       </Box>
@@ -100,10 +106,10 @@ const EmployeeManagementPage = () => {
 
           {/* Clear Button */}
           <Button variant="text" color="error" startIcon={<DeleteIcon />} onClick={() => setSearchQuery("")}>
-          Clear
+            Clear
           </Button>
-          </Box>
-          </Paper>
+        </Box>
+      </Paper>
 
       {/* Employee Table */}
       <TableContainer component={Paper} sx={{ borderRadius: 2 }}>
@@ -170,41 +176,26 @@ const EmployeeManagementPage = () => {
 
       {/* Pagination */}
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: 3 }}>
-        {/* Rows per page selector */}
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <Typography variant="body2">Rows per page:</Typography>
           <Select
             value={rowsPerPage}
             onChange={(e) => setRowsPerPage(Number(e.target.value))}
-            sx={{
-              ml: 1,
-              backgroundColor: "#f9f9f9",
-              borderRadius: 2,
-              "& .MuiOutlinedInput-notchedOutline": { border: "none" },
-            }}
           >
             <MenuItem value={5}>5</MenuItem>
             <MenuItem value={10}>10</MenuItem>
             <MenuItem value={25}>25</MenuItem>
           </Select>
         </Box>
-
-        {/* Page Indicator */}
         <Typography variant="body2">
-          {employees.length > 0
-            ? `${currentPage * rowsPerPage + 1}–${Math.min(
-                (currentPage + 1) * rowsPerPage,
-                employees.length
-              )} of ${employees.length}`
-            : "0–0 of 0"}
+          {currentPage * rowsPerPage + 1}–
+          {Math.min((currentPage + 1) * rowsPerPage, employees.length)} of {employees.length}
         </Typography>
-
-        {/* Navigation Buttons */}
         <Box sx={{ display: "flex", gap: 1 }}>
           <Button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))} disabled={currentPage === 0}>
             Previous
           </Button>
-          <Button onClick={() => setCurrentPage((prev) => Math.min(prev + 1, Math.ceil(employees.length / rowsPerPage) - 1))} disabled={(currentPage + 1) * rowsPerPage >= employees.length}>
+          <Button onClick={() => setCurrentPage((prev) => Math.min(prev + 1, Math.ceil(employees.length / rowsPerPage) - 1))}>
             Next
           </Button>
         </Box>
