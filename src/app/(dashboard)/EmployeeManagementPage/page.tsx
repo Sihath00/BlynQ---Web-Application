@@ -2,231 +2,212 @@
 
 import React, { useState } from "react";
 import {
-  DataGrid,
-  GridColDef,
-  GridPagination,
-  GridToolbarQuickFilter,
-} from "@mui/x-data-grid";
-import {
   Box,
   Button,
-  FormControl,
   Select,
   MenuItem,
-  InputBase,
-  Tabs,
-  Tab,
+  TextField,
   Typography,
   Tooltip,
   IconButton,
+  InputAdornment,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
 } from "@mui/material";
-import { Edit, Delete, Visibility, Clear } from "@mui/icons-material";
+import {
+  Edit,
+  Visibility,
+  Search as SearchIcon,
+  PersonAdd,
+  Delete as DeleteIcon,
+  Archive,
+} from "@mui/icons-material";
 
 const EmployeeManagementPage = () => {
   const [employees] = useState([
-    { id: 1, firstName: "Sihath", lastName: "Senarath", email: "test1@gmail.com", mobile: "07795870697", status: "Approved" },
-    { id: 2, firstName: "Amina", lastName: "Hajameyan", email: "amina@gmail.com", mobile: "074326599578", status: "Approved" },
-    { id: 3, firstName: "Pesadi", lastName: "Wikramathilaka", email: "", mobile: "07432659957", status: "Approved" },
-    { id: 4, firstName: "Willy", lastName: "Okey", email: "Wokey71@gmail.com", mobile: "07492090826", status: "Archived" },
-    { id: 5, firstName: "Yilmaz", lastName: "Asik", email: "yilmazasik17@hotmail.co.uk", mobile: "07570145866", status: "Approved" },
-    { id: 6, firstName: "Gaindu", lastName: "Amarasingha", email: "test1@gmail.com", mobile: "07795870697", status: "Approved" },
-    { id: 7, firstName: "Santhul", lastName: "Senarath", email: "test1@gmail.com", mobile: "07795870697", status: "Approved" },
-    { id:87, firstName: "Santhul", lastName: "Senarath", email: "test1@gmail.com", mobile: "07795870697", status: "Approved" },
+    { id: 1, firstName: "Test Employee", lastName: "Three", mobile: "0777492400", email: "testemployeethree@gmail.com", status: "Approved" },
+    { id: 2, firstName: "Test Employee", lastName: "Two Sup", mobile: "0777492499", email: "testemployeetwosup@gmail.com", status: "Approved" },
+    { id: 3, firstName: "Test Employee", lastName: "One Dom", mobile: "0777492455", email: "testemployeeonedom@gmail.com", status: "Approved" },
+    { id: 4, firstName: "Amarachi", lastName: "Eziama", mobile: "07491898664", email: "eziamaamarachi@gmail.com", status: "Approved" },
+    { id: 5, firstName: "Rasa", lastName: "Tintere", mobile: "7538831270", email: "rasatintere@googlemail.com", status: "Approved" },
+    { id: 6, firstName: "Rasa", lastName: "Tintere", mobile: "7538831270", email: "rasatintere@googlemail.com", status: "Approved" },
   ]);
-  const [activeTab, setActiveTab] = useState(0);
-  const [searchFilter, setSearchFilter] = useState("All");
-  const [searchValue, setSearchValue] = useState("");
+    
+  
 
-  const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
-    setActiveTab(newValue);
-  };
+  const [searchBy, setSearchBy] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [currentPage, setCurrentPage] = useState(0);
 
-  const columns: GridColDef[] = [
-    { field: "firstName", headerName: "First Name", flex: 1 },
-    { field: "lastName", headerName: "Last Name", flex: 1 },
-    { field: "mobile", headerName: "Mobile", flex: 1 },
-    { field: "email", headerName: "Email", flex: 1.5 },
-    {
-      field: "status",
-      headerName: "Status",
-      flex: 0.8,
-      renderCell: (params) => (
-        <Typography
-          sx={{
-            display: "inline-block",
-            padding: "4px 12px",
-            fontSize: "12px",
-            fontWeight: "500",
-            borderRadius: "12px",
-            textAlign: "center",
-            backgroundColor:
-              params.value === "Approved" ? "rgba(102, 187, 106, 0.15)" : "rgba(158, 158, 158, 0.1)",
-            color: params.value === "Approved" ? "#4CAF50" : "#9E9E9E",
-            minWidth: "80px",
-          }}
-        >
-          {params.value}
-        </Typography>
-      ),
-    },
-    {
-      field: "actions",
-      headerName: "Actions",
-      flex: 1,
-      renderCell: () => (
-        <Box sx={{ display: "flex", gap: 1 }}>
-          <Tooltip title="Edit">
-            <IconButton color="primary">
-              <Edit />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Delete">
-            <IconButton color="error">
-              <Delete />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="View">
-            <IconButton color="success">
-              <Visibility />
-            </IconButton>
-          </Tooltip>
-        </Box>
-      ),
-    },
-  ];
+  // ** Pagination Logic **
+  const paginatedEmployees = employees.slice(
+    currentPage * rowsPerPage,
+    currentPage * rowsPerPage + rowsPerPage
+  );
 
   return (
-    <Box sx={{ p: 3, backgroundColor: "#f5f5f5", minHeight: "100vh" }}>
-      {/* Header */}
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          mb: 3,
-        }}
-      >
+    <Box sx={{ p: 3, backgroundColor: "#f4f6f8", minHeight: "100vh" }}>
+      {/* Page Header */}
+      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
         <Typography variant="h5" fontWeight="bold">
           Employee List
         </Typography>
-        <Button
-          variant="contained"
-          sx={{
-            background: "linear-gradient(to right, #4caf50, #81c784)",
-            color: "white",
-            px: 3,
-            textTransform: "capitalize",
-            borderRadius: 2,
-            boxShadow: 2,
-            ":hover": {
-              background: "linear-gradient(to right, #66bb6a, #a5d6a7)",
-            },
-          }}
-        >
+        <Button variant="contained" startIcon={<PersonAdd />} sx={{ px: 3, borderRadius: 2 }}>
           Add Employee
         </Button>
       </Box>
 
-      {/* Tabs and Filters */}
-      <Box
-        sx={{
-          backgroundColor: "white",
-          boxShadow: 1,
-          borderRadius: 2,
-          p: 2,
-          mb: 3,
-        }}
-      >
-        <Tabs
-          value={activeTab}
-          onChange={handleTabChange}
-          textColor="primary"
-          indicatorColor="primary"
-          sx={{
-            "& .MuiTab-root": {
-              textTransform: "capitalize",
-              fontWeight: "bold",
-              minWidth: "100px",
-            },
-          }}
-        >
-          <Tab label="All" />
-          <Tab label="Active" />
-          <Tab label="Archives" />
-        </Tabs>
-        <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
-          <FormControl size="small" sx={{ minWidth: 150 }}>
-            <Select
-              value={searchFilter}
-              onChange={(e) => setSearchFilter(e.target.value)}
-              displayEmpty
-            >
-              <MenuItem value="All">All</MenuItem>
-              <MenuItem value="First Name">First Name</MenuItem>
-              <MenuItem value="Last Name">Last Name</MenuItem>
-              <MenuItem value="Mobile">Mobile</MenuItem>
-              <MenuItem value="Email">Email</MenuItem>
-              <MenuItem value="Status">Status</MenuItem>
-            </Select>
-          </FormControl>
-          <InputBase
+      {/* Search & Filters */}
+      <Paper sx={{ p: 3, borderRadius: 3, mb: 3 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          {/* Search By Dropdown */}
+          <TextField
+            select
+            label="Search By"
+            value={searchBy}
+            onChange={(e) => setSearchBy(e.target.value)}
+            fullWidth
+          >
+            <MenuItem value="All">All</MenuItem>
+            <MenuItem value="First Name">First Name</MenuItem>
+            <MenuItem value="Last Name">Last Name</MenuItem>
+            <MenuItem value="Mobile">Mobile</MenuItem>
+            <MenuItem value="Email">Email</MenuItem>
+            <MenuItem value="Status">Status</MenuItem>
+          </TextField>
+
+          {/* Search Input */}
+          <TextField
             placeholder="Search..."
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-            sx={{
-              flex: 1,
-              px: 2,
-              py: 1,
-              border: "1px solid #ddd",
-              borderRadius: "8px",
-              backgroundColor: "#f9f9f9",
-              fontSize: "0.9rem",
+            variant="outlined"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            fullWidth
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
             }}
           />
-          <Button
-            variant="text"
-            color="error"
-            onClick={() => setSearchValue("")}
-            sx={{ fontSize: "0.8rem" }}
+
+          {/* Clear Button */}
+          <Button variant="text" color="error" startIcon={<DeleteIcon />} onClick={() => setSearchQuery("")}>
+          Clear
+          </Button>
+          </Box>
+          </Paper>
+
+      {/* Employee Table */}
+      <TableContainer component={Paper} sx={{ borderRadius: 2 }}>
+        <Table>
+          <TableHead sx={{ backgroundColor: "#f4f6f8" }}>
+            <TableRow>
+              <TableCell sx={{ fontWeight: "bold" }}>First Name</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Last Name</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Mobile</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Email</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Status</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {paginatedEmployees.map((employee) => (
+              <TableRow key={employee.id}>
+                <TableCell>{employee.firstName}</TableCell>
+                <TableCell>{employee.lastName}</TableCell>
+                <TableCell>{employee.mobile}</TableCell>
+                <TableCell sx={{ color: employee.email === "Not Provided" ? "#9E9E9E" : "inherit" }}>
+                  {employee.email}
+                </TableCell>
+                <TableCell>
+                  <Typography
+                    sx={{
+                      display: "inline-block",
+                      padding: "6px 14px",
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      borderRadius: "16px",
+                      textAlign: "center",
+                      backgroundColor: employee.status === "Approved" ? "rgba(102, 187, 106, 0.15)" : "rgba(255, 171, 64, 0.2)",
+                      color: employee.status === "Approved" ? "#4CAF50" : "#FF9800",
+                    }}
+                  >
+                    {employee.status}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+                    <Tooltip title="Edit">
+                      <IconButton color="primary">
+                        <Edit />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Archive">
+                      <IconButton color="warning">
+                        <Archive />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="View">
+                      <IconButton color="default">
+                        <Visibility />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      {/* Pagination */}
+      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: 3 }}>
+        {/* Rows per page selector */}
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <Typography variant="body2">Rows per page:</Typography>
+          <Select
+            value={rowsPerPage}
+            onChange={(e) => setRowsPerPage(Number(e.target.value))}
+            sx={{
+              ml: 1,
+              backgroundColor: "#f9f9f9",
+              borderRadius: 2,
+              "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+            }}
           >
-            Clear
+            <MenuItem value={5}>5</MenuItem>
+            <MenuItem value={10}>10</MenuItem>
+            <MenuItem value={25}>25</MenuItem>
+          </Select>
+        </Box>
+
+        {/* Page Indicator */}
+        <Typography variant="body2">
+          {employees.length > 0
+            ? `${currentPage * rowsPerPage + 1}–${Math.min(
+                (currentPage + 1) * rowsPerPage,
+                employees.length
+              )} of ${employees.length}`
+            : "0–0 of 0"}
+        </Typography>
+
+        {/* Navigation Buttons */}
+        <Box sx={{ display: "flex", gap: 1 }}>
+          <Button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))} disabled={currentPage === 0}>
+            Previous
+          </Button>
+          <Button onClick={() => setCurrentPage((prev) => Math.min(prev + 1, Math.ceil(employees.length / rowsPerPage) - 1))} disabled={(currentPage + 1) * rowsPerPage >= employees.length}>
+            Next
           </Button>
         </Box>
-      </Box>
-
-      {/* Data Grid */}
-      <Box
-        sx={{
-          height: 500,
-          backgroundColor: "white",
-          boxShadow: 2,
-          borderRadius: 2,
-        }}
-      >
-    
-
-    <DataGrid
-  rows={employees}
-  columns={columns}
-  pagination
-  pageSizeOptions={[7, 10, 25]} // Allow multiple options for rows per page
-  initialState={{
-    pagination: {
-      paginationModel: {
-        pageSize: 7, // Default page size
-        page: 0, // Default starting page
-      },
-    },
-  }}
-  sx={{
-    "& .MuiDataGrid-row:hover": { backgroundColor: "#f5f5f5" },
-    "& .MuiDataGrid-columnHeaders": {
-      backgroundColor: "#e3f2fd",
-      fontWeight: "bold",
-    },
-    "& .MuiDataGrid-row:nth-of-type(odd)": { backgroundColor: "#fafafa" },
-  }}
-/>
       </Box>
     </Box>
   );
