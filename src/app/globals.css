@@ -27,6 +27,16 @@
   .animate-fade-in-slow {
     animation: fade-in-slow 2s ease-in-out;
   }
+
+  .react-calendar{
+    width: 100 !important;
+    border: none !important;
+    font-family: "Inter",sans-serif !important;
+
+  }
+  .react-calendar__navigation__label__labelText{
+    font-weight: 600;
+  }
   
   /* Slide Up */
   @keyframes slide-up {
