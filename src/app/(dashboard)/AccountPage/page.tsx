@@ -184,6 +184,7 @@ const UserList = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      
       {/* Pagination */}
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: 3 }}>
         <Box sx={{ display: "flex", alignItems: "center" }}>

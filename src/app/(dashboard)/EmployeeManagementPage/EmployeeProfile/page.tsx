@@ -35,6 +35,7 @@ import {
   Email as EmailIcon,
   Phone as PhoneIcon,
   Wc as GenderIcon,
+  Delete as DeleteIcon,
 } from "@mui/icons-material";
 
 
@@ -540,14 +541,11 @@ const EmployeeProfile = () => {
                 variant="outlined"
                 sx={{ flexGrow: 1 }}
               />
-              <Button
-                variant="outlined"
-                color="error"
-                sx={{ minWidth: 100 }}
-              >
-                Clear
-              </Button>
-            </Box>
+               {/* Clear Button */}
+                  <Button variant="text" color="error" startIcon={<DeleteIcon />} onClick={() => setSearchQuery("")}>
+                       Clear
+                    </Button>
+                  </Box>
 
             {/* Working History Table */}
             <TableContainer>
