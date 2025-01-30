@@ -43,16 +43,18 @@ const menuItems = [
   {
     title: "OTHER",
     items: [
+
       {
-        icon: "/MenuBar/collaborator-512.png",
-        label: "Profile",
+        icon: "/MenuBar/Settings.png",
+        label: "Service Center Profile",
         href: "/ProfilePage",
       },
       {
-        icon: "/MenuBar/Settings.png",
-        label: "Settings",
-        href: "/SettingsPage",
+        icon: "/MenuBar/collaborator-512.png",
+        label: "Accounts",
+        href: "/AccountPage",
       },
+      
       {
         icon: "/MenuBar/logout-512.png",
         label: "Logout",
