@@ -31,12 +31,15 @@ import {
 
 const EmployeeManagementPage = () => {
   const [employees] = useState([
-    { id: 1, firstName: "Test Employee", lastName: "Three", mobile: "0777492400", email: "testemployeethree@gmail.com", status: "Approved" },
-    { id: 2, firstName: "Test Employee", lastName: "Two Sup", mobile: "0777492499", email: "testemployeetwosup@gmail.com", status: "Approved" },
-    { id: 3, firstName: "Test Employee", lastName: "One Dom", mobile: "0777492455", email: "testemployeeonedom@gmail.com", status: "Approved" },
-    { id: 4, firstName: "Amarachi", lastName: "Eziama", mobile: "07491898664", email: "eziamaamarachi@gmail.com", status: "Approved" },
-    { id: 5, firstName: "Rasa", lastName: "Tintere", mobile: "7538831270", email: "rasatintere@googlemail.com", status: "Approved" },
+    { id: 1, firstName: "Sihath Senarath", lastName: "Yapa", mobile: "0777492400", email: "testemployeee@gmail.com", status: "Approved" },
+    { id: 2, firstName: "Test Employee", lastName: "Two", mobile: "0777492499", email: "testemployeetwo@gmail.com", status: "Approved" },
+    { id: 3, firstName: "Test Employee", lastName: "One ", mobile: "0777492455", email: "testemployeeone@gmail.com", status: "Approved" },
+    { id: 4, firstName: "Amina", lastName: "Hajameyan", mobile: "07491898664", email: "amina@gmail.com", status: "Approved" },
+    { id: 5, firstName: "Pesadi", lastName: "Wikramathilaka", mobile: "7538831270", email: "pesadi@googlemail.com", status: "Approved" },
+    { id: 4, firstName: "Gaindu", lastName: "Amarasingha", mobile: "07491898664", email: "gaindu@gmail.com", status: "Approved" },
+    { id: 5, firstName: "Sithum", lastName: "Duleka", mobile: "7538831270", email: "sithum@googlemail.com", status: "Approved" },
   ]);
+  
 
   const [searchBy, setSearchBy] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
@@ -60,7 +63,7 @@ const EmployeeManagementPage = () => {
         {/* Register Employee Button */}
         <Button 
           component={Link} 
-          href="/dashboard/RegEmployee" 
+          href="/EmployeeManagementPage/RegEmployee" 
           variant="contained" 
           startIcon={<PersonAdd />} 
           sx={{ px: 3, borderRadius: 2 }}
