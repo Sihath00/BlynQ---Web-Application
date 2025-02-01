@@ -31,15 +31,20 @@ import {
   Close as CloseIcon,
   Visibility,
   VisibilityOff,
+  FilterList as FilterListIcon,
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 
 const UserList = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchBy, setSearchBy] = useState("All");
+  const [statusFilter, setStatusFilter] = useState("All");
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(0);
   const [openResetModal, setOpenResetModal] = useState(false);
+  const [] = useState("");
+  const [] = useState("");
+  const [] = useState("");
   const [selectedUser, setSelectedUser] = useState("");
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -57,6 +62,7 @@ const UserList = () => {
 
   // Filter logic
   const filteredUsers = users.filter((user) => {
+    if (statusFilter !== "All" && user.status !== statusFilter) return false;
     if (searchBy === "All") return true;
     if (searchBy === "Enabled") return user.status === "Enabled";
     if (searchBy === "Disabled") return user.status === "Disabled";
@@ -91,58 +97,113 @@ const UserList = () => {
         User List
       </Typography>
 
-      {/* Search & Filters */}
-      <Paper sx={{ p: 3, borderRadius: 3, mb: 3 }}>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          {/* Search By Dropdown */}
+
+      
+     {/* Filter Section */}
+      <Paper sx={{ p: 3, mb: 3, borderRadius: 3, backgroundColor: "#ffffff", boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)" }}>
+        <Typography
+          variant="h6"
+          sx={{
+        fontWeight: "bold",
+        mb: 3,
+        color: "#1a237e",
+        display: "flex",
+        alignItems: "center",
+          }}
+        >
+          <FilterListIcon sx={{ mr: 1, fontSize: 24, color: "#007bff" }} /> Filter Users
+        </Typography>
+
+        <Box
+          sx={{
+        display: "grid",
+        gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "1fr 1fr 1fr" },
+        gap: 2,
+          }}
+        >
+          {/* Search By */}
           <TextField
-            select
-            label="Search By"
-            value={searchBy}
-            onChange={(e) => setSearchBy(e.target.value)}
-            fullWidth
+        select
+        label="Search By"
+        value={searchBy}
+        onChange={(e) => setSearchBy(e.target.value)}
+        fullWidth
+        variant="outlined"
+        size="small"
+        sx={{
+          "& .MuiOutlinedInput-root": {
+            borderRadius: "10px",
+            background: "#f9f9f9",
+          },
+        }}
           >
-            <MenuItem value="All">All</MenuItem>
-            <MenuItem value="Enabled">Enabled</MenuItem>
-            <MenuItem value="Disabled">Disabled</MenuItem>
-            <MenuItem value="First Name">First Name</MenuItem>
-            <MenuItem value="Username">Username</MenuItem>
-            <MenuItem value="Email">Email</MenuItem>
+        <MenuItem value="All">All</MenuItem>
+        <MenuItem value="First Name">First Name</MenuItem>
+        <MenuItem value="Username">Username</MenuItem>
+        <MenuItem value="Email">Email</MenuItem>
+        <MenuItem value="Enabled">Enabled</MenuItem>
+        <MenuItem value="Disabled">Disabled</MenuItem>
           </TextField>
 
-          {/* Search Input */}
+          {/* Status Filter */}
           <TextField
-            placeholder="Search..."
-            variant="outlined"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            fullWidth
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
+        select
+        label="Status Filter"
+        value={statusFilter}
+        onChange={(e) => setStatusFilter(e.target.value)}
+        fullWidth
+        variant="outlined"
+        size="small"
+        sx={{
+          "& .MuiOutlinedInput-root": {
+            borderRadius: "10px",
+            background: "#f9f9f9",
+          },
+        }}
+          >
+        <MenuItem value="All">All</MenuItem>
+        <MenuItem value="Enabled">Enabled</MenuItem>
+        <MenuItem value="Disabled">Disabled</MenuItem>
+          </TextField>
+
+          {/* Search Query */}
+          <TextField
+        placeholder="Search..."
+        variant="outlined"
+        size="small"
+        fullWidth
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+          <SearchIcon />
+            </InputAdornment>
+          ),
+        }}
+        sx={{
+          "& .MuiOutlinedInput-root": {
+            borderRadius: "10px",
+            background: "#f9f9f9",
+          },
+        }}
           />
+          </Box>
+        </Paper>
 
-          {/* Clear Button */}
-          <Button variant="text" color="error" startIcon={<DeleteIcon />} onClick={() => setSearchQuery("")}>
-            Clear
-          </Button>
-        </Box>
-      </Paper>
-
+        
+      
       {/* User Table */}
-      <TableContainer component={Paper}>
+
+      <TableContainer component={Paper} sx={{ borderRadius: 3 }}>
         <Table>
-          <TableHead sx={{ backgroundColor: "#f5f5f5" }}>
-            <TableRow>
-              <TableCell sx={{ fontWeight: "bold" }}>Full Name</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>Email</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>Username</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>Status</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>Actions</TableCell>
+          <TableHead>
+            <TableRow sx={{ backgroundColor: '#1a237e' }}>
+              <TableCell sx={{ fontWeight: "bold", color: 'white' }}>Full Name</TableCell>
+              <TableCell sx={{ fontWeight: "bold", color: 'white' }}>Email</TableCell>
+              <TableCell sx={{ fontWeight: "bold", color: 'white' }}>Username</TableCell>
+              <TableCell sx={{ fontWeight: "bold", color: 'white' }}>Status</TableCell>
+              <TableCell sx={{ fontWeight: "bold", color: 'white' }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -154,37 +215,34 @@ const UserList = () => {
                 </TableCell>
                 <TableCell>{user.username}</TableCell>
                 <TableCell>
-                <Chip
-                  label={user.status}
-                  sx={{
-                    backgroundColor: user.status === "Disabled" ? "#FFE5B4" : "#E8F5E9", // Light orange for disabled, green tint for enabled
-                    color: user.status === "Disabled" ? "#D84315" : "#2E7D32", // Darker text color for better contrast
-                    fontWeight: "bold",
-                    borderRadius: "16px",
-                    px: 2,
-                    py: 0.5,
-                  }}
-                />
-              </TableCell>
+                  <Chip
+                    label={user.status}
+                    sx={{
+                      backgroundColor: user.status === "Disabled" ? "#FFE5B4" : "#E8F5E9",
+                      color: user.status === "Disabled" ? "#D84315" : "#2E7D32",
+                      fontWeight: "bold",
+                      borderRadius: "16px",
+                      px: 2,
+                      py: 0.5,
+                    }}
+                  />
+                </TableCell>
                 <TableCell>
-                  {/* Actions: Toggle Status, Reset Password */}
                   <Tooltip title={user.status === "Enabled" ? "Disable" : "Enable"} arrow>
-                  <Switch defaultChecked={user.status === "Enabled"} />
-                </Tooltip>
-                
-
-                <Tooltip title="Reset Password" arrow>
-                  <IconButton color="primary" onClick={() => handleOpenResetModal(user.username)}>
-                    <LockResetIcon />
-                  </IconButton>
-                </Tooltip>
+                    <Switch defaultChecked={user.status === "Enabled"} />
+                  </Tooltip>
+                  <Tooltip title="Reset Password" arrow>
+                    <IconButton color="primary" onClick={() => handleOpenResetModal(user.username)}>
+                      <LockResetIcon />
+                    </IconButton>
+                  </Tooltip>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-      
+
       {/* Pagination */}
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: 3 }}>
         <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -229,172 +287,166 @@ const UserList = () => {
         </Box>
       </Box>
 
-    
-
-   {/* Reset Password Modal */}
-<Dialog
-  open={openResetModal}
-  onClose={handleCloseResetModal}
-  maxWidth="xs"
-  fullWidth
-  sx={{
-    "& .MuiPaper-root": {
-      borderRadius: 3,
-      padding: "24px",
-      boxShadow: "0px 4px 20px rgba(0,0,0,0.15)",
-    },
-  }}
->
-  {/* Modal Header */}
-  <DialogTitle
-    sx={{
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
-      pb: 1,
-      borderBottom: "1px solid #ddd",
-    }}
-  >
-    <Box display="flex" alignItems="center" gap={1}>
-      <LockResetIcon sx={{ color: "#1a237e" }} />
-      <Typography variant="h6" fontWeight="bold">Reset Password</Typography>
-    </Box>
-    <IconButton onClick={handleCloseResetModal}>
-      <CloseIcon />
-    </IconButton>
-  </DialogTitle>
-
-  {/* Modal Content */}
-  <DialogContent sx={{ px: 3, pb: 2 }}>
-    <Typography
-      variant="body2"
-      sx={{
-        mb: 3,
-        textAlign: "center",
-        color: "#666",
-        fontSize: "0.95rem",
-      }}
-    >
-    </Typography>
-
-    {/* New Password Field */}
-    <TextField
-      label="New Password"
-      type={showNewPassword ? "text" : "password"}
-      variant="outlined"
-      fullWidth
-      value={password}
-      onChange={(e) => setPassword(e.target.value)}
-      sx={{
-        mt: 2,
-        "& .MuiOutlinedInput-root": {
-          borderRadius: "10px",
-          backgroundColor: "#f9f9fa",
-        },
-      }}
-      InputLabelProps={{ shrink: true }}
-      InputProps={{
-        endAdornment: (
-          <InputAdornment position="end">
-            <IconButton onClick={() => setShowNewPassword(!showNewPassword)}>
-              {showNewPassword ? <VisibilityOff /> : <Visibility />}
-            </IconButton>
-          </InputAdornment>
-        ),
-      }}
-    />
-
-    {/* Confirm Password Field */}
-    <TextField
-      label="Confirm Password"
-      type={showConfirmPassword ? "text" : "password"}
-      variant="outlined"
-      fullWidth
-      value={confirmPassword}
-      onChange={(e) => setConfirmPassword(e.target.value)}
-      sx={{
-        mt: 2,
-        "& .MuiOutlinedInput-root": {
-          borderRadius: "10px",
-          backgroundColor: "#f9f9fa",
-        },
-      }}
-      InputLabelProps={{ shrink: true }}
-      InputProps={{
-        endAdornment: (
-          <InputAdornment position="end">
-            <IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
-              {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-            </IconButton>
-          </InputAdornment>
-        ),
-      }}
-    />
-
-    {/* Error Message */}
-    {password && confirmPassword && password !== confirmPassword && (
-      <Typography
-        color="error"
+      {/* Reset Password Modal */}
+      <Dialog
+        open={openResetModal}
+        onClose={handleCloseResetModal}
+        maxWidth="xs"
+        fullWidth
         sx={{
-          mt: 1,
-          fontSize: "0.9rem",
-          textAlign: "center",
-          animation: "fadeIn 0.3s ease-in",
+          "& .MuiPaper-root": {
+            borderRadius: 3,
+            padding: "24px",
+            boxShadow: "0px 4px 20px rgba(0,0,0,0.15)",
+          },
         }}
       >
-        Passwords do not match!
-      </Typography>
-    )}
-  </DialogContent>
+        {/* Modal Header */}
+        <DialogTitle
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            pb: 1,
+            borderBottom: "1px solid #ddd",
+          }}
+        >
+          <Box display="flex" alignItems="center" gap={1}>
+            <LockResetIcon sx={{ color: "#1a237e" }} />
+            <Typography variant="h6" fontWeight="bold">Reset Password</Typography>
+          </Box>
+          <IconButton onClick={handleCloseResetModal}>
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
 
-  {/* Modal Actions */}
-  <DialogActions
-    sx={{
-      justifyContent: "space-between",
-      px: 3,
-      pb: 3,
-      borderTop: "1px solid #ddd",
-    }}
-  >
-    <Button
-      onClick={handleCloseResetModal}
-      color="error"
-      variant="text"
-      sx={{
-        fontWeight: "bold",
-        textTransform: "none",
-        ":hover": { color: "red", textDecoration: "underline" },
-      }}
-    >
-      Clear
-    </Button>
-    <Button
-      onClick={() => {
-        alert(`Password reset for ${selectedUser}`);
-        handleCloseResetModal();
-      }}
-      variant="contained"
-      sx={{
-        backgroundColor: password && confirmPassword && password === confirmPassword ? "#1a237e" : "#ccc",
-        color: "white",
-        fontWeight: "bold",
-        textTransform: "none",
-        borderRadius: 2,
-        px: 4,
-        ":hover": { backgroundColor: "#3949ab" },
-      }}
-      disabled={!password || !confirmPassword || password !== confirmPassword}
-    >
-      Save
-    </Button>
-  </DialogActions>
-</Dialog>
+        {/* Modal Content */}
+        <DialogContent sx={{ px: 3, pb: 2 }}>
+          <Typography
+            variant="body2"
+            sx={{
+              mb: 3,
+              textAlign: "center",
+              color: "#666",
+              fontSize: "0.95rem",
+            }}
+          >
+          </Typography>
+
+          {/* New Password Field */}
+          <TextField
+            label="New Password"
+            type={showNewPassword ? "text" : "password"}
+            variant="outlined"
+            fullWidth
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            sx={{
+              mt: 2,
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "10px",
+                backgroundColor: "#f9f9fa",
+              },
+            }}
+            InputLabelProps={{ shrink: true }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={() => setShowNewPassword(!showNewPassword)}>
+                    {showNewPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+
+          {/* Confirm Password Field */}
+          <TextField
+            label="Confirm Password"
+            type={showConfirmPassword ? "text" : "password"}
+            variant="outlined"
+            fullWidth
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            sx={{
+              mt: 2,
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "10px",
+                backgroundColor: "#f9f9fa",
+              },
+            }}
+            InputLabelProps={{ shrink: true }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
+                    {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+
+          {/* Error Message */}
+          {password && confirmPassword && password !== confirmPassword && (
+            <Typography
+              color="error"
+              sx={{
+                mt: 1,
+                fontSize: "0.9rem",
+                textAlign: "center",
+                animation: "fadeIn 0.3s ease-in",
+              }}
+            >
+              Passwords do not match!
+            </Typography>
+          )}
+        </DialogContent>
+
+        {/* Modal Actions */}
+        <DialogActions
+          sx={{
+            justifyContent: "space-between",
+            px: 3,
+            pb: 3,
+            borderTop: "1px solid #ddd",
+          }}
+        >
+          <Button
+            onClick={handleCloseResetModal}
+            color="error"
+            variant="text"
+            sx={{
+              fontWeight: "bold",
+              textTransform: "none",
+              ":hover": { color: "red", textDecoration: "underline" },
+            }}
+          >
+            Clear
+          </Button>
+          <Button
+            onClick={() => {
+              alert(`Password reset for ${selectedUser}`);
+              handleCloseResetModal();
+            }}
+            variant="contained"
+            sx={{
+              backgroundColor: password && confirmPassword && password === confirmPassword ? "#1a237e" : "#ccc",
+              color: "white",
+              fontWeight: "bold",
+              textTransform: "none",
+              borderRadius: 2,
+              px: 4,
+              ":hover": { backgroundColor: "#3949ab" },
+            }}
+            disabled={!password || !confirmPassword || password !== confirmPassword}
+          >
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
 
 export default UserList;
-
-function setPassword(arg0: string) {
-  throw new Error("Function not implemented.");
-}

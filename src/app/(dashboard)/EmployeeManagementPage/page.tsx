@@ -23,12 +23,12 @@ import {
 import {
   Edit,
   Visibility,
-  Search as SearchIcon,
-  PersonAdd,
   Delete as DeleteIcon,
   Archive,
   Add,
+  Search as SearchIcon,
 } from "@mui/icons-material";
+import FilterListIcon from '@mui/icons-material/FilterList';
 
 const EmployeeManagementPage = () => {
   const [employees] = useState([
@@ -47,8 +47,38 @@ const EmployeeManagementPage = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(0);
 
+  
+
   // ** Pagination Logic **
-  const paginatedEmployees = employees.slice(
+  const filteredEmployees = employees.filter((employee) => {
+    if (searchBy === "All") {
+      return (
+        employee.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        employee.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        employee.mobile.includes(searchQuery) ||
+        employee.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        employee.status.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    } else {
+      const field = searchBy.toLowerCase();
+      switch (field) {
+        case 'firstname':
+          return employee.firstName.toLowerCase().includes(searchQuery.toLowerCase());
+        case 'lastname':
+          return employee.lastName.toLowerCase().includes(searchQuery.toLowerCase());
+        case 'mobile':
+          return employee.mobile.includes(searchQuery);
+        case 'email':
+          return employee.email.toLowerCase().includes(searchQuery.toLowerCase());
+        case 'status':
+          return employee.status.toLowerCase().includes(searchQuery.toLowerCase());
+        default:
+          return false;
+      }
+    }
+  });
+
+  const paginatedEmployees = filteredEmployees.slice(
     currentPage * rowsPerPage,
     currentPage * rowsPerPage + rowsPerPage
   );
@@ -67,83 +97,137 @@ const EmployeeManagementPage = () => {
 
         {/* Register Employee Button */}
         <Button
-                  component={Link} 
-                  href="/EmployeeManagementPage/RegEmployee" 
-                  variant="contained"
-                  startIcon={<Add />}
-                  onClick={() => handleOpen()}
-                  sx={{
-                    background: "linear-gradient(to right, #007bff, #00c6ff)",
-                    color: "white",
-                    px: 4,
-                    py: 1.2,
-                    fontSize: "1rem",
-                    borderRadius: "30px",
-                    textTransform: "capitalize",
-                    fontWeight: "bold",
-                    boxShadow: "0px 5px 15px rgba(0, 123, 255, 0.3)",
-                    ":hover": {
-                      background: "linear-gradient(to right, #0056b3, #0099cc)",
-                    },
-                  }}
-                >
-                  Add Employee
-                </Button>
-      </Box>
+          component={Link} 
+          href="/EmployeeManagementPage/RegEmployee" 
+          variant="contained"
+          startIcon={<Add />}
+          onClick={() => handleOpen()}
+            sx={{
+             background: "linear-gradient(to right, #007bff, #00c6ff)",
+            color: "white",
+            px: 4,
+            py: 1.2,
+            fontSize: "1rem",
+            borderRadius: "30px",
+            textTransform: "capitalize",
+            fontWeight: "bold",
+            boxShadow: "0px 5px 15px rgba(0, 123, 255, 0.3)",
+            ":hover": {
+            background: "linear-gradient(to right, #0056b3, #0099cc)",
+               },
+              }}
+             >
+           Add Employee
+         </Button>
+       </Box>
 
-      {/* Search & Filters */}
-      <Paper sx={{ p: 3, borderRadius: 3, mb: 3 }}>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          {/* Search By Dropdown */}
+      {/* Filter Section */}
+      <Paper sx={{ p: 3, mb: 3, borderRadius: 3, backgroundColor: "#ffffff", boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)" }}>
+        <Typography
+          variant="h6"
+          sx={{
+        fontWeight: "bold",
+        mb: 3,
+        color: "#1a237e",
+        display: "flex",
+        alignItems: "center",
+          }}
+        >
+          <FilterListIcon sx={{ mr: 1, fontSize: 24, color: "#007bff" }} /> Filter Employees
+        </Typography>
+
+        <Box
+          sx={{
+        display: "grid",
+        gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "1fr 1fr 1fr" },
+        gap: 2,
+          }}
+        >
+          {/* Search By */}
           <TextField
-            select
             label="Search By"
+            variant="outlined"
+            size="small"
+            fullWidth
+            select
             value={searchBy}
             onChange={(e) => setSearchBy(e.target.value)}
-            fullWidth
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "10px",
+                background: "#f9f9f9",
+              },
+            }}
           >
             <MenuItem value="All">All</MenuItem>
-            <MenuItem value="First Name">First Name</MenuItem>
-            <MenuItem value="Last Name">Last Name</MenuItem>
+            <MenuItem value="FirstName">First Name</MenuItem>
+            <MenuItem value="LastName">Last Name</MenuItem>
             <MenuItem value="Mobile">Mobile</MenuItem>
             <MenuItem value="Email">Email</MenuItem>
             <MenuItem value="Status">Status</MenuItem>
           </TextField>
 
-          {/* Search Input */}
+          {/* Search Query */}
           <TextField
-            placeholder="Search..."
+            placeholder="Search..." // Changed from label to placeholder
             variant="outlined"
+            size="small"
+            fullWidth
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            fullWidth
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
+            <SearchIcon />
+          </InputAdornment>
               ),
+            }}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "10px",
+                background: "#f9f9f9",
+              },
             }}
           />
 
           {/* Clear Button */}
-          <Button variant="text" color="error" startIcon={<DeleteIcon />} onClick={() => setSearchQuery("")}>
+          <Button
+            variant="outlined"
+            fullWidth
+            startIcon={<DeleteIcon />}
+            onClick={() => {
+              setSearchBy("All");
+              setSearchQuery("");
+            }}
+            sx={{
+              borderColor: "#ff1744",
+              fontWeight: "bold",
+              borderRadius: "10px",
+              background: "linear-gradient(to right, #ff1744, #ff616f)",
+              color: "white",
+              "&:hover": {
+                borderColor: "#d50000",
+                background: "linear-gradient(to right, #d50000, #ff616f)",
+              },
+            }}
+              >
             Clear
-          </Button>
-        </Box>
-      </Paper>
+              </Button>
+            </Box>
+          </Paper>
 
+      
       {/* Employee Table */}
-      <TableContainer component={Paper} sx={{ borderRadius: 2 }}>
+      <TableContainer component={Paper} sx={{ borderRadius: 3, overflow: "hidden" }}>
         <Table>
           <TableHead sx={{ backgroundColor: "#f4f6f8" }}>
-            <TableRow>
-              <TableCell sx={{ fontWeight: "bold" }}>First Name</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>Last Name</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>Mobile</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>Email</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>Status</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>Actions</TableCell>
+            <TableRow sx={{ backgroundColor: '#1a237e' }}>
+              <TableCell sx={{ fontWeight: "bold",color:"white" }}>First Name</TableCell>
+              <TableCell sx={{ fontWeight: "bold" ,color:"white"}}>Last Name</TableCell>
+              <TableCell sx={{ fontWeight: "bold" ,color:"white"}}>Mobile</TableCell>
+              <TableCell sx={{ fontWeight: "bold" ,color:"white"}}>Email</TableCell>
+              <TableCell sx={{ fontWeight: "bold" ,color:"white"}}>Status</TableCell>
+              <TableCell sx={{ fontWeight: "bold" ,color:"white"}}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
