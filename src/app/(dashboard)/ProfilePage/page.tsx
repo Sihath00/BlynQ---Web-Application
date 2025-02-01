@@ -146,18 +146,20 @@ const ServiceCenterProfile = () => {
           <Grid item xs={6}><TextField label="Contact Number 2" name="contact2" fullWidth variant="outlined" value={serviceCenter.contact2} onChange={handleChange} disabled={!editMode} error={!!errors.contact2} helperText={errors.contact2} /></Grid>
 
             {/* Image Upload */}
-            <Grid item xs={12}>
-            <div {...getRootProps()} style={{ border: "2px dashed #007bff", padding: "20px", textAlign: "center", cursor: "pointer", borderRadius: "10px", backgroundColor: "#f9f9f9" }}>
-              <input {...getInputProps()} />
-              <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
-              <img src="/upload.png" alt="Upload Illustration" style={{ maxWidth: "20%", height: "auto" }} />
-              </Box>
-              <Typography fontWeight="bold">Drop or Select file</Typography>
-              <Typography color="error">Please upload only landscape images.</Typography>
-              <Typography variant="caption">Supported file formats: .png, .jpg, .jpeg</Typography>
-              {errors.images && <FormHelperText error>{errors.images}</FormHelperText>}
-            </div>
-            </Grid>
+            {editMode && (
+              <Grid item xs={12}>
+              <div {...getRootProps()} style={{ border: "2px dashed #007bff", padding: "20px", textAlign: "center", cursor: "pointer", borderRadius: "10px", backgroundColor: "#f9f9f9" }}>
+                <input {...getInputProps()} />
+                <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
+                <img src="/upload.png" alt="Upload Illustration" style={{ maxWidth: "20%", height: "auto" }} />
+                </Box>
+                <Typography fontWeight="bold">Drop or Select file</Typography>
+                <Typography color="error">Please upload only landscape images.</Typography>
+                <Typography variant="caption">Supported file formats: .png, .jpg, .jpeg</Typography>
+                {errors.images && <FormHelperText error>{errors.images}</FormHelperText>}
+              </div>
+              </Grid>
+            )}
 
             {/* Image Preview */}
             {serviceCenter.images.length > 0 && (

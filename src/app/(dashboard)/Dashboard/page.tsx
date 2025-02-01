@@ -1,5 +1,4 @@
 import AttendenceChart from '@/app/components/AttendenceChart'
-import AttendanceChart from '@/app/components/AttendenceChart'
 import EventCalender from '@/app/components/EventCalender'
 import FinanceChart from '@/app/components/FinanceChart'
 import InfoCard from '@/app/components/InfoCard'
