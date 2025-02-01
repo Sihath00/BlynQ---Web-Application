@@ -3,8 +3,8 @@ import React from 'react'
 
 const Navbar = () => {
   return (
-    <div className='flex items-center justify-between p-4'>
-   <span className='hidden md:inline text-[25px] font-bold whitespace-nowrap'>Auto Miraj</span>
+    <div className='flex items-center justify-between p-4 bg-white'>
+      <span className='hidden md:inline text-[25px] font-bold whitespace-nowrap'>Auto Miraj</span>
       {/* Search Bar*/}
       <div className='relative flex w-[350px] h-[45px]'>
         <Image src={"/BottomBar/ServiceStationIcon.jpeg"} alt='' layout="fill"
