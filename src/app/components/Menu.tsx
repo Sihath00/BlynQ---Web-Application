@@ -31,7 +31,7 @@ const menuItems = [
         },
         {
           icon: "/MenuBar/Autilog.png",
-          label: "AuditLog",
+          label: "Audit Log",
           href: "/AuditLog",
         },
         {
