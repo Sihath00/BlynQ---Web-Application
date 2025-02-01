@@ -47,7 +47,7 @@ export default function DashboardLayout({
             transition={{ duration: 0.5, ease: "easeInOut" }}
           />
         )}
-        
+
       {/* Main Content (Right Panel) */}
       <div className="w-[86%] md:w-[92%] lg:w-[84%] xl:w-[86%] overflow-auto">
         <Navbar />
@@ -66,3 +66,9 @@ export default function DashboardLayout({
     </div>
   );
 }
+
+
+
+
+
+
