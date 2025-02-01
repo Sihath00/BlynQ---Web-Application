@@ -71,3 +71,13 @@
   .animate-bounce > div:nth-child(3) {
     animation-delay: 0.4s;
   }
+
+  /* Customizing NProgress Bar */
+#nprogress .bar {
+  background: #007bff !important; /* Blue Progress Bar */
+  height: 4px !important; /* Thickness */
+}
+
+#nprogress .peg {
+  box-shadow: 0 0 10px #007bff, 0 0 5px #007bff !important;
+}
