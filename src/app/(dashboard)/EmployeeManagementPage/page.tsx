@@ -279,41 +279,41 @@ const EmployeeManagementPage = () => {
           </TableBody>
         </Table>
       </TableContainer>
-
-      {/* Pagination */}
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: 3 }}>
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Typography variant="body2">Rows per page:</Typography>
-          <Select
-            value={rowsPerPage}
-            onChange={(e) => setRowsPerPage(Number(e.target.value))}
-            sx={{
-              ml: 1,
-              backgroundColor: "#f9f9f9",
-              border: "none",
-              outline: "none",
-              "& .MuiOutlinedInput-notchedOutline": { border: "none" },
-            }}
-          >
-            <MenuItem value={5}>5</MenuItem>
-            <MenuItem value={10}>10</MenuItem>
-            <MenuItem value={25}>25</MenuItem>
-          </Select>
+          
+          {/* Pagination */}
+                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: 3 }}>
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <Typography variant="body2">Rows per page:</Typography>
+                    <Select
+                      value={rowsPerPage}
+                      onChange={(e) => setRowsPerPage(Number(e.target.value))}
+                      sx={{
+                        ml: 1,
+                        border: "none",
+                        outline: "none",
+                        "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+                      }}
+                    
+                    >
+                      <MenuItem value={5}>5</MenuItem>
+                      <MenuItem value={10}>10</MenuItem>
+                      <MenuItem value={25}>25</MenuItem>
+                    </Select>
+                  </Box>
+                  <Typography variant="body2">
+                    {currentPage * rowsPerPage + 1}–
+                    {Math.min((currentPage + 1) * rowsPerPage, employees.length)} of {employees.length}
+                  </Typography>
+                  <Box sx={{ display: "flex", gap: 1 }}>
+                    <Button onClick={() => setCurrentPage((prev: number) => Math.max(prev - 1, 0))} disabled={currentPage === 0}>
+                      Previous
+                    </Button>
+                    <Button onClick={() => setCurrentPage((prev: number) => Math.min(prev + 1, Math.ceil(employees.length / rowsPerPage) - 1))}>
+                      Next
+                    </Button>
+                  </Box>
+                </Box>
         </Box>
-        <Typography variant="body2">
-          {currentPage * rowsPerPage + 1}–
-          {Math.min((currentPage + 1) * rowsPerPage, employees.length)} of {employees.length}
-        </Typography>
-        <Box sx={{ display: "flex", gap: 1 }}>
-          <Button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))} disabled={currentPage === 0}>
-            Previous
-          </Button>
-          <Button onClick={() => setCurrentPage((prev) => Math.min(prev + 1, Math.ceil(employees.length / rowsPerPage) - 1))}>
-            Next
-          </Button>
-        </Box>
-      </Box>
-    </Box>
   );
 };
 
