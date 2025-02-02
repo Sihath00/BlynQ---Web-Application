@@ -37,8 +37,8 @@ const EmployeeManagementPage = () => {
     { id: 3, firstName: "Test Employee", lastName: "One ", mobile: "0777492455", email: "testemployeeone@gmail.com", status: "Approved" },
     { id: 4, firstName: "Amina", lastName: "Hajameyan", mobile: "07491898664", email: "amina@gmail.com", status: "Approved" },
     { id: 5, firstName: "Pesadi", lastName: "Wikramathilaka", mobile: "7538831270", email: "pesadi@googlemail.com", status: "Approved" },
-    { id: 4, firstName: "Gaindu", lastName: "Amarasingha", mobile: "07491898664", email: "gaindu@gmail.com", status: "Approved" },
-    { id: 5, firstName: "Sithum", lastName: "Duleka", mobile: "7538831270", email: "sithum@googlemail.com", status: "Approved" },
+    { id: 6, firstName: "Gaindu", lastName: "Amarasingha", mobile: "07491898664", email: "gaindu@gmail.com", status: "Approved" },
+    { id: 7, firstName: "Sithum", lastName: "Duleka", mobile: "7538831270", email: "sithum@googlemail.com", status: "Approved" },
   ]);
   
 
