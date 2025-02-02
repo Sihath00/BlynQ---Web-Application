@@ -244,16 +244,32 @@ export default function AuditLogPage() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredLogs.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((log) => (
-              <TableRow key={log.id} sx={{ '&:hover': { backgroundColor: '#f0f0f0' } }}>
-                <TableCell>{log.employeeName}</TableCell>
-                <TableCell>{log.startTime}</TableCell>
-                <TableCell>{log.endTime}</TableCell>
-                <TableCell>{log.clientName}</TableCell>
-                <TableCell>{log.serviceType}</TableCell>
-                <TableCell>{log.timestamp}</TableCell>
+            {filteredLogs.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={6} sx={{ textAlign: 'center', py: 4 }}>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', p: 3 }}>
+                    <img
+                      src="/noimage.png"
+                      alt="No data found"
+                      width={300}
+                      height={300}
+                      style={{ marginBottom: '1rem' }}
+                    />
+                  </Box>
+                </TableCell>
               </TableRow>
-            ))}
+            ) : (
+              filteredLogs.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((log) => (
+                <TableRow key={log.id} sx={{ '&:hover': { backgroundColor: '#f0f0f0' } }}>
+                  <TableCell>{log.employeeName}</TableCell>
+                  <TableCell>{log.startTime}</TableCell>
+                  <TableCell>{log.endTime}</TableCell>
+                  <TableCell>{log.clientName}</TableCell>
+                  <TableCell>{log.serviceType}</TableCell>
+                  <TableCell>{log.timestamp}</TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </Paper>

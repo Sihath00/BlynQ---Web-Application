@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import React, { useState } from "react";
 import {
   Box,
@@ -276,6 +277,21 @@ const EmployeeManagementPage = () => {
                 </TableCell>
               </TableRow>
             ))}
+            {paginatedEmployees.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={6} sx={{ textAlign: 'center', py: 4 }}>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', p: 3 }}>
+                    <Image
+                      src="/noimage.png"
+                      alt="No data found"
+                      width={300}
+                      height={300}
+                      style={{ marginBottom: '1rem' }}
+                    />
+                  </Box>
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </TableContainer>
