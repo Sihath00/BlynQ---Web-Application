@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image"; // Add this import
 import {
   Box,
   Typography,
@@ -26,7 +27,6 @@ import {
 } from "@mui/material";
 import {
   Search as SearchIcon,
-  Delete as DeleteIcon,
   LockReset as LockResetIcon,
   Close as CloseIcon,
   Visibility,
@@ -63,9 +63,9 @@ const UserList = () => {
   // Filter logic
   const filteredUsers = users.filter((user) => {
     if (statusFilter !== "All" && user.status !== statusFilter) return false;
-    if (searchBy === "All") return true;
-    if (searchBy === "Enabled") return user.status === "Enabled";
-    if (searchBy === "Disabled") return user.status === "Disabled";
+    if (searchBy === "All") return user.name.toLowerCase().includes(searchQuery.toLowerCase()) || user.username.includes(searchQuery) || user.email.toLowerCase().includes(searchQuery.toLowerCase());
+    if (searchBy === "Enabled") return user.status === "Enabled" && (user.name.toLowerCase().includes(searchQuery.toLowerCase()) || user.username.includes(searchQuery) || user.email.toLowerCase().includes(searchQuery.toLowerCase()));
+    if (searchBy === "Disabled") return user.status === "Disabled" && (user.name.toLowerCase().includes(searchQuery.toLowerCase()) || user.username.includes(searchQuery) || user.email.toLowerCase().includes(searchQuery.toLowerCase()));
     if (searchBy === "First Name") return user.name.toLowerCase().includes(searchQuery.toLowerCase());
     if (searchBy === "Username") return user.username.includes(searchQuery);
     if (searchBy === "Email") return user.email.toLowerCase().includes(searchQuery.toLowerCase());
@@ -99,149 +99,164 @@ const UserList = () => {
 
 
       
-     {/* Filter Section */}
-      <Paper sx={{ p: 3, mb: 3, borderRadius: 3, backgroundColor: "#ffffff", boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)" }}>
-        <Typography
-          variant="h6"
-          sx={{
-        fontWeight: "bold",
-        mb: 3,
-        color: "#1a237e",
-        display: "flex",
-        alignItems: "center",
-          }}
-        >
-          <FilterListIcon sx={{ mr: 1, fontSize: 24, color: "#007bff" }} /> Filter Users
-        </Typography>
+    {/* Filter Section */}
+    <Paper sx={{ p: 3, mb: 3, borderRadius: 3, backgroundColor: "#ffffff", boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)" }}>
+      <Typography
+      variant="h6"
+      sx={{
+      fontWeight: "bold",
+      mb: 3,
+      color: "#1a237e",
+      display: "flex",
+      alignItems: "center",
+      }}
+      >
+      <FilterListIcon sx={{ mr: 1, fontSize: 24, color: "#007bff" }} /> Filter Users
+      </Typography>
 
-        <Box
-          sx={{
-        display: "grid",
-        gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "1fr 1fr 1fr" },
-        gap: 2,
-          }}
-        >
-          {/* Search By */}
-          <TextField
-        select
-        label="Search By"
-        value={searchBy}
-        onChange={(e) => setSearchBy(e.target.value)}
-        fullWidth
-        variant="outlined"
-        size="small"
-        sx={{
-          "& .MuiOutlinedInput-root": {
-            borderRadius: "10px",
-            background: "#f9f9f9",
-          },
-        }}
-          >
-        <MenuItem value="All">All</MenuItem>
-        <MenuItem value="First Name">First Name</MenuItem>
-        <MenuItem value="Username">Username</MenuItem>
-        <MenuItem value="Email">Email</MenuItem>
-        <MenuItem value="Enabled">Enabled</MenuItem>
-        <MenuItem value="Disabled">Disabled</MenuItem>
-          </TextField>
+      <Box
+      sx={{
+      display: "grid",
+      gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "1fr 1fr 1fr" },
+      gap: 2,
+      }}
+      >
+      {/* Search By */}
+      <TextField
+      select
+      label="Search By"
+      value={searchBy}
+      onChange={(e) => setSearchBy(e.target.value)}
+      fullWidth
+      variant="outlined"
+      size="small"
+      sx={{
+      "& .MuiOutlinedInput-root": {
+        borderRadius: "10px",
+        background: "#f9f9f9",
+      },
+      }}
+      >
+      <MenuItem value="All">All</MenuItem>
+      <MenuItem value="First Name">First Name</MenuItem>
+      <MenuItem value="Username">Username</MenuItem>
+      <MenuItem value="Email">Email</MenuItem>
+      </TextField>
 
-          {/* Status Filter */}
-          <TextField
-        select
-        label="Status Filter"
-        value={statusFilter}
-        onChange={(e) => setStatusFilter(e.target.value)}
-        fullWidth
-        variant="outlined"
-        size="small"
-        sx={{
-          "& .MuiOutlinedInput-root": {
-            borderRadius: "10px",
-            background: "#f9f9f9",
-          },
-        }}
-          >
-        <MenuItem value="All">All</MenuItem>
-        <MenuItem value="Enabled">Enabled</MenuItem>
-        <MenuItem value="Disabled">Disabled</MenuItem>
-          </TextField>
+      {/* Status Filter */}
+      <TextField
+      select
+      label="Status Filter"
+      value={statusFilter}
+      onChange={(e) => setStatusFilter(e.target.value)}
+      fullWidth
+      variant="outlined"
+      size="small"
+      sx={{
+      "& .MuiOutlinedInput-root": {
+        borderRadius: "10px",
+        background: "#f9f9f9",
+      },
+      }}
+      >
+      <MenuItem value="All">All</MenuItem>
+      <MenuItem value="Enabled">Enabled</MenuItem>
+      <MenuItem value="Disabled">Disabled</MenuItem>
+      </TextField>
 
-          {/* Search Query */}
-          <TextField
-        placeholder="Search..."
-        variant="outlined"
-        size="small"
-        fullWidth
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        InputProps={{
+      {/* Search Query */}
+      <TextField
+      placeholder="Search..."
+      variant="outlined"
+      size="small"
+      fullWidth
+      value={searchQuery}
+      onChange={(e) => setSearchQuery(e.target.value)}
+      slotProps={{
+        input: {
           startAdornment: (
             <InputAdornment position="start">
-          <SearchIcon />
+              <SearchIcon />
             </InputAdornment>
           ),
-        }}
-        sx={{
-          "& .MuiOutlinedInput-root": {
-            borderRadius: "10px",
-            background: "#f9f9f9",
-          },
-        }}
-          />
-          </Box>
-        </Paper>
-
-        
+        },
+      }}
+      sx={{
+      "& .MuiOutlinedInput-root": {
+        borderRadius: "10px",
+        background: "#f9f9f9",
+      },
+      }}
+      />
+      </Box>
       
-      {/* User Table */}
+    </Paper>
 
-      <TableContainer component={Paper} sx={{ borderRadius: 3 }}>
-        <Table>
-          <TableHead>
-            <TableRow sx={{ backgroundColor: '#1a237e' }}>
-              <TableCell sx={{ fontWeight: "bold", color: 'white' }}>Full Name</TableCell>
-              <TableCell sx={{ fontWeight: "bold", color: 'white' }}>Email</TableCell>
-              <TableCell sx={{ fontWeight: "bold", color: 'white' }}>Username</TableCell>
-              <TableCell sx={{ fontWeight: "bold", color: 'white' }}>Status</TableCell>
-              <TableCell sx={{ fontWeight: "bold", color: 'white' }}>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {paginatedUsers.map((user, index) => (
-              <TableRow key={index}>
-                <TableCell>{user.name}</TableCell>
-                <TableCell sx={{ color: user.email === "Not Provided" ? "gray" : "inherit" }}>
-                  {user.email}
-                </TableCell>
-                <TableCell>{user.username}</TableCell>
-                <TableCell>
-                  <Chip
-                    label={user.status}
-                    sx={{
-                      backgroundColor: user.status === "Disabled" ? "#FFE5B4" : "#E8F5E9",
-                      color: user.status === "Disabled" ? "#D84315" : "#2E7D32",
-                      fontWeight: "bold",
-                      borderRadius: "16px",
-                      px: 2,
-                      py: 0.5,
-                    }}
-                  />
-                </TableCell>
-                <TableCell>
-                  <Tooltip title={user.status === "Enabled" ? "Disable" : "Enable"} arrow>
-                    <Switch defaultChecked={user.status === "Enabled"} />
-                  </Tooltip>
-                  <Tooltip title="Reset Password" arrow>
-                    <IconButton color="primary" onClick={() => handleOpenResetModal(user.username)}>
-                      <LockResetIcon />
-                    </IconButton>
-                  </Tooltip>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+<TableContainer component={Paper} sx={{ borderRadius: 3 }}>
+  <Table>
+    <TableHead>
+      <TableRow sx={{ backgroundColor: '#1a237e' }}>
+        <TableCell sx={{ fontWeight: "bold", color: 'white' }}>Full Name</TableCell>
+        <TableCell sx={{ fontWeight: "bold", color: 'white' }}>Email</TableCell>
+        <TableCell sx={{ fontWeight: "bold", color: 'white' }}>Username</TableCell>
+        <TableCell sx={{ fontWeight: "bold", color: 'white' }}>Status</TableCell>
+        <TableCell sx={{ fontWeight: "bold", color: 'white' }}>Actions</TableCell>
+      </TableRow>
+    </TableHead>
+    <TableBody>
+      {paginatedUsers.length === 0 ? (
+        <TableRow>
+          <TableCell colSpan={5} sx={{ textAlign: 'center', py: 4 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', p: 3 }}>
+              <Image
+                src="/noimage.png"
+                alt="No data found"
+                width={300}
+                height={300}
+                style={{ marginBottom: '1rem' }}
+              />
+            </Box>
+          </TableCell>
+        </TableRow>
+      ) : (
+        paginatedUsers.map((user, index) => (
+          <TableRow key={index}>
+            <TableCell>{user.name}</TableCell>
+            <TableCell sx={{ color: user.email === "Not Provided" ? "gray" : "inherit" }}>
+              {user.email}
+            </TableCell>
+            <TableCell>{user.username}</TableCell>
+            <TableCell>
+              <Chip
+                label={user.status}
+                sx={{
+                  backgroundColor: user.status === "Disabled" ? "#FFE5B4" : "#E8F5E9",
+                  color: user.status === "Disabled" ? "#D84315" : "#2E7D32",
+                  fontWeight: "bold",
+                  borderRadius: "16px",
+                  px: 2,
+                  py: 0.5,
+                }}
+              />
+            </TableCell>
+            <TableCell>
+              <Tooltip title={user.status === "Enabled" ? "Disable" : "Enable"} arrow>
+                <Switch defaultChecked={user.status === "Enabled"} />
+              </Tooltip>
+              <Tooltip title="Reset Password" arrow>
+                <IconButton color="primary" onClick={() => handleOpenResetModal(user.username)}>
+                  <LockResetIcon />
+                </IconButton>
+              </Tooltip>
+            </TableCell>
+          </TableRow>
+        ))
+      )}
+    </TableBody>
+  </Table>
+</TableContainer>
+
+
 
       {/* Pagination */}
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: 3 }}>
@@ -341,14 +356,6 @@ const UserList = () => {
             fullWidth
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            sx={{
-              mt: 2,
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "10px",
-                backgroundColor: "#f9f9fa",
-              },
-            }}
-            InputLabelProps={{ shrink: true }}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -357,6 +364,13 @@ const UserList = () => {
                   </IconButton>
                 </InputAdornment>
               ),
+            }}
+            sx={{
+              mt: 2,
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "10px",
+                backgroundColor: "#f9f9fa",
+              },
             }}
           />
 
@@ -368,14 +382,6 @@ const UserList = () => {
             fullWidth
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            sx={{
-              mt: 2,
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "10px",
-                backgroundColor: "#f9f9fa",
-              },
-            }}
-            InputLabelProps={{ shrink: true }}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -385,7 +391,15 @@ const UserList = () => {
                 </InputAdornment>
               ),
             }}
+            sx={{
+              mt: 2,
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "10px",
+                backgroundColor: "#f9f9fa",
+              },
+            }}
           />
+      
 
           {/* Error Message */}
           {password && confirmPassword && password !== confirmPassword && (
