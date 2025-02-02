@@ -39,12 +39,12 @@ export default function DashboardLayout({
 
       {/* Sidebar (Left Panel) */}
       <div className="relative w-[14%] md:w-[8%] lg:w-[16%] xl:w-[14%] bg-white shadow-md p-4">
-        <Link href="/" className="flex items-center justify-center">
+        <Link href="/Dashboard" className="flex items-center justify-center">
           <Image
             className="mt-2"
             src="/logoNew.png"
             alt="logo"
-            width={180}
+            width={480}
             height={40}
           />
         </Link>
