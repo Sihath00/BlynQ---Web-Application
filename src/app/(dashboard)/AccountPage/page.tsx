@@ -32,6 +32,7 @@ import {
   Visibility,
   VisibilityOff,
   FilterList as FilterListIcon,
+  Delete as DeleteIcon,
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 
@@ -117,7 +118,7 @@ const UserList = () => {
       <Box
       sx={{
       display: "grid",
-      gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "1fr 1fr 1fr" },
+      gridTemplateColumns: "repeat(4, 1fr)",
       gap: 2,
       }}
       >
@@ -127,14 +128,14 @@ const UserList = () => {
       label="Search By"
       value={searchBy}
       onChange={(e) => setSearchBy(e.target.value)}
-      fullWidth
       variant="outlined"
       size="small"
       sx={{
-      "& .MuiOutlinedInput-root": {
+        "& .MuiOutlinedInput-root": {
         borderRadius: "10px",
         background: "#f9f9f9",
-      },
+        height: "40px",
+        },
       }}
       >
       <MenuItem value="All">All</MenuItem>
@@ -149,14 +150,14 @@ const UserList = () => {
       label="Status Filter"
       value={statusFilter}
       onChange={(e) => setStatusFilter(e.target.value)}
-      fullWidth
       variant="outlined"
       size="small"
       sx={{
-      "& .MuiOutlinedInput-root": {
+        "& .MuiOutlinedInput-root": {
         borderRadius: "10px",
         background: "#f9f9f9",
-      },
+        height: "40px",
+        },
       }}
       >
       <MenuItem value="All">All</MenuItem>
@@ -169,27 +170,49 @@ const UserList = () => {
       placeholder="Search..."
       variant="outlined"
       size="small"
-      fullWidth
       value={searchQuery}
       onChange={(e) => setSearchQuery(e.target.value)}
-      slotProps={{
-        input: {
-          startAdornment: (
-            <InputAdornment position="start">
-              <SearchIcon />
-            </InputAdornment>
-          ),
-        },
+      InputProps={{
+        startAdornment: (
+        <InputAdornment position="start">
+          <SearchIcon />
+        </InputAdornment>
+        ),
       }}
       sx={{
-      "& .MuiOutlinedInput-root": {
+        "& .MuiOutlinedInput-root": {
         borderRadius: "10px",
         background: "#f9f9f9",
-      },
+        height: "40px",
+        },
       }}
       />
+
+      {/* Clear Button */}
+      <Button
+      variant="outlined"
+      startIcon={<DeleteIcon />}
+      onClick={() => {
+        setSearchBy("All");
+        setSearchQuery("");
+        setStatusFilter("All");
+      }}
+      sx={{
+        borderColor: "#ff1744",
+        fontWeight: "bold",
+        borderRadius: "10px",
+        background: "linear-gradient(to right, #ff1744, #ff616f)",
+        color: "white",
+        height: "40px",
+        "&:hover": {
+        borderColor: "#d50000",
+        background: "linear-gradient(to right, #d50000, #ff616f)",
+        },
+      }}
+      >
+      Clear
+      </Button>
       </Box>
-      
     </Paper>
 
 <TableContainer component={Paper} sx={{ borderRadius: 3 }}>

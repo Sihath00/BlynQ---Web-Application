@@ -102,15 +102,17 @@ export default function AuditLogPage() {
     doc.save('mechanic_audit_logs.pdf');
   };
 
-  function setCurrentPage(arg0: (prev: any) => number): void {
+  function setCurrentPage(_arg0: (prev: any) => number): void {
     throw new Error('Function not implemented.');
   }
 
-  function setSearchQuery(arg0: string) {
-    throw new Error('Function not implemented.');
+  function setSearchQuery(query: string) {
+    setFilterEmployee(query);
+    setFilterService(query);
+    setFilterDate(query);
   }
 
-  function setSearchBy(arg0: string) {
+  function setSearchBy(_arg0: string) {
     setFilterEmployee('');
     setFilterService('');
     setFilterDate('');
