@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Typography, Paper, Box, TextField, MenuItem, Button, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Chip, Tooltip, Switch, IconButton, Select, InputAdornment } from '@mui/material';
 import { FilterList as FilterListIcon, Search as SearchIcon, Delete as DeleteIcon } from '@mui/icons-material';
 
@@ -42,6 +42,10 @@ const RecordsPage: React.FC = () => {
   const [rowsPerPage, setRowsPerPage] = useState<number>(5);
   const [currentPage, setCurrentPage] = useState<number>(0);
 
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [searchQuery, searchBy, statusFilter, serviceDateFilter]);
+
   const handleApprove = (id: number) => {
     setRecords(records.map(record => 
       record.id === id ? { ...record, previousStatus: record.status, status: 'Approved' } : record
@@ -60,8 +64,6 @@ const RecordsPage: React.FC = () => {
     ));
   };
 
-  const handleClearData = () => {
-  };
 
   const filteredRecords = records.filter((record) => {
     // ✅ Status Filtering
@@ -73,6 +75,7 @@ const RecordsPage: React.FC = () => {
     // ✅ Search Filtering
     if (searchQuery) {
       const lowerQuery = searchQuery.toLowerCase();
+      
   
       //  If searching by "All", check all relevant fields
       if (
