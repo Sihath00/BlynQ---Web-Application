@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -139,9 +139,9 @@ const Login = () => {
               {errors.email && <span className="text-xs text-red-500">{errors.email}</span>}
             </div>
 
-            {/* Password Input */}
-            <div className="relative">
+            
   {/* Password Input */}
+  <div className="relative">
   <input
     type={passwordVisible ? "text" : "password"}
     id="password"
@@ -223,7 +223,7 @@ const Login = () => {
           {/* Footer */}
           <p className="mt-4 text-center text-sm text-gray-500">
             Don’t have an account?{" "}
-            <a href="#" className="text-blue-500 hover:underline font-medium">
+            <a href="/Login/NewUser" className="text-blue-500 hover:underline font-medium">
               Create an account
             </a>
           </p>

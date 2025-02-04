@@ -208,7 +208,7 @@ const AddEmployeePage = () => {
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
-              label="Date of Birth"
+              label="Date of Birth *"
               name="dateOfBirth"
               type="date"
               InputLabelProps={{ shrink: true }}
@@ -224,10 +224,10 @@ const AddEmployeePage = () => {
             <FormControl fullWidth variant="outlined" error={!!errors.gender}>
               <InputLabel>Gender</InputLabel>
               <Select
-                name="gender"
+                name="Gender"
                 value={formData.gender}
                 onChange={handleInputChange}
-                label="Gender"
+                label="Gender *"
               >
                 <MenuItem value="Male">Male</MenuItem>
                 <MenuItem value="Female">Female</MenuItem>
@@ -239,7 +239,7 @@ const AddEmployeePage = () => {
 
           <Grid item xs={12} sm={6}>
             <TextField
-              label="Personal ID Number"
+              label="Personal ID Number *"
               name="personalID"
               value={formData.personalID}
               onChange={handleInputChange}
@@ -251,12 +251,12 @@ const AddEmployeePage = () => {
           </Grid>
           <Grid item xs={12} sm={6}>
             <FormControl fullWidth variant="outlined" error={!!errors.status}>
-              <InputLabel>Status</InputLabel>
+              <InputLabel>Status *</InputLabel>
               <Select
                 name="status"
                 value={formData.status}
                 onChange={handleInputChange}
-                label="Status"
+                label="Status *"
               >
                 <MenuItem value="Active">Active</MenuItem>
                 <MenuItem value="Inactive">Inactive</MenuItem>
@@ -268,7 +268,7 @@ const AddEmployeePage = () => {
           {/* Role Field */}
           <Grid item xs={12} sm={6}>
             <FormControl fullWidth variant="outlined" error={!!errors.role}>
-              <InputLabel>Role</InputLabel>
+              <InputLabel>Role *</InputLabel>
               <Select
                 name="role"
                 value={formData.role}
@@ -277,7 +277,8 @@ const AddEmployeePage = () => {
               >
                 <MenuItem value="Admin">Admin</MenuItem>
                 <MenuItem value="Manager">Manager</MenuItem>
-                <MenuItem value="Employee">Employee</MenuItem>
+                <MenuItem value="Staff">Employee</MenuItem>
+                
               </Select>
               {errors.role && <Typography color="error">{errors.role}</Typography>}
             </FormControl>
