@@ -74,7 +74,7 @@ const RecordsPage: React.FC = () => {
     if (searchQuery) {
       const lowerQuery = searchQuery.toLowerCase();
   
-      // 🔹 If searching by "All", check all relevant fields
+      //  If searching by "All", check all relevant fields
       if (
         searchBy === "All" &&
         !(
