@@ -169,7 +169,7 @@ const EmployeeManagementPage = () => {
 
           {/* Search Query */}
           <TextField
-            placeholder="Search..." // Changed from label to placeholder
+            placeholder="Search..." 
             variant="outlined"
             size="small"
             fullWidth
