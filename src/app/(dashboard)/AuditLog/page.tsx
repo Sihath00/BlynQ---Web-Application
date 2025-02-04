@@ -13,6 +13,7 @@ import {
   TextField,
   MenuItem,
   Select,
+  SelectChangeEvent,
 } from '@mui/material';
 
 import {
@@ -57,12 +58,16 @@ export default function AuditLogPage() {
     // Replace with API call later
   }, []);
 
+  useEffect(() => {
+    setPage(0);
+  }, [filterEmployee, filterService, filterDate]);
+
   // Handle Page Change
   const handleChangePage = (_event: unknown, newPage: number) => setPage(newPage);
 
   // Handle Rows per Page Change
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+  const handleChangeRowsPerPage = (event: SelectChangeEvent<number>) => {
+    setRowsPerPage(parseInt(event.target.value as string, 10));
     setPage(0);
   };
 
@@ -281,31 +286,37 @@ export default function AuditLogPage() {
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <Typography variant="body2">Rows per page:</Typography>
           <Select
-            value={rowsPerPage}
-            onChange={(e) => setRowsPerPage(Number(e.target.value))}
-            sx={{
-              ml: 1,
-              border: "none",
-              outline: "none",
-              "& .MuiOutlinedInput-notchedOutline": { border: "none" },
-            }}
-          
+        value={rowsPerPage}
+        onChange={(e) => setRowsPerPage(Number(e.target.value))}
+        sx={{
+          ml: 1,
+          border: "none",
+          outline: "none",
+          "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+        }}
           >
-            <MenuItem value={5}>5</MenuItem>
-            <MenuItem value={10}>10</MenuItem>
-            <MenuItem value={25}>25</MenuItem>
+        <MenuItem value={5}>5</MenuItem>
+        <MenuItem value={10}>10</MenuItem>
+        <MenuItem value={25}>25</MenuItem>
           </Select>
         </Box>
         <Typography variant="body2">
           {page * rowsPerPage + 1}–
-          {Math.min((page + 1) * rowsPerPage, logs.length)} of {logs.length}
+          {Math.min((page + 1) * rowsPerPage, filteredLogs.length)} of {filteredLogs.length}
         </Typography>
         <Box sx={{ display: "flex", gap: 1 }}>
           <Button onClick={() => setPage((prev) => Math.max(prev - 1, 0))} disabled={page === 0}>
-            Previous
+        Previous
           </Button>
-          <Button onClick={() => setPage((prev) => Math.min(prev + 1, Math.ceil(logs.length / rowsPerPage) - 1))}>
-            Next
+          <Button
+        onClick={() =>
+          setPage((prev) =>
+            Math.min(prev + 1, Math.ceil(filteredLogs.length / rowsPerPage) - 1)
+          )
+        }
+        disabled={(page + 1) * rowsPerPage >= filteredLogs.length}
+          >
+        Next
           </Button>
         </Box>
       </Box>

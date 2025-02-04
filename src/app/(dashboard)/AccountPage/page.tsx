@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image"; // Add this import
 import {
   Box,
@@ -91,6 +91,11 @@ const UserList = () => {
     setConfirmPassword("");
   };
 
+  // Reset currentPage to 0 when filters or search query change
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [searchQuery, searchBy, statusFilter]);
+
   return (
     <Box sx={{ backgroundColor: "#f9f9f9", minHeight: "100vh", p: 4 }}>
       {/* Page Header */}
@@ -98,188 +103,184 @@ const UserList = () => {
         User List
       </Typography>
 
+      {/* Filter Section */}
+      <Paper sx={{ p: 3, mb: 3, borderRadius: 3, backgroundColor: "#ffffff", boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)" }}>
+        <Typography
+          variant="h6"
+          sx={{
+            fontWeight: "bold",
+            mb: 3,
+            color: "#1a237e",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <FilterListIcon sx={{ mr: 1, fontSize: 24, color: "#007bff" }} /> Filter Users
+        </Typography>
 
-      
-    {/* Filter Section */}
-    <Paper sx={{ p: 3, mb: 3, borderRadius: 3, backgroundColor: "#ffffff", boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)" }}>
-      <Typography
-      variant="h6"
-      sx={{
-      fontWeight: "bold",
-      mb: 3,
-      color: "#1a237e",
-      display: "flex",
-      alignItems: "center",
-      }}
-      >
-      <FilterListIcon sx={{ mr: 1, fontSize: 24, color: "#007bff" }} /> Filter Users
-      </Typography>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: "repeat(4, 1fr)",
+            gap: 2,
+          }}
+        >
+          {/* Search By */}
+          <TextField
+            select
+            label="Search By"
+            value={searchBy}
+            onChange={(e) => setSearchBy(e.target.value)}
+            variant="outlined"
+            size="small"
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "10px",
+                background: "#f9f9f9",
+                height: "40px",
+              },
+            }}
+          >
+            <MenuItem value="All">All</MenuItem>
+            <MenuItem value="First Name">First Name</MenuItem>
+            <MenuItem value="Username">Username</MenuItem>
+            <MenuItem value="Email">Email</MenuItem>
+          </TextField>
 
-      <Box
-      sx={{
-      display: "grid",
-      gridTemplateColumns: "repeat(4, 1fr)",
-      gap: 2,
-      }}
-      >
-      {/* Search By */}
-      <TextField
-      select
-      label="Search By"
-      value={searchBy}
-      onChange={(e) => setSearchBy(e.target.value)}
-      variant="outlined"
-      size="small"
-      sx={{
-        "& .MuiOutlinedInput-root": {
-        borderRadius: "10px",
-        background: "#f9f9f9",
-        height: "40px",
-        },
-      }}
-      >
-      <MenuItem value="All">All</MenuItem>
-      <MenuItem value="First Name">First Name</MenuItem>
-      <MenuItem value="Username">Username</MenuItem>
-      <MenuItem value="Email">Email</MenuItem>
-      </TextField>
+          {/* Status Filter */}
+          <TextField
+            select
+            label="Status Filter"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            variant="outlined"
+            size="small"
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "10px",
+                background: "#f9f9f9",
+                height: "40px",
+              },
+            }}
+          >
+            <MenuItem value="All">All</MenuItem>
+            <MenuItem value="Enabled">Enabled</MenuItem>
+            <MenuItem value="Disabled">Disabled</MenuItem>
+          </TextField>
 
-      {/* Status Filter */}
-      <TextField
-      select
-      label="Status Filter"
-      value={statusFilter}
-      onChange={(e) => setStatusFilter(e.target.value)}
-      variant="outlined"
-      size="small"
-      sx={{
-        "& .MuiOutlinedInput-root": {
-        borderRadius: "10px",
-        background: "#f9f9f9",
-        height: "40px",
-        },
-      }}
-      >
-      <MenuItem value="All">All</MenuItem>
-      <MenuItem value="Enabled">Enabled</MenuItem>
-      <MenuItem value="Disabled">Disabled</MenuItem>
-      </TextField>
+          {/* Search Query */}
+          <TextField
+            placeholder="Search..."
+            variant="outlined"
+            size="small"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "10px",
+                background: "#f9f9f9",
+                height: "40px",
+              },
+            }}
+          />
 
-      {/* Search Query */}
-      <TextField
-      placeholder="Search..."
-      variant="outlined"
-      size="small"
-      value={searchQuery}
-      onChange={(e) => setSearchQuery(e.target.value)}
-      InputProps={{
-        startAdornment: (
-        <InputAdornment position="start">
-          <SearchIcon />
-        </InputAdornment>
-        ),
-      }}
-      sx={{
-        "& .MuiOutlinedInput-root": {
-        borderRadius: "10px",
-        background: "#f9f9f9",
-        height: "40px",
-        },
-      }}
-      />
+          {/* Clear Button */}
+          <Button
+            variant="outlined"
+            startIcon={<DeleteIcon />}
+            onClick={() => {
+              setSearchBy("All");
+              setSearchQuery("");
+              setStatusFilter("All");
+            }}
+            sx={{
+              borderColor: "#ff1744",
+              fontWeight: "bold",
+              borderRadius: "10px",
+              background: "linear-gradient(to right, #ff1744, #ff616f)",
+              color: "white",
+              height: "40px",
+              "&:hover": {
+                borderColor: "#d50000",
+                background: "linear-gradient(to right, #d50000, #ff616f)",
+              },
+            }}
+          >
+            Clear
+          </Button>
+        </Box>
+      </Paper>
 
-      {/* Clear Button */}
-      <Button
-      variant="outlined"
-      startIcon={<DeleteIcon />}
-      onClick={() => {
-        setSearchBy("All");
-        setSearchQuery("");
-        setStatusFilter("All");
-      }}
-      sx={{
-        borderColor: "#ff1744",
-        fontWeight: "bold",
-        borderRadius: "10px",
-        background: "linear-gradient(to right, #ff1744, #ff616f)",
-        color: "white",
-        height: "40px",
-        "&:hover": {
-        borderColor: "#d50000",
-        background: "linear-gradient(to right, #d50000, #ff616f)",
-        },
-      }}
-      >
-      Clear
-      </Button>
-      </Box>
-    </Paper>
-
-<TableContainer component={Paper} sx={{ borderRadius: 3 }}>
-  <Table>
-    <TableHead>
-      <TableRow sx={{ backgroundColor: '#1a237e' }}>
-        <TableCell sx={{ fontWeight: "bold", color: 'white' }}>Full Name</TableCell>
-        <TableCell sx={{ fontWeight: "bold", color: 'white' }}>Email</TableCell>
-        <TableCell sx={{ fontWeight: "bold", color: 'white' }}>Username</TableCell>
-        <TableCell sx={{ fontWeight: "bold", color: 'white' }}>Status</TableCell>
-        <TableCell sx={{ fontWeight: "bold", color: 'white' }}>Actions</TableCell>
-      </TableRow>
-    </TableHead>
-    <TableBody>
-      {paginatedUsers.length === 0 ? (
-        <TableRow>
-          <TableCell colSpan={5} sx={{ textAlign: 'center', py: 4 }}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', p: 3 }}>
-              <Image
-                src="/noimage.png"
-                alt="No data found"
-                width={300}
-                height={300}
-                style={{ marginBottom: '1rem' }}
-              />
-            </Box>
-          </TableCell>
-        </TableRow>
-      ) : (
-        paginatedUsers.map((user, index) => (
-          <TableRow key={index}>
-            <TableCell>{user.name}</TableCell>
-            <TableCell sx={{ color: user.email === "Not Provided" ? "gray" : "inherit" }}>
-              {user.email}
-            </TableCell>
-            <TableCell>{user.username}</TableCell>
-            <TableCell>
-              <Chip
-                label={user.status}
-                sx={{
-                  backgroundColor: user.status === "Disabled" ? "#FFE5B4" : "#E8F5E9",
-                  color: user.status === "Disabled" ? "#D84315" : "#2E7D32",
-                  fontWeight: "bold",
-                  borderRadius: "16px",
-                  px: 2,
-                  py: 0.5,
-                }}
-              />
-            </TableCell>
-            <TableCell>
-              <Tooltip title={user.status === "Enabled" ? "Disable" : "Enable"} arrow>
-                <Switch defaultChecked={user.status === "Enabled"} />
-              </Tooltip>
-              <Tooltip title="Reset Password" arrow>
-                <IconButton color="primary" onClick={() => handleOpenResetModal(user.username)}>
-                  <LockResetIcon />
-                </IconButton>
-              </Tooltip>
-            </TableCell>
-          </TableRow>
-        ))
-      )}
-    </TableBody>
-  </Table>
-</TableContainer>
-
-
+      <TableContainer component={Paper} sx={{ borderRadius: 3 }}>
+        <Table>
+          <TableHead>
+            <TableRow sx={{ backgroundColor: '#1a237e' }}>
+              <TableCell sx={{ fontWeight: "bold", color: 'white' }}>Full Name</TableCell>
+              <TableCell sx={{ fontWeight: "bold", color: 'white' }}>Email</TableCell>
+              <TableCell sx={{ fontWeight: "bold", color: 'white' }}>Username</TableCell>
+              <TableCell sx={{ fontWeight: "bold", color: 'white' }}>Status</TableCell>
+              <TableCell sx={{ fontWeight: "bold", color: 'white' }}>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {paginatedUsers.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={5} sx={{ textAlign: 'center', py: 4 }}>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', p: 3 }}>
+                    <Image
+                      src="/noimage.png"
+                      alt="No data found"
+                      width={300}
+                      height={300}
+                      style={{ marginBottom: '1rem' }}
+                    />
+                  </Box>
+                </TableCell>
+              </TableRow>
+            ) : (
+              paginatedUsers.map((user, index) => (
+                <TableRow key={index}>
+                  <TableCell>{user.name}</TableCell>
+                  <TableCell sx={{ color: user.email === "Not Provided" ? "gray" : "inherit" }}>
+                    {user.email}
+                  </TableCell>
+                  <TableCell>{user.username}</TableCell>
+                  <TableCell>
+                    <Chip
+                      label={user.status}
+                      sx={{
+                        backgroundColor: user.status === "Disabled" ? "#FFE5B4" : "#E8F5E9",
+                        color: user.status === "Disabled" ? "#D84315" : "#2E7D32",
+                        fontWeight: "bold",
+                        borderRadius: "16px",
+                        px: 2,
+                        py: 0.5,
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Tooltip title={user.status === "Enabled" ? "Disable" : "Enable"} arrow>
+                      <Switch defaultChecked={user.status === "Enabled"} />
+                    </Tooltip>
+                    <Tooltip title="Reset Password" arrow>
+                      <IconButton color="primary" onClick={() => handleOpenResetModal(user.username)}>
+                        <LockResetIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
       {/* Pagination */}
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: 3 }}>
@@ -422,7 +423,6 @@ const UserList = () => {
               },
             }}
           />
-      
 
           {/* Error Message */}
           {password && confirmPassword && password !== confirmPassword && (
