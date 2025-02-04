@@ -83,7 +83,8 @@ const RecordsPage: React.FC = () => {
         !(
           record.vehicleNumber.toLowerCase().includes(lowerQuery) ||
           record.serviceId.toLowerCase().includes(lowerQuery) ||
-          record.clientName.toLowerCase().includes(lowerQuery)
+          record.clientName.toLowerCase().includes(lowerQuery) ||
+          record.serviceType.toLowerCase().includes(lowerQuery)
         )
       ) {
         return false;
@@ -98,6 +99,10 @@ const RecordsPage: React.FC = () => {
       }
   
       if (searchBy === "Client Name" && !record.clientName.toLowerCase().includes(lowerQuery)) {
+        return false;
+      }
+
+      if (searchBy === "Service Type" && !record.serviceType.toLowerCase().includes(lowerQuery)) {
         return false;
       }
     }
@@ -153,6 +158,7 @@ const RecordsPage: React.FC = () => {
             <MenuItem value="Vehicle Number">Vehicle Number</MenuItem>
             <MenuItem value="Service ID">Service ID</MenuItem>
             <MenuItem value="Client Name">Client Name</MenuItem>
+            <MenuItem value="Service Type">Service Type</MenuItem>
           </TextField>
 
           <TextField
