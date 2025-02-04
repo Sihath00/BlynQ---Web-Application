@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -10,6 +9,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [errors, setErrors] = useState({ email: "", password: "" });
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   // Helper to validate email
@@ -36,20 +36,40 @@ const Login = () => {
     return isValid;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
-      console.log("Email:", email);
-      console.log("Password:", password);
-      router.push("/Home");
+      setLoading(true);
+      try {
+        const response = await fetch("https://your-backend-url.com/api/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        });
+
+        const data = await response.json();
+        setLoading(false);
+
+        if (response.ok) {
+          // Handle successful login
+          console.log("Login successful:", data);
+          router.push("/Home");
+        } else {
+          // Handle errors from the backend
+          console.error("Login failed:", data);
+          setErrors({ email: "", password: data.message || "Login failed" });
+        }
+      } catch (error) {
+        setLoading(false);
+        console.error("An error occurred:", error);
+        setErrors({ email: "", password: "An error occurred. Please try again." });
+      }
     }
   };
 
-
   return (
-
-
-
     <div className="relative flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-500 via-blue-700 to-indigo-800 overflow-hidden">
       {/* Decorative Blurred Background Elements */}
       <div className="absolute top-10 left-10 w-96 h-96 bg-gradient-to-r from-purple-400 to-blue-500 rounded-full blur-3xl opacity-30"></div>
@@ -74,9 +94,8 @@ const Login = () => {
 
         {/* Right Section */}
         <div className="w-full md:w-1/2 p-6 md:p-10 bg-white flex flex-col justify-center">
-          {/* Circular Logo */}
           <div className="flex justify-center mb-6">
-            <div className="rounded-full shadow-lg h-16 w-16 md:h-20 md:w-20 lg:h-24 lg:w-24 flex items-center justify-center overflow-hidden">
+            <div className="rounded-full shadow-lg h-20 w-20 md:h-24 md:w-24 lg:h-28 lg:w-28 flex items-center justify-center overflow-hidden">
               <img
                 src="/BlynqLogo.png"
                 alt="Blynq Logo"
@@ -122,59 +141,57 @@ const Login = () => {
 
             {/* Password Input */}
             <div className="relative">
-              <input
-                type={passwordVisible ? "text" : "password"}
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className={`block w-full px-4 py-3 text-base text-gray-800 bg-transparent border ${
-                  errors.password ? "border-red-500" : "border-gray-300"
-                } rounded-lg appearance-none focus:outline-none focus:ring-2 ${
-                  errors.password ? "focus:ring-red-500" : "focus:ring-blue-500"
-                } peer`}
-              />
-              <label
-                htmlFor="password"
-                className={`absolute left-4 bg-white px-2 text-sm transition-all duration-300 ${
-                  password ? "-top-3 text-blue-500" : "top-4 text-gray-500"
-                } peer-focus:-top-3 peer-focus:text-blue-500 peer-focus:bg-white`}
-              >
-                Password
-              </label>
-              <button
-                type="button"
-                onClick={() => setPasswordVisible(!passwordVisible)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-blue-500 focus:outline-none"
-              >
-                {passwordVisible ? (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    fill="currentColor"
-                    className="bi bi-eye-fill"
-                    viewBox="0 0 16 16"
-                  >
-                    <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
-                    <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
-                  </svg>
-                ) : (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    fill="currentColor"
-                    className="bi bi-eye-slash-fill"
-                    viewBox="0 0 16 16"
-                  >
-                    <path d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7 7 0 0 0 2.79-.588M5.21 3.088A7 7 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474z" />
-                    <path d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12z" />
-                  </svg>
-                )}
-              </button>
-              {errors.password && <span className="text-xs text-red-500">{errors.password}</span>}
-            </div>
+  {/* Password Input */}
+  <input
+    type={passwordVisible ? "text" : "password"}
+    id="password"
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+    required
+    className={`block w-full px-4 py-3 text-base text-gray-800 bg-transparent border ${
+      errors.password ? "border-red-500" : "border-gray-300"
+    } rounded-lg appearance-none focus:outline-none focus:ring-2 ${
+      errors.password ? "focus:ring-red-500" : "focus:ring-blue-500"
+    } peer`}
+  />
+  
+  {/* Label */}
+  <label
+    htmlFor="password"
+    className={`absolute left-4 bg-white px-2 text-sm transition-all duration-300 ${
+      password ? "-top-3 text-blue-500" : "top-4 text-gray-500"
+    } peer-focus:-top-3 peer-focus:text-blue-500 peer-focus:bg-white`}
+  >
+    Password
+  </label>
+
+  {/* Eye Button (Now Centered Properly) */}
+  <button
+    type="button"
+    onClick={(e) => {
+      e.preventDefault();
+      setPasswordVisible((prev) => !prev);
+    }}
+    className="absolute right-3 top-1/3 -translate-y-1/2 text-gray-500 hover:text-blue-500 focus:outline-none z-10 flex items-center h-full"
+  >
+    {passwordVisible ? (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-eye-fill" viewBox="0 0 16 16">
+        <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
+        <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
+      </svg>
+    ) : (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-eye-slash-fill" viewBox="0 0 16 16">
+        <path d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7 7 0 0 0 2.79-.588M5.21 3.088A7 7 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474z" />
+        <path d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12z" />
+      </svg>
+    )}
+  </button>
+
+  {/* Error Message (Fixed Height to Avoid Layout Shift) */}
+  <span className="block h-5 text-xs text-red-500 mt-1">
+    {errors.password}
+  </span>
+</div>
 
             {/* Remember Me and Forgot Password */}
             <div className="flex justify-between items-center">
@@ -197,10 +214,10 @@ const Login = () => {
             <button
               type="submit"
               className="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl hover:from-blue-700 hover:to-blue-800 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all duration-300"
+              disabled={loading}
             >
-              Login
+              {loading ? "Logging in..." : "Login"}
             </button>
-       
           </form>
 
           {/* Footer */}
@@ -216,7 +233,6 @@ const Login = () => {
           </p>
         </div>
       </div>
-
     </div>
   );
 };
