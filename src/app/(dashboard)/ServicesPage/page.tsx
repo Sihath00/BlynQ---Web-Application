@@ -21,7 +21,6 @@ import {
   Edit,
   Delete,
   Add,
-  AttachMoney,
   AccessTime,
 
   ToggleOn,
@@ -29,14 +28,7 @@ import {
 } from "@mui/icons-material";
 
 const ServicePage = () => {
-  const [services, setServices] = useState([
-    { id: 1, name: "Oil Change", description: "Standard oil change for smooth engine performance.", price: "$30", duration: "30 min", active: true },
-    { id: 2, name: "Brake Inspection", description: "Comprehensive brake system check to ensure safety.", price: "$50", duration: "45 min", active: true },
-    { id: 3, name: "Battery Replacement", description: "Quick and reliable car battery replacement service.", price: "$80", duration: "40 min", active: true },
-    { id: 4, name: "Tire Rotation", description: "Extend tire life and improve handling with rotation.", price: "$40", duration: "35 min", active: true },
-    { id: 5, name: "Wheel Alignment", description: "Precision wheel alignment for smoother driving.", price: "$60", duration: "50 min", active: true },
-    { id: 6, name: "Full Car Service", description: "Complete inspection and maintenance service.", price: "$120", duration: "2 hours", active: true },
-  ]);
+  const [services, setServices] = useState<{ id: number; name: string; description: string; price: string; duration: string; active: boolean }[]>([]);
 
   const [open, setOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -67,37 +59,80 @@ const ServicePage = () => {
     setEditMode(false);
   };
 
-  // Handle Input Change
+  const [errors, setErrors] = useState({
+    name: "",
+    description: "",
+    price: "",
+    duration: "",
+  });
+  
+  // Handle Input Change with Validation
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCurrentService({ ...currentService, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+  
+    if (name === "price") {
+      if (!/^\d*\.?\d*$/.test(value)) return; // Allow only numbers and decimals
+      setCurrentService({ ...currentService, price: value });
+    } 
+    
+    else if (name === "duration") {
+      const numericValue = value.replace(/\D/g, ""); // Remove any non-numeric characters
+      setCurrentService({ ...currentService, duration: numericValue });
+    } 
+    
+    else {
+      setCurrentService({ ...currentService, [name]: value });
+    }
+  
+    // Clear errors when user types
+    setErrors({ ...errors, [name]: "" });
+  };
+  
+  
+  // Validate Form Before Submitting
+  const validateForm = () => {
+    let newErrors = { name: "", description: "", price: "", duration: "" };
+    let isValid = true;
+  
+    if (!currentService.name.trim()) {
+      newErrors.name = "Service Name is required";
+      isValid = false;
+    }
+    if (!currentService.description.trim()) {
+      newErrors.description = "Description is required";
+      isValid = false;
+    }
+    if (!currentService.price.trim() || isNaN(Number(currentService.price))) {
+      newErrors.price = "Valid Price is required";
+      isValid = false;
+    }
+    if (!currentService.duration.trim() || isNaN(Number(currentService.duration))) {
+      newErrors.duration = "Valid Duration is required";
+      isValid = false;
+    }
+  
+    setErrors(newErrors);
+    return isValid;
   };
   
   // Add or Update Service
   const handleAddOrUpdateService = () => {
-  if (currentService.name && currentService.description && currentService.price && currentService.duration) {
+    if (!validateForm()) return; // Prevent submission if validation fails
+  
     setServices((prevServices) => {
       if (editMode) {
-        // Update existing service
         return prevServices.map((s) => (s.id === currentService.id ? { ...s, ...currentService } : s));
       } else {
-        // Assign unique id to the new service
         const newId = prevServices.length > 0 ? Math.max(...prevServices.map((s) => s.id)) + 1 : 1;
         return [...prevServices, { ...currentService, id: newId }];
       }
     });
-
-    // Reset state and close modal
+  
     setCurrentService({ id: 0, name: "", description: "", price: "", duration: "", active: true });
     setEditMode(false);
     setOpen(false);
-  }
+  };
 
-
-      // Reset state and close modal
-      setCurrentService({ id: 0, name: "", description: "", price: "", duration: "", active: true });
-      setEditMode(false);
-      setOpen(false);
-    }
   
 
   // Delete Service
@@ -144,74 +179,87 @@ const ServicePage = () => {
       </Box>
 
       {/* Service Cards */}
-      <Grid container spacing={3}>
-        {services.map((service) => (
-          <Grid item xs={12} sm={6} md={4} key={service.id}>
-            <Paper
-              elevation={8}
-              sx={{
-                borderRadius: "15px",
-                overflow: "hidden",
-                transition: "0.3s",
-                background: "#ffffff",
-                boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.1)",
-                "&:hover": {
-                  boxShadow: "0px 10px 25px rgba(0, 0, 0, 0.3)",
-                  transform: "scale(1.04)",
-                },
-              }}
-            >
-              {/* Card Header */}
-              <Box
-                sx={{
-                  background: service.active ? "linear-gradient(to right, #007bff, #00c6ff)" : "#d32f2f",
-                  p: 2,
-                  color: "white",
-                  textAlign: "center",
-                  fontWeight: "bold",
-                  fontSize: "1.3rem",
-                  borderTopLeftRadius: "15px",
-                  borderTopRightRadius: "15px",
-                }}
-              >
-                {service.name}
-              </Box>
+{services.length > 0 ? (
+  <Grid container spacing={3}>
+    {services.map((service) => (
+      <Grid item xs={12} sm={6} md={4} key={service.id}>
+        <Paper
+          elevation={8}
+          sx={{
+            borderRadius: "15px",
+            overflow: "hidden",
+            transition: "0.3s",
+            background: "#ffffff",
+            boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.1)",
+            "&:hover": {
+              boxShadow: "0px 10px 25px rgba(0, 0, 0, 0.3)",
+              transform: "scale(1.04)",
+            },
+          }}
+        >
+          {/* Card Header */}
+          <Box
+            sx={{
+              background: service.active ? "linear-gradient(to right, #007bff, #00c6ff)" : "#d32f2f",
+              p: 2,
+              color: "white",
+              textAlign: "center",
+              fontWeight: "bold",
+              fontSize: "1.3rem",
+              borderTopLeftRadius: "15px",
+              borderTopRightRadius: "15px",
+            }}
+          >
+            {service.name}
+          </Box>
 
-              {/* Card Body */}
-              <CardContent sx={{ p: 3, textAlign: "center" }}>
-                <Typography variant="body1" color="text.secondary">
-                  {service.description}
-                </Typography>
-                <Typography sx={{ mt: 2, fontWeight: "bold", fontSize: "1rem", color: "#424242" }}>
-                  <span style={{ color: "#2e7d32" }}>Price:</span> {service.price}
-                </Typography>
-                <Typography sx={{ fontWeight: "bold", fontSize: "1rem", color: "#424242" }}>
-                  <span style={{ color: "#d32f2f" }}>Duration:</span> {service.duration}
-                </Typography>
-              </CardContent>
+          {/* Card Body */}
+          <CardContent sx={{ p: 3, textAlign: "center" }}>
+            <Typography variant="body1" color="text.secondary">
+              {service.description}
+            </Typography>
+            <Typography sx={{ mt: 2, fontWeight: "bold", fontSize: "1rem", color: "#424242" }}>
+              <span style={{ color: "#2e7d32" }}>Price:</span> Rs. {parseFloat(service.price).toFixed(2)}
+            </Typography>
+            <Typography sx={{ fontWeight: "bold", fontSize: "1rem", color: "#424242" }}>
+              <span style={{ color: "#d32f2f" }}>Duration:</span> {service.duration} min
+            </Typography>
+          </CardContent>
 
-              {/* Actions */}
-              <Box sx={{ display: "flex", justifyContent: "center", gap: 1, pb: 2 }}>
-                <Tooltip title="Edit">
-                  <IconButton sx={{ color: "#ffa000" }} onClick={() => handleOpen(service)}>
-                    <Edit />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Delete">
-                  <IconButton sx={{ color: "#d32f2f" }} onClick={() => handleDeleteService(service.id)}>
-                    <Delete />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title={service.active ? "Deactivate" : "Activate"}>
-                  <IconButton sx={{ color: service.active ? "#007bff" : "#d32f2f" }} onClick={() => handleToggleActive(service.id)}>
-                    {service.active ? <ToggleOn /> : <ToggleOff />}
-                  </IconButton>
-                </Tooltip>
-              </Box>
-            </Paper>
-          </Grid>
-        ))}
+          {/* Actions */}
+          <Box sx={{ display: "flex", justifyContent: "center", gap: 1, pb: 2 }}>
+            <Tooltip title="Edit">
+              <IconButton sx={{ color: "#ffa000" }} onClick={() => handleOpen(service)}>
+                <Edit />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Delete">
+              <IconButton sx={{ color: "#d32f2f" }} onClick={() => handleDeleteService(service.id)}>
+                <Delete />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title={service.active ? "Deactivate" : "Activate"}>
+              <IconButton sx={{ color: service.active ? "#007bff" : "#d32f2f" }} onClick={() => handleToggleActive(service.id)}>
+                {service.active ? <ToggleOn /> : <ToggleOff />}
+              </IconButton>
+            </Tooltip>
+          </Box>
+        </Paper>
       </Grid>
+    ))}
+  </Grid>
+) : (
+  <Box sx={{ textAlign: "center", mt: 6 }}>
+    <img
+      src="/noservice.png" 
+      alt="No Services Available"
+      style={{ maxWidth: "800px", width: "400%", margin: "0 auto" }}
+    />
+    <Typography variant="h6" sx={{ mt: 2, color: "#555" }}>
+      No services available. Add a new service to get started.
+    </Typography>
+  </Box>
+)}
       {/* Add Service Dialog */}
       <Dialog
         open={open}
@@ -244,87 +292,90 @@ const ServicePage = () => {
           borderTopRightRadius: "20px",
         }}
       >
-
         Add New Service
       </DialogTitle>
 
       <DialogContent
-      sx={{
-        p: 6, // Increase padding to move fields down
-        borderRadius: "20px",
-        display: "flex",
-        flexDirection: "column",
-        gap: 1, // Add spacing between elements
+  sx={{
+    p: 6,
+    display: "flex",
+    flexDirection: "column",
+    gap: 1,
+  }}
+>
+  {/* Service Name Field */}
+  <TextField
+    label="Service Name"
+    name="name"
+    fullWidth
+    variant="outlined"
+    value={currentService.name}
+    onChange={handleChange}
+    error={!!errors.name}
+    helperText={errors.name}
+    sx={{
+      mt: 2,
+      mb: 2,
+      "& .MuiOutlinedInput-root": { borderRadius: "15px" },
+    }}
+  />
+
+  {/* Description Field */}
+  <TextField
+    label="Description"
+    name="description"
+    fullWidth
+    multiline
+    rows={3}
+    variant="outlined"
+    value={currentService.description}
+    onChange={handleChange}
+    error={!!errors.description}
+    helperText={errors.description}
+    sx={{
+      mb: 2,
+      "& .MuiOutlinedInput-root": { borderRadius: "15px" },
+    }}
+  />
+
+  {/* Price & Duration Fields */}
+  <Box sx={{ display: "flex", gap: 2 }}>
+    <TextField
+      label="Price"
+      name="price"
+      fullWidth
+      variant="outlined"
+      value={currentService.price}
+      onChange={handleChange}
+      error={!!errors.price}
+      helperText={errors.price}
+      InputProps={{
+        startAdornment: <InputAdornment position="start">Rs.</InputAdornment>,
       }}
-    >
-      <TextField
-        label="Service Name"
-        name="name"
-        fullWidth
-        variant="outlined"
-        value={currentService.name}
-        onChange={handleChange}
-        sx={{
-          mt: 2, // Moves this field further down
-          mb: 2,
-          "& .MuiOutlinedInput-root": {
-            borderRadius: "15px",
-          },
-        }}
-      />
-      <TextField
-        label="Description"
-        name="description"
-        fullWidth
-        multiline
-        rows={3}
-        variant="outlined"
-        value={currentService.description}
-        onChange={handleChange}
-        sx={{
-          mb: 2,
-          "& .MuiOutlinedInput-root": {
-            borderRadius: "15px",
-          },
-        }}
-      />
-      <Box sx={{ display: "flex", gap: 2 }}>
-        <TextField
-          label="Price"
-          name="price"
-          fullWidth
-          variant="outlined"
-          value={currentService.price}
-          onChange={handleChange}
-          InputProps={{
-            startAdornment: <InputAdornment position="start"><AttachMoney /></InputAdornment>,
-          }}
-          sx={{
-            borderRadius: "15px",
-            "& .MuiOutlinedInput-root": {
-              borderRadius: "15px",
-            },
-          }}
-        />
-        <TextField
-          label="Duration"
-          name="duration"
-          fullWidth
-          variant="outlined"
-          value={currentService.duration}
-          onChange={handleChange}
-          InputProps={{
-            startAdornment: <InputAdornment position="start"><AccessTime /></InputAdornment>,
-          }}
-          sx={{
-            borderRadius: "15px",
-            "& .MuiOutlinedInput-root": {
-              borderRadius: "15px",
-            },
-          }}
-        />
-      </Box>
-    </DialogContent>
+      sx={{
+        "& .MuiOutlinedInput-root": { borderRadius: "15px" },
+      }}
+    />
+
+<TextField
+  label="Duration"
+  name="duration"
+  fullWidth
+  variant="outlined"
+  value={currentService.duration}
+  onChange={handleChange}
+  error={!!errors.duration}
+  helperText={errors.duration}
+  InputProps={{
+    startAdornment: <InputAdornment position="start"><AccessTime /></InputAdornment>,
+    inputProps: { inputMode: "numeric", pattern: "[0-9]*" }, // Allow only numeric input
+  }}
+  sx={{
+    "& .MuiOutlinedInput-root": { borderRadius: "15px" },
+  }}
+/>
+  </Box>
+</DialogContent>
 
     <DialogActions sx={{ justifyContent: "space-between", px: 4, pb: 3 }}>
       {/* Cancel Button */}
