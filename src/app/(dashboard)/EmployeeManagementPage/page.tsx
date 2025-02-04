@@ -48,9 +48,8 @@ const EmployeeManagementPage = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(0);
 
-  
-
   // ** Pagination Logic **
+  // Filter the entire dataset based on the search query before applying pagination
   const filteredEmployees = employees.filter((employee) => {
     if (searchBy === "All") {
       return (
@@ -170,19 +169,24 @@ const EmployeeManagementPage = () => {
 
           {/* Search Query */}
           <TextField
-            placeholder="Search..." // Changed from label to placeholder
+            placeholder="Search..." 
             variant="outlined"
             size="small"
             fullWidth
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            InputProps={{
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setCurrentPage(0); // Reset to the first page on new search
+            }}
+          slotProps={{
+            input: {
               startAdornment: (
                 <InputAdornment position="start">
-            <SearchIcon />
-          </InputAdornment>
+                  <SearchIcon />
+                </InputAdornment>
               ),
-            }}
+            },
+          }}
             sx={{
               "& .MuiOutlinedInput-root": {
                 borderRadius: "10px",
@@ -199,6 +203,7 @@ const EmployeeManagementPage = () => {
             onClick={() => {
               setSearchBy("All");
               setSearchQuery("");
+              setCurrentPage(0); // Reset to the first page on clear
             }}
             sx={{
               borderColor: "#ff1744",
@@ -296,41 +301,51 @@ const EmployeeManagementPage = () => {
         </Table>
       </TableContainer>
           
-          {/* Pagination */}
-                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: 3 }}>
-                  <Box sx={{ display: "flex", alignItems: "center" }}>
-                    <Typography variant="body2">Rows per page:</Typography>
-                    <Select
-                      value={rowsPerPage}
-                      onChange={(e) => setRowsPerPage(Number(e.target.value))}
-                      sx={{
-                        ml: 1,
-                        border: "none",
-                        outline: "none",
-                        "& .MuiOutlinedInput-notchedOutline": { border: "none" },
-                      }}
-                    
-                    >
-                      <MenuItem value={5}>5</MenuItem>
-                      <MenuItem value={10}>10</MenuItem>
-                      <MenuItem value={25}>25</MenuItem>
-                    </Select>
-                  </Box>
-                  <Typography variant="body2">
-                    {currentPage * rowsPerPage + 1}–
-                    {Math.min((currentPage + 1) * rowsPerPage, employees.length)} of {employees.length}
-                  </Typography>
-                  <Box sx={{ display: "flex", gap: 1 }}>
-                    <Button onClick={() => setCurrentPage((prev: number) => Math.max(prev - 1, 0))} disabled={currentPage === 0}>
-                      Previous
-                    </Button>
-                    <Button onClick={() => setCurrentPage((prev: number) => Math.min(prev + 1, Math.ceil(employees.length / rowsPerPage) - 1))}>
-                      Next
-                    </Button>
-                  </Box>
-                </Box>
+        {/* Pagination */}
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: 3 }}>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <Typography variant="body2">Rows per page:</Typography>
+            <Select
+              value={rowsPerPage}
+              onChange={(e) => setRowsPerPage(Number(e.target.value))}
+              sx={{
+                ml: 1,
+                backgroundColor: "#f9f9f9",
+                border: "none",
+                outline: "none",
+                "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+              }}
+            >
+              <MenuItem value={5}>5</MenuItem>
+              <MenuItem value={10}>10</MenuItem>
+              <MenuItem value={25}>25</MenuItem>
+            </Select>
+          </Box>
+          <Typography variant="body2">
+            {currentPage * rowsPerPage + 1}–
+            {Math.min((currentPage + 1) * rowsPerPage, filteredEmployees.length)} of {filteredEmployees.length}
+          </Typography>
+          <Box sx={{ display: "flex", gap: 1 }}>
+            <Button
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))}
+              disabled={currentPage === 0}
+            >
+              Previous
+            </Button>
+            <Button
+              onClick={() =>
+                setCurrentPage((prev) =>
+                  Math.min(prev + 1, Math.ceil(filteredEmployees.length / rowsPerPage) - 1)
+                )
+              }
+              disabled={(currentPage + 1) * rowsPerPage >= filteredEmployees.length}
+            >
+              Next
+            </Button>
+          </Box>
         </Box>
-  );
+       </Box>
+   );  
 };
 
 export default EmployeeManagementPage;
