@@ -279,26 +279,24 @@ const UserList = () => {
   </Table>
 </TableContainer>
 
-
-
       {/* Pagination */}
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: 3 }}>
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <Typography variant="body2">Rows per page:</Typography>
           <Select
-            value={rowsPerPage}
-            onChange={(e) => setRowsPerPage(Number(e.target.value))}
-            sx={{
-              ml: 1,
-              backgroundColor: "#f9f9f9",
-              border: "none",
-              outline: "none",
-              "& .MuiOutlinedInput-notchedOutline": { border: "none" },
-            }}
+        value={rowsPerPage}
+        onChange={(e) => setRowsPerPage(Number(e.target.value))}
+        sx={{
+          ml: 1,
+          backgroundColor: "#f9f9f9",
+          border: "none",
+          outline: "none",
+          "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+        }}
           >
-            <MenuItem value={5}>5</MenuItem>
-            <MenuItem value={10}>10</MenuItem>
-            <MenuItem value={25}>25</MenuItem>
+        <MenuItem value={5}>5</MenuItem>
+        <MenuItem value={10}>10</MenuItem>
+        <MenuItem value={25}>25</MenuItem>
           </Select>
         </Box>
         <Typography variant="body2">
@@ -307,20 +305,20 @@ const UserList = () => {
         </Typography>
         <Box sx={{ display: "flex", gap: 1 }}>
           <Button
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))}
-            disabled={currentPage === 0}
+        onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))}
+        disabled={currentPage === 0}
           >
-            Previous
+        Previous
           </Button>
           <Button
-            onClick={() =>
-              setCurrentPage((prev) =>
-                Math.min(prev + 1, Math.ceil(filteredUsers.length / rowsPerPage) - 1)
-              )
-            }
-            disabled={(currentPage + 1) * rowsPerPage >= filteredUsers.length}
+        onClick={() =>
+          setCurrentPage((prev) =>
+            Math.min(prev + 1, Math.ceil(filteredUsers.length / rowsPerPage) - 1)
+          )
+        }
+        disabled={(currentPage + 1) * rowsPerPage >= filteredUsers.length}
           >
-            Next
+        Next
           </Button>
         </Box>
       </Box>
