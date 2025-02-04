@@ -592,33 +592,33 @@ const EmployeeProfile = () => {
 
             {/* Pagination */}
             <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: 3 }}>
-  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-    <Typography variant="body2" sx={{ fontWeight: "bold", color: "#5F6368" }}>
-      Rows per page:
-    </Typography>
-    <Select
-      value={rowsPerPage}
-      onChange={(e) => {
-        setRowsPerPage(Number(e.target.value));
-        setCurrentPage(0);
-      }}
-      sx={{
-        height: 32,
-        border: "1px solid #E0E0E0",
-        borderRadius: "8px",
-        "& .MuiSelect-select": {
-          padding: "4px 16px",
-        },
-        "& .MuiOutlinedInput-notchedOutline": {
-          border: "none",
-        },
-      }}
-    >
-      <MenuItem value={5}>5</MenuItem>
-      <MenuItem value={10}>10</MenuItem>
-      <MenuItem value={25}>25</MenuItem>
-    </Select>
-  </Box>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Typography variant="body2" sx={{ fontWeight: "bold", color: "#5F6368" }}>
+                Rows per page:
+              </Typography>
+              <Select
+                value={rowsPerPage}
+                onChange={(e) => {
+                  setRowsPerPage(Number(e.target.value));
+                  setCurrentPage(0);
+                }}
+                sx={{
+                  height: 32,
+                  border: "1px solid #E0E0E0",
+                  borderRadius: "8px",
+                  "& .MuiSelect-select": {
+                    padding: "4px 16px",
+                  },
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    border: "none",
+                  },
+                }}
+              >
+                <MenuItem value={5}>5</MenuItem>
+                <MenuItem value={10}>10</MenuItem>
+                <MenuItem value={25}>25</MenuItem>
+              </Select>
+            </Box>
 
         <Typography variant="body2" sx={{ fontWeight: "bold", color: "#5F6368" }}>
           {currentPage * rowsPerPage + 1}–{Math.min((currentPage + 1) * rowsPerPage, filteredHistory.length)} of{" "}
