@@ -1,26 +1,13 @@
+
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
-import React, { useState } from "react";
-import {
-  Box,
-  Button,
-  Select,
-  MenuItem,
-  TextField,
-  Typography,
-  Tooltip,
-  IconButton,
-  InputAdornment,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from "@mui/material";
+import { auth } from "../../../../firebase/firebaseConfig"; 
+import { useState, useEffect } from "react";
+import { archiveEmployeeByPersonalID, getActiveEmployees, updateEmployeeByPersonalID } from "../../services/employeeService";
+import { onAuthStateChanged } from "firebase/auth";
+import { useRouter } from "next/navigation";
+
 import {
   Edit,
   Visibility,
@@ -30,65 +17,289 @@ import {
   Search as SearchIcon,
 } from "@mui/icons-material";
 import FilterListIcon from '@mui/icons-material/FilterList';
+import CloseIcon from "@mui/icons-material/Close";
+import {
+  Box,
+  Button,
+  Select,
+  MenuItem,
+  TextField,
+  Typography,
+  InputAdornment,
+Paper,
+Table,
+TableBody,
+TableCell,
+TableContainer,
+TableHead,
+TableRow,
+
+CircularProgress,
+Tooltip,
+IconButton
+} from "@mui/material";
+import Image from "next/image";
+
+
 
 const EmployeeManagementPage = () => {
-  const [employees] = useState([
-    { id: 1, firstName: "Sihath Senarath", lastName: "Yapa", mobile: "0777492400", email: "testemployeee@gmail.com", status: "Approved" },
-    { id: 2, firstName: "Test Employee", lastName: "Two", mobile: "0777492499", email: "testemployeetwo@gmail.com", status: "Approved" },
-    { id: 3, firstName: "Test Employee", lastName: "One ", mobile: "0777492455", email: "testemployeeone@gmail.com", status: "Approved" },
-    { id: 4, firstName: "Amina", lastName: "Hajameyan", mobile: "07491898664", email: "amina@gmail.com", status: "Approved" },
-    { id: 5, firstName: "Pesadi", lastName: "Wikramathilaka", mobile: "7538831270", email: "pesadi@googlemail.com", status: "Approved" },
-    { id: 6, firstName: "Gaindu", lastName: "Amarasingha", mobile: "07491898664", email: "gaindu@gmail.com", status: "Approved" },
-    { id: 7, firstName: "Sithum", lastName: "Duleka", mobile: "7538831270", email: "sithum@googlemail.com", status: "Approved" },
-  ]);
+const router = useRouter();
+const [employees, setEmployees] = useState<any[]>([]);
+const [loading, setLoading] = useState(true);
+const [searchBy, setSearchBy] = useState("All");
+const [searchQuery, setSearchQuery] = useState("");
+const [rowsPerPage, setRowsPerPage] = useState(5);
+const [currentPage, setCurrentPage] = useState(0);
+const [openEditModal, setOpenEditModal] = useState(false);
+const [editForm, setEditForm] = useState<any | null>(null);
+
+const handleViewEmployee = (id: string) => {
+  router.push(`/EmployeeManagementPage/EmployeeProfile/${id}`); // ✅ Fix Navigation Path
+};
+
+const fetchEmployees = async (uid: string) => {
+  try {
+    const fetchedEmployees = await getActiveEmployees(uid);
+    setEmployees(fetchedEmployees);
+  } catch (error) {
+    console.error("Error fetching employees:", error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+
   
+// Fetch employees for the logged-in service center
 
-  const [searchBy, setSearchBy] = useState("All");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [currentPage, setCurrentPage] = useState(0);
-
-  // ** Pagination Logic **
-  // Filter the entire dataset based on the search query before applying pagination
-  const filteredEmployees = employees.filter((employee) => {
-    if (searchBy === "All") {
-      return (
-        employee.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        employee.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        employee.mobile.includes(searchQuery) ||
-        employee.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        employee.status.toLowerCase().includes(searchQuery.toLowerCase())
-      );
+useEffect(() => {
+  const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      await fetchEmployees(user.uid);
     } else {
-      const field = searchBy.toLowerCase();
-      switch (field) {
-        case 'firstname':
-          return employee.firstName.toLowerCase().includes(searchQuery.toLowerCase());
-        case 'lastname':
-          return employee.lastName.toLowerCase().includes(searchQuery.toLowerCase());
-        case 'mobile':
-          return employee.mobile.includes(searchQuery);
-        case 'email':
-          return employee.email.toLowerCase().includes(searchQuery.toLowerCase());
-        case 'status':
-          return employee.status.toLowerCase().includes(searchQuery.toLowerCase());
-        default:
-          return false;
-      }
+      console.error("❌ User not authenticated");
     }
   });
 
-  const paginatedEmployees = filteredEmployees.slice(
-    currentPage * rowsPerPage,
-    currentPage * rowsPerPage + rowsPerPage
-  );
+  return () => unsubscribe();
+}, []);
 
-  function handleOpen(): void {
-    throw new Error("Function not implemented.");
+
+// ** Filter employees based on search query **
+const filteredEmployees = employees.filter((employee) => {
+  const query = searchQuery.toLowerCase();
+  if (searchBy === "All") {
+    return (
+      employee.first_name.toLowerCase().includes(query) ||
+      employee.last_name.toLowerCase().includes(query) ||
+      employee.mobile.includes(searchQuery) ||
+      employee.email.toLowerCase().includes(query) ||
+      employee.status.toLowerCase().includes(query)
+    );
   }
+  switch (searchBy.toLowerCase()) {
+    case "firstname":
+      return employee.first_name.toLowerCase().includes(query);
+    case "lastname":
+      return employee.last_name.toLowerCase().includes(query);
+    case "mobile":
+      return employee.mobile.includes(searchQuery);
+    case "email":
+      return employee.email.toLowerCase().includes(query);
+    case "status":
+      return employee.status.toLowerCase().includes(query);
+    default:
+      return false;
+  }
+});
+
+const paginatedEmployees = filteredEmployees.slice(
+  currentPage * rowsPerPage,
+  currentPage * rowsPerPage + rowsPerPage
+);
+const handleUpdateEmployee = async () => {
+  if (!editForm?.personal_id) {
+    alert("❌ Employee Personal ID is missing");
+    return;
+  }
+
+  try {
+    await updateEmployeeByPersonalID(editForm.personal_id, editForm);
+    alert("✅ Employee updated successfully!");
+    setOpenEditModal(false);
+    fetchEmployees(auth.currentUser?.uid || ""); // Refresh the employee list
+  } catch (error) {
+    alert(`❌ Failed to update employee`);
+  }
+};
+
+const handleArchiveEmployee = async (personalID: string) => {
+  if (!personalID) {
+      alert("❌ Personal ID is missing");
+      return;
+  }
+
+  try {
+      await archiveEmployeeByPersonalID(personalID);
+      alert("✅ Employee archived successfully!");
+
+      // ✅ Refresh the employee list to remove from UI
+      fetchEmployees(auth.currentUser?.uid || "");
+  } catch (error) {
+      alert("❌ Failed to archive employee");
+  }
+};
+
 
   return (
     <Box sx={{ p: 3, backgroundColor: "#f4f6f8", minHeight: "100vh" }}>
+
+{openEditModal && editForm && (
+  <Box
+    sx={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      backdropFilter: "blur(10px)",
+      backgroundColor: "rgba(0, 0, 0, 0.4)",
+      zIndex: 1000,
+    }}
+  >
+    <Box
+      sx={{
+        backgroundColor: "#fff",
+        borderRadius: "12px",
+        boxShadow: "0px 15px 40px rgba(0, 0, 0, 0.3)",
+        maxWidth: "700px",
+        width: "95%",
+        maxHeight: "90vh",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+      }}
+    >
+      {/* Modal Header */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          backgroundColor: "#fff",
+          padding: "16px 24px",
+          borderBottom: "1px solid #ddd",
+          minHeight: "80px",
+        }}
+      >
+        <Typography variant="h5" fontWeight="bold" color="#1a237e">
+          Edit Employee
+        </Typography>
+        <IconButton
+          onClick={() => setOpenEditModal(false)}
+          aria-label="close"
+          sx={{ color: "#555", "&:hover": { color: "#222" } }}
+        >
+          <CloseIcon />
+        </IconButton>
+      </Box>
+
+      {/* Modal Form Content */}
+      <Box
+        sx={{
+          flex: 1,
+          overflowY: "auto",
+          padding: "24px",
+          "&::-webkit-scrollbar": { width: "8px" },
+          "&::-webkit-scrollbar-thumb": { background: "#bbb", borderRadius: "5px" },
+          "&::-webkit-scrollbar-thumb:hover": { background: "#888" },
+        }}
+      >
+        {/* Form Fields */}
+        {[
+          { label: "First Name", key: "first_name" },
+          { label: "Last Name", key: "last_name" },
+          { label: "Personal ID", key: "personal_id", readOnly: true },
+          { label: "Date of Birth", key: "date_of_birth", type: "date" },
+          { label: "Gender", key: "gender", type: "select", options: ["Male", "Female", "Other"] },
+          { label: "Role", key: "role", type: "select", options: ["Admin", "Manager", "Supervisor", "Employee", "Contractor"] },
+          { label: "Job Role", key: "job_role" },
+          { label: "Mobile", key: "mobile" },
+          { label: "Email", key: "email" },
+          { label: "Address 1", key: "address1" },
+          { label: "Address 2", key: "address2" },
+          { label: "City", key: "city" },
+          { label: "County", key: "county" },
+          { label: "Postcode", key: "postcode" },
+        ].map(({ label, key, type, options }) => (
+          type === "select" ? (
+            <TextField
+              key={key}
+              label={label}
+              select
+              fullWidth
+              value={editForm?.[key] || ""}
+              onChange={(e) => setEditForm({ ...editForm, [key]: e.target.value })}
+              margin="normal"
+              variant="outlined"
+              size="medium"
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "8px",
+                },
+              }}
+            >
+              {options?.map((option) => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </TextField>
+          ) : (
+            <TextField
+              key={key}
+              label={label}
+              type={type || "text"}
+              fullWidth
+              value={editForm?.[key] || ""}
+              onChange={(e) => setEditForm({ ...editForm, [key]: e.target.value })}
+              margin="normal"
+              variant="outlined"
+              size="medium"
+              InputLabelProps={type === "date" ? { shrink: true } : {}}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "8px",
+                },
+              }}
+            />
+          )
+        ))}
+      </Box>
+
+      {/* Save Button */}
+      <Box sx={{ display: "flex", justifyContent: "flex-end", p: 2 }}>
+        <Button
+          variant="contained"
+          onClick={handleUpdateEmployee}
+          sx={{
+            px: 4,
+            py: 1,
+            backgroundColor: "#1a73e8",
+            ":hover": { backgroundColor: "#135abf" },
+          }}
+        >
+          Save Changes
+        </Button>
+      </Box>
+    </Box>
+  </Box>
+)}
+
       {/* Page Header */}
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
         <Typography variant="h5" fontWeight="bold" sx={{ fontSize: "1.5rem", color: "#1a237e" }}>
@@ -97,13 +308,12 @@ const EmployeeManagementPage = () => {
 
         {/* Register Employee Button */}
         <Button
-          component={Link} 
-          href="/EmployeeManagementPage/RegEmployee" 
+          component={Link}
+          href="/EmployeeManagementPage/RegEmployee"
           variant="contained"
           startIcon={<Add />}
-          onClick={() => handleOpen()}
-            sx={{
-             background: "linear-gradient(to right, #007bff, #00c6ff)",
+          sx={{
+            background: "linear-gradient(to right, #007bff, #00c6ff)",
             color: "white",
             px: 4,
             py: 1.2,
@@ -112,13 +322,11 @@ const EmployeeManagementPage = () => {
             textTransform: "capitalize",
             fontWeight: "bold",
             boxShadow: "0px 5px 15px rgba(0, 123, 255, 0.3)",
-            ":hover": {
-            background: "linear-gradient(to right, #0056b3, #0099cc)",
-               },
-              }}
-             >
-           Add Employee
-         </Button>
+            ":hover": { background: "linear-gradient(to right, #0056b3, #0099cc)" },
+          }}
+        >
+          Add Employee
+        </Button>
        </Box>
 
       {/* Filter Section */}
@@ -228,74 +436,99 @@ const EmployeeManagementPage = () => {
         <Table>
           <TableHead sx={{ backgroundColor: "#f4f6f8" }}>
             <TableRow sx={{ backgroundColor: '#1a237e' }}>
-              <TableCell sx={{ fontWeight: "bold",color:"white" }}>First Name</TableCell>
-              <TableCell sx={{ fontWeight: "bold" ,color:"white"}}>Last Name</TableCell>
-              <TableCell sx={{ fontWeight: "bold" ,color:"white"}}>Mobile</TableCell>
-              <TableCell sx={{ fontWeight: "bold" ,color:"white"}}>Email</TableCell>
-              <TableCell sx={{ fontWeight: "bold" ,color:"white"}}>Status</TableCell>
-              <TableCell sx={{ fontWeight: "bold" ,color:"white"}}>Actions</TableCell>
+              <TableCell sx={{ fontWeight: "bold", color: "white"}}>First Name</TableCell>
+              <TableCell sx={{ fontWeight: "bold", color: "white"}}>Last Name</TableCell>
+              <TableCell sx={{ fontWeight: "bold", color: "white"}}>Mobile</TableCell>
+              <TableCell sx={{ fontWeight: "bold", color: "white"}}>Email</TableCell>
+              <TableCell sx={{ fontWeight: "bold", color: "white" }}>Status</TableCell>
+              <TableCell sx={{ fontWeight: "bold", color: "white"}}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedEmployees.map((employee) => (
-              <TableRow key={employee.id}>
-                <TableCell>{employee.firstName}</TableCell>
-                <TableCell>{employee.lastName}</TableCell>
-                <TableCell>{employee.mobile}</TableCell>
-                <TableCell sx={{ color: employee.email === "Not Provided" ? "#9E9E9E" : "inherit" }}>
-                  {employee.email}
-                </TableCell>
-                <TableCell>
-                  <Typography
-                    sx={{
-                      display: "inline-block",
-                      padding: "6px 14px",
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                      borderRadius: "16px",
-                      textAlign: "center",
-                      backgroundColor: employee.status === "Approved" ? "rgba(102, 187, 106, 0.15)" : "rgba(255, 171, 64, 0.2)",
-                      color: employee.status === "Approved" ? "#4CAF50" : "#FF9800",
-                    }}
-                  >
-                    {employee.status}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-                    <Tooltip title="Edit">
-                      <IconButton color="primary">
-                        <Edit />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Archive">
-                      <IconButton color="warning">
-                        <Archive />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="View">
-                      <IconButton color="default">
-                        <Visibility />
-                      </IconButton>
-                    </Tooltip>
-                  </Box>
-                </TableCell>
-              </TableRow>
-            ))}
-            {paginatedEmployees.length === 0 && (
+            {loading ? (
               <TableRow>
-                <TableCell colSpan={6} sx={{ textAlign: 'center', py: 4 }}>
-                  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', p: 3 }}>
-                    <Image
-                      src="/noimage.png"
-                      alt="No data found"
-                      width={300}
-                      height={300}
-                      style={{ marginBottom: '1rem' }}
-                    />
-                  </Box>
+                <TableCell colSpan={6} sx={{ textAlign: "center", py: 4 }}>
+                  <CircularProgress />
                 </TableCell>
               </TableRow>
+            ) : paginatedEmployees.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={6} sx={{ textAlign: "center", py: 4 }}>
+                  No employees found
+                </TableCell>
+              </TableRow>
+            ) : (
+              paginatedEmployees.map((employee) => (
+                <TableRow key={employee.id}>
+                  <TableCell >{employee.first_name}</TableCell>
+                  <TableCell >{employee.last_name}</TableCell>
+                  <TableCell >{employee.mobile}</TableCell>
+                  <TableCell >{employee.email}</TableCell>
+                  <TableCell >
+        <Typography
+          sx={{
+            display: "inline-block",
+            padding: "6px 14px",
+            fontSize: "12px",
+            fontWeight: "bold",
+            borderRadius: "16px",
+            textAlign: "center",
+            backgroundColor:
+              employee.status === "Active"
+                ? "rgba(102, 187, 106, 0.15)"
+                : "rgba(255, 171, 64, 0.2)",
+            color: employee.status === "Active" ? "#4CAF50" : "#FF9800",
+          }}
+        >
+          {employee.status}
+        </Typography>
+      </TableCell>
+      <TableCell >
+        <Box sx={{ display: "flex", gap: 1 }}>
+        <Tooltip title="Edit">
+  <IconButton 
+    color="primary" 
+    onClick={() => {
+      setEditForm(employee); // ✅ Pre-fill form with employee data
+      setOpenEditModal(true); // ✅ Open the modal
+    }}
+  >
+    <Edit />
+  </IconButton>
+</Tooltip>
+
+
+
+<Tooltip title="Archive">
+    <IconButton
+        color="warning"
+        onClick={() => handleArchiveEmployee(employee.personal_id)}
+    >
+        <Archive />
+    </IconButton>
+</Tooltip>
+
+<IconButton
+  color="default"
+  onClick={() => {
+    if (!employee.personal_id) {
+      console.error("❌ Personal ID is missing");
+      return;
+    }
+    router.push(`/EmployeeProfile/${employee.personal_id}`);
+  }}
+>
+  <Visibility />
+</IconButton>
+
+
+
+        </Box>
+      </TableCell>
+
+
+                </TableRow>
+              ))
             )}
           </TableBody>
         </Table>

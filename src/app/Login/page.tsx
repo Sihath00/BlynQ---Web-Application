@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../../firebase/firebaseConfig";
+ 
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -36,38 +38,49 @@ const Login = () => {
     return isValid;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+ // ✅ Ensure correct Firebase import
+
+const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
-      setLoading(true);
-      try {
-        const response = await fetch("https://your-backend-url.com/api/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email, password }),
-        });
+        setLoading(true);
 
-        const data = await response.json();
-        setLoading(false);
+        try {
+            // ✅ Authenticate with Firebase
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const firebaseUser = userCredential.user;
 
-        if (response.ok) {
-          // Handle successful login
-          console.log("Login successful:", data);
-          router.push("/Home");
-        } else {
-          // Handle errors from the backend
-          console.error("Login failed:", data);
-          setErrors({ email: "", password: data.message || "Login failed" });
+            // ✅ Get Firebase ID Token
+            const token = await firebaseUser.getIdToken();
+            console.log("🔥 Firebase Token:", token);
+
+            // ✅ Send Login Request with Token in Headers
+            const response = await fetch("http://localhost:5001/api/auth/loginWeb", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`, // ✅ Send Firebase token
+                    "Content-Type": "application/json"
+                }
+            });
+
+            const data = await response.json();
+            setLoading(false);
+
+            if (response.ok) {
+                localStorage.setItem("token", token);
+                console.log("✅ Token stored:", token);
+                router.push("/Dashboard");
+            } else {
+                console.error("❌ Login Error:", data);
+                setErrors({ email: "", password: data.message || "Login failed" });
+            }
+        } catch (error) {
+            console.error("❌ Request Error:", error);
+            setLoading(false);
+            setErrors({ email: "", password: "An error occurred. Please try again." });
         }
-      } catch (error) {
-        setLoading(false);
-        console.error("An error occurred:", error);
-        setErrors({ email: "", password: "An error occurred. Please try again." });
-      }
     }
-  };
+};
 
   return (
     <div className="relative flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-500 via-blue-700 to-indigo-800 overflow-hidden">

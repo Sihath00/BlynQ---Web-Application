@@ -67,16 +67,35 @@ const Register = () => {
         e.preventDefault();
         if (validateForm()) {
             setLoading(true);
+    
+            // Convert the phone number to E.164 format
+            let formattedPhoneNumber = phoneNumber.trim();
+            if (!formattedPhoneNumber.startsWith("+94")) {
+                // If the number starts with "0", replace it with "+94"
+                if (formattedPhoneNumber.startsWith("0")) {
+                    formattedPhoneNumber = "+94" + formattedPhoneNumber.substring(1);
+                } else {
+                    // If it's missing the country code, add it
+                    formattedPhoneNumber = "+94" + formattedPhoneNumber;
+                }
+            }
+    
             try {
-                const response = await fetch("https://your-backend-url.com/api/register", {
+                const response = await fetch("http://localhost:5001/api/auth/registerWebUser", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ username, phoneNumber, email, password })
+                    body: JSON.stringify({
+                        name: username,    // ✅ Use "name" instead of "username"
+                        phone: formattedPhoneNumber, // ✅ Send formatted number
+                        email,
+                        password
+                    })
                 });
+    
                 const data = await response.json();
                 setLoading(false);
                 if (response.ok) {
-                    router.push("/Home");
+                    router.push("/Login");
                 } else {
                     setErrors({
                         username: "",
@@ -98,7 +117,8 @@ const Register = () => {
             }
         }
     };
-
+    
+     
     return (
         <div className="relative flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-500 via-blue-700 to-indigo-800 overflow-hidden">
             {/* Decorative Blurred Background Elements */}
