@@ -42,7 +42,8 @@ import {
 
 
 const EmployeeProfile = () => {
-  const router = useRouter(); // ✅ Correct way
+  const params = useParams();
+  const personal_id = Array.isArray(params?.personal_id) ? params.personal_id[0] : params.personal_id || "";  
   const [selectedTab, setSelectedTab] = useState(0);
   const [avatar, setAvatar] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -52,29 +53,33 @@ const EmployeeProfile = () => {
   const [activityFilter, setActivityFilter] = useState("All");
   const [employee, setEmployee] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
-  const { personal_id } = useParams();
+  
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setSelectedTab(newValue);
   };
-
   useEffect(() => {
-    if (!personal_id) return;
-    const fetchEmployee = async () => {
-      try {
-        const data = await getEmployeeByPersonalID(personal_id as string);
-        setEmployee(data);
-      } catch (error) {
-        console.error("Error loading employee:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchEmployee();
-  }, [personal_id]);
+    console.log("🔍 Checking personal_id before API call:", personal_id); // Debug Log
 
-  if (loading) return <p>Loading...</p>;
-  if (!employee) return <p>Employee not found.</p>;
+    if (!personal_id || personal_id === "undefined") {
+        console.error("❌ Error: Personal ID is missing or invalid");
+        return;
+    }
+
+    const fetchEmployee = async () => {
+        try {
+            console.log("🔍 Fetching employee with ID:", personal_id);
+            const data = await getEmployeeByPersonalID(personal_id);
+            setEmployee(data);
+        } catch (error) {
+            console.error("❌ Error fetching employee:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    fetchEmployee();
+}, [personal_id]);
 
   const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {

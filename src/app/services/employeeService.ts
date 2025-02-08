@@ -44,26 +44,29 @@ export const addEmployee = async (employeeData: any) => {
     return { error: "Failed to add employee" };
   }
 };
-export const updateEmployeeByPersonalID = async (personalID: string, updatedData: any) => {
-    try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/employees/${personalID}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(updatedData),
-        });
+export const updateEmployee = async (personalID: string, data: any) => {
+  console.log("🔍 updateEmployee called with personalID:", personalID); // Debug Log
 
-        if (!response.ok) {
-            throw new Error("Failed to update employee");
-        }
+  if (!personalID || personalID === "undefined") {
+    console.error("❌ Error: Cannot update employee - Invalid ID");
+    return null;
+  }
 
-        return await response.json();
-    } catch (error) {
-        console.error("Error updating employee:", error);
-        throw error;
-    }
+  try {
+    const response = await fetch(`${BACKEND_URL}/employees/${personalID}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) throw new Error(`Failed to update employee: ${response.statusText}`);
+
+    return await response.json();
+  } catch (error) {
+    console.error("❌ Error updating employee:", error);
+  }
 };
+
 
 export const archiveEmployeeByPersonalID = async (personalID: string) => {
     try {
@@ -86,16 +89,27 @@ export const archiveEmployeeByPersonalID = async (personalID: string) => {
 };
 
 export const getEmployeeByPersonalID = async (personalID: string) => {
-    try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/employees/${personalID}`);
+  if (!personalID || personalID === "undefined") {
+      console.error("❌ Error: Invalid personal ID in request");
+      return null;
+  }
 
-        if (!response.ok) {
-            throw new Error("Failed to fetch employee details");
-        }
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
 
-        return await response.json();
-    } catch (error) {
-        console.error("❌ Error fetching employee:", error);
-        throw error;
-    }
+  try {
+      console.log("🔍 Fetching Employee with ID:", personalID);
+
+      const response = await fetch(`${API_URL}/employees/${personalID}`);
+
+      if (!response.ok) {
+          throw new Error(`Failed to fetch employee: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log("✅ Employee Data:", data);
+      return data;
+  } catch (error) {
+      console.error("❌ Error fetching employee:", error);
+      throw error;
+  }
 };

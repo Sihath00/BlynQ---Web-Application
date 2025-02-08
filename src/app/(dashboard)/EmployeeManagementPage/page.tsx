@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { auth } from "../../../../firebase/firebaseConfig"; 
 import { useState, useEffect } from "react";
-import { archiveEmployeeByPersonalID, getActiveEmployees, updateEmployeeByPersonalID } from "../../services/employeeService";
+import { archiveEmployeeByPersonalID, getActiveEmployees, updateEmployee } from "../../services/employeeService";
 import { onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
 
@@ -54,8 +54,13 @@ const [openEditModal, setOpenEditModal] = useState(false);
 const [editForm, setEditForm] = useState<any | null>(null);
 
 const handleViewEmployee = (id: string) => {
-  router.push(`/EmployeeManagementPage/EmployeeProfile/${id}`); // ✅ Fix Navigation Path
+  if (!id || id === "undefined") {
+    console.error("❌ Navigation Error: Invalid employee ID");
+    return;
+  }
+  router.push(`/EmployeeProfile/${id}`);
 };
+
 
 const fetchEmployees = async (uid: string) => {
   try {
@@ -68,17 +73,16 @@ const fetchEmployees = async (uid: string) => {
   }
 };
 
-
-
-  
 // Fetch employees for the logged-in service center
 
 useEffect(() => {
   const unsubscribe = onAuthStateChanged(auth, async (user) => {
-    if (user) {
+    if (user?.uid) {
+      console.log("🔍 Fetching employees for UID:", user.uid);
       await fetchEmployees(user.uid);
     } else {
       console.error("❌ User not authenticated");
+      setLoading(false);
     }
   });
 
@@ -87,7 +91,7 @@ useEffect(() => {
 
 
 // ** Filter employees based on search query **
-const filteredEmployees = employees.filter((employee) => {
+const filteredEmployees = (employees || []).filter((employee) => {
   const query = searchQuery.toLowerCase();
   if (searchBy === "All") {
     return (
@@ -119,13 +123,14 @@ const paginatedEmployees = filteredEmployees.slice(
   currentPage * rowsPerPage + rowsPerPage
 );
 const handleUpdateEmployee = async () => {
-  if (!editForm?.personal_id) {
-    alert("❌ Employee Personal ID is missing");
+  if (!editForm?.personal_id || editForm.personal_id === "undefined") {
+    alert("❌ Employee Personal ID is invalid");
     return;
   }
 
   try {
-    await updateEmployeeByPersonalID(editForm.personal_id, editForm);
+    console.log("🔄 Updating Employee with ID:", editForm.personal_id);
+    await updateEmployee(editForm.personal_id, editForm);
     alert("✅ Employee updated successfully!");
     setOpenEditModal(false);
     fetchEmployees(auth.currentUser?.uid || ""); // Refresh the employee list
@@ -134,22 +139,23 @@ const handleUpdateEmployee = async () => {
   }
 };
 
+
 const handleArchiveEmployee = async (personalID: string) => {
-  if (!personalID) {
-      alert("❌ Personal ID is missing");
+  if (!personalID || personalID === "undefined") {
+      alert("❌ Personal ID is invalid");
       return;
   }
 
   try {
+      console.log("📌 Archiving Employee with ID:", personalID);
       await archiveEmployeeByPersonalID(personalID);
       alert("✅ Employee archived successfully!");
-
-      // ✅ Refresh the employee list to remove from UI
       fetchEmployees(auth.currentUser?.uid || "");
   } catch (error) {
       alert("❌ Failed to archive employee");
   }
 };
+
 
 
   return (
