@@ -1,4 +1,4 @@
-const BACKEND_URL = "http://localhost:5001/api"; // ✅ Update with your backend URL
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5001/api";
 
 // ✅ Fetch Employees by Service Center UID
 export const getActiveEmployees = async (uid: string) => {
@@ -69,23 +69,21 @@ export const updateEmployee = async (personalID: string, data: any) => {
 
 
 export const archiveEmployeeByPersonalID = async (personalID: string) => {
-    try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/employees/archive/${personalID}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
+  if (!personalID) return console.error("❌ Invalid employee ID");
 
-        if (!response.ok) {
-            throw new Error("Failed to archive employee");
-        }
+  try {
+    const response = await fetch(`${BACKEND_URL}/employees/archive/${personalID}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+    });
 
-        return await response.json();
-    } catch (error) {
-        console.error("❌ Error archiving employee:", error);
-        throw error;
-    }
+    if (!response.ok) throw new Error("Failed to archive employee");
+
+    return await response.json();
+  } catch (error) {
+    console.error("❌ Error archiving employee:", error);
+    throw error;
+  }
 };
 
 export const getEmployeeByPersonalID = async (personalID: string) => {
