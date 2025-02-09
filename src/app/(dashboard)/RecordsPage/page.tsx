@@ -273,10 +273,13 @@ const RecordsPage: React.FC = () => {
                   <img
                     src="/noimage.png"
                     alt="No data found"
-                    width={300}
-                    height={300}
+                    width={200}
+                    height={200}
                     style={{ marginBottom: '1rem' }}
                   />
+                  <Typography variant="h6" color="text.secondary">
+                      No records found
+                    </Typography>
                   </Box>
                 </TableCell>
                 </TableRow>

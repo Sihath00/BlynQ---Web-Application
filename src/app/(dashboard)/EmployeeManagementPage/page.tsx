@@ -460,7 +460,18 @@ const handleArchiveEmployee = async (personalID: string) => {
             ) : paginatedEmployees.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={6} sx={{ textAlign: "center", py: 4 }}>
-                  No employees found
+                  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+                    <Image
+                      src="/noimage.png"
+                      alt="No employees found"
+                      width={200}
+                      height={200}
+                      priority
+                    />
+                    <Typography variant="h6" color="text.secondary">
+                      No employees found
+                    </Typography>
+                  </Box>
                 </TableCell>
               </TableRow>
             ) : (
@@ -542,47 +553,47 @@ const handleArchiveEmployee = async (personalID: string) => {
           
         {/* Pagination */}
         <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: 3 }}>
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <Typography variant="body2">Rows per page:</Typography>
-            <Select
-              value={rowsPerPage}
-              onChange={(e) => setRowsPerPage(Number(e.target.value))}
-              sx={{
-                ml: 1,
-                backgroundColor: "#f9f9f9",
-                border: "none",
-                outline: "none",
-                "& .MuiOutlinedInput-notchedOutline": { border: "none" },
-              }}
-            >
-              <MenuItem value={5}>5</MenuItem>
-              <MenuItem value={10}>10</MenuItem>
-              <MenuItem value={25}>25</MenuItem>
-            </Select>
-          </Box>
-          <Typography variant="body2">
-            {currentPage * rowsPerPage + 1}–
-            {Math.min((currentPage + 1) * rowsPerPage, filteredEmployees.length)} of {filteredEmployees.length}
-          </Typography>
-          <Box sx={{ display: "flex", gap: 1 }}>
-            <Button
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))}
-              disabled={currentPage === 0}
-            >
-              Previous
-            </Button>
-            <Button
-              onClick={() =>
-                setCurrentPage((prev) =>
-                  Math.min(prev + 1, Math.ceil(filteredEmployees.length / rowsPerPage) - 1)
-                )
-              }
-              disabled={(currentPage + 1) * rowsPerPage >= filteredEmployees.length}
-            >
-              Next
-            </Button>
-          </Box>
-        </Box>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <Typography variant="body2">Rows per page:</Typography>
+                  <Select
+                              value={rowsPerPage}
+                              onChange={(e) => setRowsPerPage(Number(e.target.value))}
+                              sx={{
+                                ml: 1,
+                                border: "none",
+                                outline: "none",
+                                "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+                              }}
+                            
+                            >
+                              <MenuItem value={5}>5</MenuItem>
+                              <MenuItem value={10}>10</MenuItem>
+                              <MenuItem value={25}>25</MenuItem>
+                            </Select>
+                </Box>
+                <Typography variant="body2">
+                  {currentPage * rowsPerPage + 1}–
+                  {Math.min((currentPage + 1) * rowsPerPage, employees.length)} of {employees.length}
+                </Typography>
+                <Box sx={{ display: "flex", gap: 1 }}>
+                  <Button
+                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))}
+                    disabled={currentPage === 0}
+                  >
+                    Previous
+                  </Button>
+                  <Button
+                    onClick={() =>
+                      setCurrentPage((prev) =>
+                        Math.min(prev + 1, Math.ceil(employees.length / rowsPerPage) - 1)
+                      )
+                    }
+                    disabled={(currentPage + 1) * rowsPerPage >= employees.length}
+                  >
+                    Next
+                  </Button>
+                </Box>
+              </Box>
        </Box>
    );  
 };
