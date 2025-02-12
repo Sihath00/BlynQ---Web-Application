@@ -253,7 +253,7 @@ const ServicePage = () => {
     <img
       src="/noservice.png" 
       alt="No Services Available"
-      style={{ maxWidth: "800px", width: "400%", margin: "0 auto" }}
+      style={{ maxWidth: "600px", width: "500%", margin: "0 auto" }}
     />
     <Typography variant="h6" sx={{ mt: 2, color: "#555" }}>
       No services available. Add a new service to get started.

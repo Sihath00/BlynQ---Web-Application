@@ -45,7 +45,7 @@ const SplashScreen = () => {
           BlynQ
         </h1>
         <p className="text-lg text-white animate-fade-in-slow">
-          Sync Your Ride Simplfy Your Drive
+          Your Smart App Experience
         </p>
 
         {/* Loader Animation */}

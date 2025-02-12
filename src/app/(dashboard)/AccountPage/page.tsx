@@ -1,7 +1,8 @@
 "use client";
-
+import { onAuthStateChanged } from "firebase/auth";
+import axios from "axios";
 import React, { useState, useEffect } from "react";
-import Image from "next/image"; // Add this import
+import Image from "next/image"; 
 import {
   Box,
   Typography,
@@ -24,6 +25,8 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Tooltip,
+  CircularProgress,
 } from "@mui/material";
 import {
   Search as SearchIcon,
@@ -34,7 +37,8 @@ import {
   FilterList as FilterListIcon,
   Delete as DeleteIcon,
 } from "@mui/icons-material";
-import { Tooltip } from "@mui/material";
+import { auth } from "../../../../firebase/firebaseConfig";
+
 
 const UserList = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -43,40 +47,37 @@ const UserList = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(0);
   const [openResetModal, setOpenResetModal] = useState(false);
-  const [] = useState("");
-  const [] = useState("");
-  const [] = useState("");
   const [selectedUser, setSelectedUser] = useState("");
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [employees, setEmployees] = useState<Employee[]>([]); 
+  interface Employee {
+    id: string;
+    name: string;
+    email: string;
+    role: string;
+    status: 'Active' | 'Inactive';
+  }
 
-  const users = [
-    { name: "Sihath Senarath", email: "Not Provided", username: "0000000000", status: "Enabled" },
-    { name: "Amantha Perera", email: "Not Provided", username: "0000000000", status: "Enabled" },
-    { name: "Gaindu Amarasinga", email: "Not Provided", username: "0000000001", status: "Enabled" },
-    { name: "Anura Wijethunga", email: "anura@gmail.com", username: "00445328791233", status: "Enabled" },
-    { name: "Mahinda Rajapaksha", email: "Not Provided", username: "01206305798", status: "Disabled" },
-    { name: "Sithum Kalhara", email: "Not Provided", username: "01206305798", status: "Disabled" },
-  ];
-
-  // Filter logic
-  const filteredUsers = users.filter((user) => {
-    if (statusFilter !== "All" && user.status !== statusFilter) return false;
-    if (searchBy === "All") return user.name.toLowerCase().includes(searchQuery.toLowerCase()) || user.username.includes(searchQuery) || user.email.toLowerCase().includes(searchQuery.toLowerCase());
-    if (searchBy === "Enabled") return user.status === "Enabled" && (user.name.toLowerCase().includes(searchQuery.toLowerCase()) || user.username.includes(searchQuery) || user.email.toLowerCase().includes(searchQuery.toLowerCase()));
-    if (searchBy === "Disabled") return user.status === "Disabled" && (user.name.toLowerCase().includes(searchQuery.toLowerCase()) || user.username.includes(searchQuery) || user.email.toLowerCase().includes(searchQuery.toLowerCase()));
-    if (searchBy === "First Name") return user.name.toLowerCase().includes(searchQuery.toLowerCase());
-    if (searchBy === "Username") return user.username.includes(searchQuery);
-    if (searchBy === "Email") return user.email.toLowerCase().includes(searchQuery.toLowerCase());
-    return false;
-  });
-
-  const paginatedUsers = filteredUsers.slice(
-    currentPage * rowsPerPage,
-    currentPage * rowsPerPage + rowsPerPage
-  );
+   // Fetch employees based on UID
+   useEffect(() => {
+    const fetchEmployees = async (uid: string) => {
+      try {
+          console.log("🔹 Fetching employees for UID:", uid);
+  
+          const response = await axios.get(`http://localhost:5001/api/employees/service-center/${uid}`);
+          console.log("✅ Employee Data:", response.data);
+  
+          setEmployees(response.data);
+          setLoading(false);
+      } catch (error) {
+          console.error("❌ Error fetching employees:", error);
+          setLoading(false);
+      }
+  };
 
   // Open Reset Password Modal
   const handleOpenResetModal = (username: string) => {
@@ -90,11 +91,72 @@ const UserList = () => {
     setPassword("");
     setConfirmPassword("");
   };
+  // Listen for Auth Changes
+  const unsubscribe = onAuthStateChanged(auth, (user) => {
+    if (user) {
+      console.log("✅ User authenticated:", user.uid);
+      fetchEmployees(user.uid);
+    } else {
+      console.error("❌ User not authenticated");
+    }
+  });
 
-  // Reset currentPage to 0 when filters or search query change
-  useEffect(() => {
-    setCurrentPage(0);
-  }, [searchQuery, searchBy, statusFilter]);
+  return () => unsubscribe();
+}, []);
+
+   // Filtering employees based on search and status
+   const filteredEmployees = employees.filter((user) => {
+    if (statusFilter !== "All" && user.status.toLowerCase() !== statusFilter.toLowerCase()) return false;
+    if (searchBy === "All")
+      return (
+        (user.name?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
+        (user.email?.toLowerCase() || '').includes(searchQuery.toLowerCase())
+      );
+    if (searchBy === "First Name") return (user.name?.toLowerCase() || '').includes(searchQuery.toLowerCase());
+    if (searchBy === "Email") return (user.email?.toLowerCase() || '').includes(searchQuery.toLowerCase());
+    return false;
+  });
+
+
+  // Paginate employees
+  const paginatedEmployees = filteredEmployees.slice(
+    currentPage * rowsPerPage,
+    currentPage * rowsPerPage + rowsPerPage
+  );
+
+  // ✅ Toggle Employee Status
+  const toggleEmployeeStatus = async (id: string, currentStatus: "Active" | "Inactive") => {
+    try {
+        console.log("🔹 Updating status for employee ID:", id);
+
+        const newStatus = currentStatus === "Active" ? "Inactive" : "Active";
+
+        await axios.put(`http://localhost:5001/api/employees/update-status/${id}`, { status: newStatus });
+
+        // ✅ Update UI
+        setEmployees((prevEmployees) =>
+            prevEmployees.map((emp) =>
+                emp.id === id ? { ...emp, status: newStatus } : emp
+            )
+        );
+    } catch (error) {
+        console.error("❌ Error updating status:", error);
+    }
+};
+
+
+  // Open Reset Password Modal
+  const handleOpenResetModal = (username: string) => {
+    setSelectedUser(username);
+    setOpenResetModal(true);
+  };
+
+  // Close Reset Password Modal
+  const handleCloseResetModal = () => {
+    setOpenResetModal(false);
+    setPassword("");
+    setConfirmPassword("");
+  };
 
   return (
     <Box sx={{ backgroundColor: "#f9f9f9", minHeight: "100vh", p: 4 }}>
@@ -105,26 +167,11 @@ const UserList = () => {
 
       {/* Filter Section */}
       <Paper sx={{ p: 3, mb: 3, borderRadius: 3, backgroundColor: "#ffffff", boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)" }}>
-        <Typography
-          variant="h6"
-          sx={{
-            fontWeight: "bold",
-            mb: 3,
-            color: "#1a237e",
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
+        <Typography variant="h6" sx={{ fontWeight: "bold", mb: 3, color: "#1a237e", display: "flex", alignItems: "center" }}>
           <FilterListIcon sx={{ mr: 1, fontSize: 24, color: "#007bff" }} /> Filter Users
         </Typography>
 
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            gap: 2,
-          }}
-        >
+        <Box sx={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 2 }}>
           {/* Search By */}
           <TextField
             select
@@ -133,17 +180,10 @@ const UserList = () => {
             onChange={(e) => setSearchBy(e.target.value)}
             variant="outlined"
             size="small"
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "10px",
-                background: "#f9f9f9",
-                height: "40px",
-              },
-            }}
+            sx={{ "& .MuiOutlinedInput-root": { borderRadius: "10px", background: "#f9f9f9", height: "40px" } }}
           >
             <MenuItem value="All">All</MenuItem>
             <MenuItem value="First Name">First Name</MenuItem>
-            <MenuItem value="Username">Username</MenuItem>
             <MenuItem value="Email">Email</MenuItem>
           </TextField>
 
@@ -155,17 +195,11 @@ const UserList = () => {
             onChange={(e) => setStatusFilter(e.target.value)}
             variant="outlined"
             size="small"
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "10px",
-                background: "#f9f9f9",
-                height: "40px",
-              },
-            }}
+            sx={{ "& .MuiOutlinedInput-root": { borderRadius: "10px", background: "#f9f9f9", height: "40px" } }}
           >
             <MenuItem value="All">All</MenuItem>
-            <MenuItem value="Enabled">Enabled</MenuItem>
-            <MenuItem value="Disabled">Disabled</MenuItem>
+            <MenuItem value="active">Active</MenuItem>
+            <MenuItem value="inactive">Inactive</MenuItem>
           </TextField>
 
           {/* Search Query */}
@@ -182,13 +216,7 @@ const UserList = () => {
                 </InputAdornment>
               ),
             }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "10px",
-                background: "#f9f9f9",
-                height: "40px",
-              },
-            }}
+            sx={{ "& .MuiOutlinedInput-root": { borderRadius: "10px", background: "#f9f9f9", height: "40px" } }}
           />
 
           {/* Clear Button */}
@@ -207,10 +235,7 @@ const UserList = () => {
               background: "linear-gradient(to right, #ff1744, #ff616f)",
               color: "white",
               height: "40px",
-              "&:hover": {
-                borderColor: "#d50000",
-                background: "linear-gradient(to right, #d50000, #ff616f)",
-              },
+              "&:hover": { borderColor: "#d50000", background: "linear-gradient(to right, #d50000, #ff616f)" },
             }}
           >
             Clear
@@ -218,46 +243,54 @@ const UserList = () => {
         </Box>
       </Paper>
 
+      {/* Table */}
       <TableContainer component={Paper} sx={{ borderRadius: 3 }}>
         <Table>
           <TableHead>
-            <TableRow sx={{ backgroundColor: '#1a237e' }}>
-              <TableCell sx={{ fontWeight: "bold", color: 'white' }}>Full Name</TableCell>
-              <TableCell sx={{ fontWeight: "bold", color: 'white' }}>Email</TableCell>
-              <TableCell sx={{ fontWeight: "bold", color: 'white' }}>Username</TableCell>
-              <TableCell sx={{ fontWeight: "bold", color: 'white' }}>Status</TableCell>
-              <TableCell sx={{ fontWeight: "bold", color: 'white' }}>Actions</TableCell>
+            <TableRow sx={{ backgroundColor: "#1a237e" }}>
+              <TableCell sx={{ fontWeight: "bold", color: "white", padding: "16px" }}>Full Name</TableCell>
+              <TableCell sx={{ fontWeight: "bold", color: "white", padding: "16px" }}>Email</TableCell>
+              <TableCell sx={{ fontWeight: "bold", color: "white", padding: "16px" }}>Role</TableCell>
+              <TableCell sx={{ fontWeight: "bold", color: "white", padding: "16px" }}>Status</TableCell>
+              <TableCell sx={{ fontWeight: "bold", color: "white", padding: "16px" }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedUsers.length === 0 ? (
+            {loading ? (
               <TableRow>
-                <TableCell colSpan={5} sx={{ textAlign: 'center', py: 4 }}>
-                  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', p: 3 }}>
-                    <Image
-                      src="/noimage.png"
-                      alt="No data found"
-                      width={300}
-                      height={300}
-                      style={{ marginBottom: '1rem' }}
-                    />
-                  </Box>
-                </TableCell>
+                  <TableCell colSpan={6} sx={{ textAlign: "center", py: 4 }}>
+                     <CircularProgress />
+                       </TableCell>          
               </TableRow>
-            ) : (
-              paginatedUsers.map((user, index) => (
-                <TableRow key={index}>
-                  <TableCell>{user.name}</TableCell>
-                  <TableCell sx={{ color: user.email === "Not Provided" ? "gray" : "inherit" }}>
-                    {user.email}
-                  </TableCell>
-                  <TableCell>{user.username}</TableCell>
+            ) : paginatedEmployees.length === 0 ? (
+                          <TableRow>
+                            <TableCell colSpan={6} sx={{ textAlign: "center", py: 4 }}>
+                              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+                                <Image
+                                  src="/noimage.png"
+                                  alt="No employees found"
+                                  width={200}
+                                  height={200}
+                                  priority
+                                />
+                                <Typography variant="h6" color="text.secondary">
+                                  No users found
+                                </Typography>
+                              </Box>
+                            </TableCell>
+                          </TableRow>
+                        ) : (
+              paginatedEmployees.map((employee) => (
+                <TableRow key={employee.id}>
+                  <TableCell>{employee.name}</TableCell>
+                  <TableCell>{employee.email}</TableCell>
+                  <TableCell>{employee.role}</TableCell>
                   <TableCell>
                     <Chip
-                      label={user.status}
+                      label={employee.status === "Active" ? "Active" : "Inactive"}
                       sx={{
-                        backgroundColor: user.status === "Disabled" ? "#FFE5B4" : "#E8F5E9",
-                        color: user.status === "Disabled" ? "#D84315" : "#2E7D32",
+                        backgroundColor: employee.status === "Active" ? "#E8F5E9" : "#FFE5B4",
+                        color: employee.status === "Active" ? "#2E7D32" : "#D84315",
                         fontWeight: "bold",
                         borderRadius: "16px",
                         px: 2,
@@ -266,11 +299,14 @@ const UserList = () => {
                     />
                   </TableCell>
                   <TableCell>
-                    <Tooltip title={user.status === "Enabled" ? "Disable" : "Enable"} arrow>
-                      <Switch defaultChecked={user.status === "Enabled"} />
+                    <Tooltip title="Toggle Active Status">
+                      <Switch
+                        checked={employee.status === "Active"}
+                        onChange={() => toggleEmployeeStatus(employee.id, employee.status)}
+                      />
                     </Tooltip>
                     <Tooltip title="Reset Password" arrow>
-                      <IconButton color="primary" onClick={() => handleOpenResetModal(user.username)}>
+                      <IconButton color="primary" onClick={() => handleOpenResetModal(employee.email)}>
                         <LockResetIcon />
                       </IconButton>
                     </Tooltip>
@@ -281,50 +317,6 @@ const UserList = () => {
           </TableBody>
         </Table>
       </TableContainer>
-
-      {/* Pagination */}
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: 3 }}>
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Typography variant="body2">Rows per page:</Typography>
-          <Select
-            value={rowsPerPage}
-            onChange={(e) => setRowsPerPage(Number(e.target.value))}
-            sx={{
-              ml: 1,
-              backgroundColor: "#f9f9f9",
-              border: "none",
-              outline: "none",
-              "& .MuiOutlinedInput-notchedOutline": { border: "none" },
-            }}
-          >
-            <MenuItem value={5}>5</MenuItem>
-            <MenuItem value={10}>10</MenuItem>
-            <MenuItem value={25}>25</MenuItem>
-          </Select>
-        </Box>
-        <Typography variant="body2">
-          {currentPage * rowsPerPage + 1}–
-          {Math.min((currentPage + 1) * rowsPerPage, filteredUsers.length)} of {filteredUsers.length}
-        </Typography>
-        <Box sx={{ display: "flex", gap: 1 }}>
-          <Button
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))}
-            disabled={currentPage === 0}
-          >
-            Previous
-          </Button>
-          <Button
-            onClick={() =>
-              setCurrentPage((prev) =>
-                Math.min(prev + 1, Math.ceil(filteredUsers.length / rowsPerPage) - 1)
-              )
-            }
-            disabled={(currentPage + 1) * rowsPerPage >= filteredUsers.length}
-          >
-            Next
-          </Button>
-        </Box>
-      </Box>
 
       {/* Reset Password Modal */}
       <Dialog
@@ -482,6 +474,46 @@ const UserList = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+            {/* Pagination */}
+            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: 3 }}>
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <Typography variant="body2">Rows per page:</Typography>
+                <Select
+              value={rowsPerPage}
+              onChange={(e) => setRowsPerPage(Number(e.target.value))}
+              sx={{
+                ml: 1,
+                border: "none",
+                outline: "none",
+                "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+              }}
+                >
+              <MenuItem value={5}>5</MenuItem>
+              <MenuItem value={10}>10</MenuItem>
+              <MenuItem value={25}>25</MenuItem>
+                </Select>
+              </Box>
+              <Typography variant="body2">
+                {currentPage * rowsPerPage + 1}–
+                {Math.min((currentPage + 1) * rowsPerPage, filteredEmployees.length)} of {filteredEmployees.length}
+              </Typography>
+              <Box sx={{ display: "flex", gap: 1 }}>
+                <Button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))} disabled={currentPage === 0}>
+              Previous
+                </Button>
+                <Button
+              onClick={() =>
+                setCurrentPage((prev) =>
+                  Math.min(prev + 1, Math.ceil(filteredEmployees.length / rowsPerPage) - 1)
+                )
+              }
+              disabled={(currentPage + 1) * rowsPerPage >= filteredEmployees.length}
+                >
+              Next
+                </Button>
+              </Box>
+            </Box>
     </Box>
   );
 };
