@@ -524,7 +524,7 @@ const handleArchiveEmployee = async (personalID: string) => {
         <Archive />
     </IconButton>
 </Tooltip>
-
+<Tooltip title="View">
 <IconButton
   color="default"
   onClick={() => {
@@ -537,7 +537,7 @@ const handleArchiveEmployee = async (personalID: string) => {
 >
   <Visibility />
 </IconButton>
-
+</Tooltip>
 
 
         </Box>
