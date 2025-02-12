@@ -1,6 +1,8 @@
 "use client";
+import { useState, useEffect } from "react";
+import { useParams, useRouter  } from "next/navigation"; // ✅ Fixed import
+import { getEmployeeByPersonalID } from "../../../services/employeeService";
 
-import React, { useState } from "react";
 import {
   Tabs,
   Tab,
@@ -39,8 +41,9 @@ import {
 } from "@mui/icons-material";
 
 
-
 const EmployeeProfile = () => {
+  const params = useParams();
+  const personal_id = Array.isArray(params?.personal_id) ? params.personal_id[0] : params.personal_id || "";  
   const [selectedTab, setSelectedTab] = useState(0);
   const [avatar, setAvatar] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -48,12 +51,35 @@ const EmployeeProfile = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [dateFilter, setDateFilter] = useState({ from: "", to: "" });
   const [activityFilter, setActivityFilter] = useState("All");
+  const [employee, setEmployee] = useState<any | null>(null);
+  const [loading, setLoading] = useState(true);
+  
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setSelectedTab(newValue);
   };
+  useEffect(() => {
+    console.log("🔍 Checking personal_id before API call:", personal_id); // Debug Log
 
-  
+    if (!personal_id || personal_id === "undefined") {
+        console.error("❌ Error: Personal ID is missing or invalid");
+        return;
+    }
+
+    const fetchEmployee = async () => {
+        try {
+            console.log("🔍 Fetching employee with ID:", personal_id);
+            const data = await getEmployeeByPersonalID(personal_id);
+            setEmployee(data);
+        } catch (error) {
+            console.error("❌ Error fetching employee:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    fetchEmployee();
+}, [personal_id]);
 
   const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -67,7 +93,6 @@ const EmployeeProfile = () => {
   };
 
   
-
   const workingHistory = [
     {
       date: "30/12/2024",
@@ -257,9 +282,9 @@ const EmployeeProfile = () => {
         </Box>
         <Box>
           <Typography variant="h6" fontWeight="bold" sx={{ fontSize: "1.2rem" }}>
-            Test Employee Three
+          {employee?.first_name} {employee?.last_name}
           </Typography>
-          <Typography sx={{ fontSize: "0.9rem" }}>ID: 1480</Typography>
+          <Typography sx={{ fontSize: "0.9rem" }}>{employee?.personal_id}</Typography>
         </Box>
       </Box>
 
@@ -309,7 +334,7 @@ const EmployeeProfile = () => {
                     <Typography fontWeight="bold" color="text.secondary">
                       Name
                     </Typography>
-                    <Typography>Test Employee Three</Typography>
+                    <Typography>{employee?.first_name} {employee?.last_name}</Typography>
                   </Box>
                 </Box>
               </Grid>
@@ -322,7 +347,7 @@ const EmployeeProfile = () => {
                     <Typography fontWeight="bold" color="text.secondary">
                       Email
                     </Typography>
-                    <Typography>testemployeethree@gmail.com</Typography>
+                    <Typography>{employee?.email}</Typography>
                   </Box>
                 </Box>
               </Grid>
@@ -335,7 +360,7 @@ const EmployeeProfile = () => {
                     <Typography fontWeight="bold" color="text.secondary">
                       Mobile
                     </Typography>
-                    <Typography>0777492400</Typography>
+                    <Typography>{employee?.mobile}</Typography>
                   </Box>
                 </Box>
               </Grid>
@@ -361,7 +386,7 @@ const EmployeeProfile = () => {
                     <Typography fontWeight="bold" color="text.secondary">
                       Personal ID
                     </Typography>
-                    <Typography>123456789V</Typography>
+                    <Typography>{employee?.personal_id}</Typography>
                   </Box>
                 </Box>
               </Grid>
@@ -374,7 +399,7 @@ const EmployeeProfile = () => {
                     <Typography fontWeight="bold" color="text.secondary">
                       Job Role
                     </Typography>
-                    <Typography>Service Technician</Typography>
+                    <Typography>{employee?.job_role || "Not Assigned"}</Typography>
                   </Box>
                 </Box>
               </Grid>
@@ -387,7 +412,7 @@ const EmployeeProfile = () => {
                     <Typography fontWeight="bold" color="text.secondary">
                       Location
                     </Typography>
-                    <Typography>Downtown Service Center</Typography>
+                    <Typography>{employee?.address1}, {employee?.city}</Typography>
                   </Box>
                 </Box>
               </Grid>
@@ -400,7 +425,7 @@ const EmployeeProfile = () => {
                     <Typography fontWeight="bold" color="text.secondary">
                       Status
                     </Typography>
-                    <Typography>Approved</Typography>
+                    <Typography>{employee?.status}</Typography>
                   </Box>
                 </Box>
               </Grid>

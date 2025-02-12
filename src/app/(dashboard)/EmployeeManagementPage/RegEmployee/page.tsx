@@ -1,6 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import { getAuth } from "firebase/auth";
+import { addEmployee } from "../../../services/employeeService";
+import { onAuthStateChanged } from "firebase/auth";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -16,49 +19,68 @@ import {
 } from "@mui/material";
 
 const AddEmployeePage = () => {
-  const [formData, setFormData] = useState({
+  type EmployeeFormData = {
+    firstName: string;
+    lastName: string;
+    dateOfBirth: string;
+    gender: string;
+    personalID: string;
+    role: string;
+    jobRole: string;
+    status: string;
+    address1: string;
+    address2: string;
+    city: string;
+    county: string;
+    postcode: string;
+    mobile: string;
+    email: string;
+  };
+  
+  // Use this type when defining formData state
+  const [formData, setFormData] = useState<EmployeeFormData>({
     firstName: "",
     lastName: "",
     dateOfBirth: "",
     gender: "",
-    civilState: "",
     personalID: "",
     role: "",
     jobRole: "",
     status: "",
-    initials: "",
-    remark: "",
     address1: "",
     address2: "",
     city: "",
     county: "",
     postcode: "",
     mobile: "",
-    telephone: "",
     email: "",
   });
-
-  const [errors, setErrors] = useState({
-    firstName: "",
-    lastName: "",
-    dateOfBirth: "",
-    gender: "",
-    personalID: "",
-    role: "",
-    status: "",
-    address1: "",
-    city: "",
-    postcode: "",
-    mobile: "",
-    email: "",
-  });
-
   
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }> | SelectChangeEvent<string>) => {
-      const { name, value } = e.target as HTMLInputElement | { name?: string; value: unknown };
+  const [uid, setUid] = useState<string | null>(null);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-    // Ensure only numeric values for mobile and personal ID
+  // ✅ Fetch Firebase Authenticated User UID
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUid(user.uid);
+      } else {
+        console.error("❌ User not authenticated");
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // ✅ Handle Input Change
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }> | SelectChangeEvent<string>
+  ) => {
+    const { name, value } = e.target as HTMLInputElement | { name?: string; value: unknown };
+
+    // ✅ Ensure only numeric values for `mobile` & `personalID`
     if (name === "mobile" || name === "personalID") {
       if (!/^\d*$/.test(value as string)) return; // Allow only numbers
       if (name === "mobile" && (value as string).length > 10) return; // Restrict mobile to 10 digits
@@ -68,92 +90,81 @@ const AddEmployeePage = () => {
     setErrors({ ...errors, [name as string]: "" }); // Clear errors on valid input
   };
 
-  const validateEmail = (email: string) => {
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return emailPattern.test(email);
-  };
-  
+  // ✅ Validate Email Format
+  const validateEmail = (email: string) => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
+
+  // ✅ Validate Form Before Submission
   const validateForm = () => {
     let valid = true;
-    let newErrors = { ...errors };
-  
-    if (!formData.firstName) {
-      newErrors.firstName = "First Name is required";
-      valid = false;
-    }
-    if (!formData.lastName) {
-      newErrors.lastName = "Last Name is required";
-      valid = false;
-    }
-    if (!formData.dateOfBirth) {
-      newErrors.dateOfBirth = "Date of Birth is required";
-      valid = false;
-    }
-    if (!formData.gender) {
-      newErrors.gender = "Gender is required";
-      valid = false;
-    }
-    if (!formData.personalID) {
-      newErrors.personalID = "Personal ID is required";
-      valid = false;
-    }
-    if (!formData.role) {
-      newErrors.role = "Role is required";
-      valid = false;
-    }
-    if (!formData.status) {
-      newErrors.status = "Status is required";
-      valid = false;
-    }
-    if (!formData.address1) {
-      newErrors.address1 = "Address Line 1 is required";
-      valid = false;
-    }
-    if (!formData.city) {
-      newErrors.city = "City is required";
-      valid = false;
-    }
-    if (!formData.postcode) {
-      newErrors.postcode = "Postcode is required";
-      valid = false;
-    }
-    if (!formData.mobile) {
-      newErrors.mobile = "Mobile Number is required";
-      valid = false;
-    } else if (formData.mobile.length !== 10) {
+    let newErrors: { [key: string]: string } = {};
+
+    ["firstName", "lastName", "dateOfBirth", "gender", "personalID", "role", "status", "address1", "city", "postcode", "mobile", "email"].forEach((field) => {
+      if (!formData[field as keyof EmployeeFormData]) {
+        newErrors[field as keyof EmployeeFormData] = `${field.replace(/([A-Z])/g, " $1")} is required`;
+        valid = false;
+      }
+    });
+    
+
+    if (formData.mobile.length !== 10) {
       newErrors.mobile = "Mobile Number must be exactly 10 digits";
       valid = false;
     }
-    if (!formData.email) {
-      newErrors.email = "Email Address is required";
-      valid = false;
-    } else if (!validateEmail(formData.email)) {
+
+    if (!validateEmail(formData.email)) {
       newErrors.email = "Invalid Email Address";
       valid = false;
     }
-  
+
     setErrors(newErrors);
     return valid;
   };
-  
-  function isNumeric(value: any) {
-    return !isNaN(value);
-  }
-  const handleMobileChange = (e: { target: { name: any; value: any; }; }) => {
-    const { name, value } = e.target;
-    if (isNumeric(value) && value.length <= 10) {
-      setFormData({ ...formData, [name]: value });
-      setErrors({ ...errors, [name]: "" });
-    }
-  };
-  
-  const handleSubmit = () => {
-    if (validateForm()) {
-      console.log("Submitted Form Data", formData);
-      window.location.href = "/EmployeeManagementPage"; // Redirect after successful validation
-    }
-  };
 
+  // ✅ Submit Form Data to Backend
+  const handleSubmit = async () => {
+    if (!validateForm()) return; // Stop submission if form is invalid
+  
+    const auth = getAuth();
+    const user = auth.currentUser;
+  
+    if (!user) {
+      alert("❌ User not authenticated");
+      return;
+    }
+  
+    const employeeData = {
+      uid: user.uid, // ✅ Correct UID
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      dateOfBirth: formData.dateOfBirth, // ✅ Keep it as "YYYY-MM-DD"
+      gender: formData.gender,
+      personalID: formData.personalID, // ✅ Matched to Postman
+      role: formData.role,
+      jobRole: formData.jobRole,
+      status: formData.status,
+      address1: formData.address1,
+      address2: formData.address2,
+      city: formData.city,
+      county: formData.county,
+      postcode: formData.postcode,
+      mobile: formData.mobile,
+      email: formData.email,
+    };
+  
+    try {
+      const response = await addEmployee(employeeData);
+      if (response.error) {
+        alert("❌ Failed to add employee: " + response.error);
+      } else {
+        alert("✅ Employee added successfully!");
+        window.location.href = "/EmployeeManagementPage"; // Redirect to Employee List
+      }
+    } catch (error) {
+      console.error("❌ Error adding employee:", error);
+      alert("❌ Unexpected error occurred");
+    }
+  };
+  
   return (
     <Box sx={{ p: 4, backgroundColor: "#f5f7fb", minHeight: "100vh" }}>
       {/* Page Header */}
@@ -220,11 +231,12 @@ const AddEmployeePage = () => {
               helperText={errors.dateOfBirth}
             />
           </Grid>
+          
           <Grid item xs={12} sm={6}>
             <FormControl fullWidth variant="outlined" error={!!errors.gender}>
               <InputLabel>Gender</InputLabel>
               <Select
-                name="Gender"
+                name="gender"
                 value={formData.gender}
                 onChange={handleInputChange}
                 label="Gender *"
@@ -422,5 +434,3 @@ const AddEmployeePage = () => {
 
 
 export default AddEmployeePage;
-
-

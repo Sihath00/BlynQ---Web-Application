@@ -141,7 +141,14 @@ const ServiceCenterProfile = () => {
   };
 
   return (
-    <Box sx={{ p: 3, backgroundColor: "#f4f6f8", minHeight: "100vh" }}>
+    <Box sx={{ 
+      p: 3, 
+      backgroundColor: "#f4f6f8", 
+      minHeight: "100vh",
+      width: "100%",
+      position: "relative",
+      overflow: "auto"
+    }}>
       {/* Page Header */}
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
         <Typography variant="h5" fontWeight="bold" sx={{ fontSize: "1.5rem", color: "#1a237e" }}>
@@ -158,7 +165,7 @@ const ServiceCenterProfile = () => {
       </Box>
 
       {/* Profile Form */}
-      <Paper sx={{ p: 3, borderRadius: 3 }}>
+      <Paper sx={{ p: 2, borderRadius: 3 }}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField label="Service Center Name" name="name" fullWidth variant="outlined" value={serviceCenter.name} onChange={handleChange} disabled={!editMode} error={!!errors.name} helperText={errors.name} />
