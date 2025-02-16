@@ -7,8 +7,12 @@ const Navbar = () => {
       <span className='hidden md:inline text-[25px] font-bold whitespace-nowrap'>Auto Miraj</span>
       {/* Search Bar*/}
       <div className='relative flex w-[350px] h-[45px]'>
-        <Image src={"/BottomBar/ServiceStationIcon.jpeg"} alt='' layout="fill"
-            objectFit="contain"></Image>
+      <Image 
+        src="/BottomBar/ServiceStationIcon.jpeg" 
+        alt='' 
+        fill 
+        style={{ objectFit: 'contain' }} 
+        />
       </div>
       {/*  Icons and User*/}
       <div className='flex justify-end w-full'>
