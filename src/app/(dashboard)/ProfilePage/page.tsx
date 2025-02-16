@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -13,12 +13,13 @@ import {
   CardActions,
   FormHelperText,
 } from "@mui/material";
-import Grid from "@mui/material/Grid"; // Grid is the new component
+import Grid from "@mui/material/Grid";
 import { Edit, Save, Delete } from "@mui/icons-material";
 import { useDropzone } from "react-dropzone";
+import { fetchServiceCenterProfile, saveServiceCenterProfile } from "../../services/serviceCenterProfileService";
 
 const ServiceCenterProfile = () => {
-  const [editMode, setEditMode] = useState(true);
+  const [editMode, setEditMode] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [serviceCenter, setServiceCenter] = useState({
     name: "",
@@ -26,88 +27,56 @@ const ServiceCenterProfile = () => {
     latitude: "",
     longitude: "",
     description: "",
-    serviceProvider1: "",
-    contact1: "",
-    serviceProvider2: "",
-    contact2: "",
-    images: [] as string[],
-    logo: "",
+    service_provider1_name: "",
+    service_provider1_contact: "",
+    service_provider2_name: "",
+    service_provider2_contact: "",
+    logo: null as File | string | null,
+    images: [] as (File | string)[],
+    
   });
 
-  // Handle input change
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        const data = await fetchServiceCenterProfile();
+        setServiceCenter({ ...data, images: data.images || [], logo: data.logo || null });
+      } catch (error) {
+        console.error("Failed to load profile:", error);
+      }
+    };
+    loadProfile();
+  }, []);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-  
-    // Restrict non-numeric characters and limit length to 10 for contact fields
-    if (name === "contact1" || name === "contact2") {
-      if (!/^\d*$/.test(value)) return; // Prevent non-numeric input
-      if (value.length > 10) return; // Prevent more than 10 digits
-    }
-  
+    if ((name === "contact1" || name === "contact2") && (!/^\d*$/.test(value) || value.length > 10)) return;
     setServiceCenter({ ...serviceCenter, [name]: value });
-    setErrors({ ...errors, [name]: "" }); // Clear errors on typing
+    setErrors({ ...errors, [name]: "" });
   };
 
-  // Image Upload Handling (Drag & Drop)
-  const onDrop = (acceptedFiles: File[], isLogo: boolean = false) => {
-    const validFiles = acceptedFiles.filter((file) =>
-      ["image/png", "image/jpeg", "image/jpg"].includes(file.type)
-    );
-
-    if (validFiles.length !== acceptedFiles.length) {
-      alert("Only .png, .jpg, .jpeg formats are allowed.");
-      return;
-    }
-
+  const onDrop = (acceptedFiles: File[], isLogo = false) => {
+    const validFiles = acceptedFiles.filter((file) => ["image/png", "image/jpeg", "image/jpg"].includes(file.type));
     if (!isLogo && serviceCenter.images.length + validFiles.length > 5) {
       setErrors({ ...errors, images: "You can upload up to 5 images only." });
       return;
     }
-
-    // Convert files to Data URLs
-    const fileReaders = validFiles.map((file) => {
-      return new Promise<string>((resolve) => {
-        const reader = new FileReader();
-        reader.onload = (e) => resolve(e.target?.result as string);
-        reader.readAsDataURL(file);
-      });
-    });
-
-    Promise.all(fileReaders).then((urls) => {
-      if (isLogo) {
-        setServiceCenter((prev) => ({
-          ...prev,
-          logo: urls[0],
-        }));
-      } else {
-        setServiceCenter((prev) => ({
-          ...prev,
-          images: [...prev.images, ...urls],
-        }));
-      }
-    });
+    if (isLogo) {
+      setServiceCenter((prev) => ({ ...prev, logo: validFiles[0] }));
+    } else {
+      setServiceCenter((prev) => ({ ...prev, images: [...prev.images, ...validFiles] }));
+    }
   };
 
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop: (files) => onDrop(files),
-    accept: { "image/jpeg": [], "image/png": [] },
-    maxFiles: 5,
-  });
+  const { getRootProps, getInputProps } = useDropzone({ onDrop: (files) => onDrop(files, false), accept: { "image/jpeg": [], "image/png": [] }, maxFiles: 5 });
+  const { getRootProps: getLogoRootProps, getInputProps: getLogoInputProps } = useDropzone({ onDrop: (files) => onDrop(files, true), accept: { "image/jpeg": [], "image/png": [] }, maxFiles: 1 });
 
-  const { getRootProps: getLogoRootProps, getInputProps: getLogoInputProps } = useDropzone({
-    onDrop: (files) => onDrop(files, true),
-    accept: { "image/jpeg": [], "image/png": [] },
-    maxFiles: 1,
-  });
-
-  // Handle deleting an image
   const handleDeleteImage = (index: number) => {
     const updatedImages = [...serviceCenter.images];
     updatedImages.splice(index, 1);
     setServiceCenter({ ...serviceCenter, images: updatedImages });
   };
 
-  // Form validation
   const validateForm = () => {
     let newErrors: { [key: string]: string } = {};
     if (!serviceCenter.name) newErrors.name = "Service Center Name is required.";
@@ -115,31 +84,44 @@ const ServiceCenterProfile = () => {
     if (!serviceCenter.latitude) newErrors.latitude = "Latitude is required.";
     if (!serviceCenter.longitude) newErrors.longitude = "Longitude is required.";
     if (!serviceCenter.description) newErrors.description = "Description is required.";
-    if (!serviceCenter.serviceProvider1) newErrors.serviceProvider1 = "First Service Provider Name is required.";
-    if (!serviceCenter.contact1) {
-      newErrors.contact1 = "First Contact Number is required.";
-    } else if (!/^\d{10}$/.test(serviceCenter.contact1)) {
-      newErrors.contact1 = "First Contact Number must be exactly 10 digits.";
-    }
-    
-    if (!serviceCenter.contact2) {
-      newErrors.contact2 = "Second Contact Number is required.";
-    } else if (!/^\d{10}$/.test(serviceCenter.contact2)) {
-      newErrors.contact2 = "Second Contact Number must be exactly 10 digits.";
-    }
-    if (serviceCenter.images.length === 0) newErrors.images = "At least one image is required.";
-    if (!serviceCenter.logo) newErrors.logo = "Logo is required.";
+    if (!serviceCenter.service_provider1_name) newErrors.service_provider1_name = "First Service Provider Name is required.";
+    if (!/^\d{10}$/.test(serviceCenter.service_provider1_contact)) newErrors.contact1 = "First Contact Number must be exactly 10 digits.";
+    if (!/^\d{10}$/.test(serviceCenter.service_provider2_contact)) newErrors.contact2 = "Second Contact Number must be exactly 10 digits.";
+    if (serviceCenter.images.length === 0 && !serviceCenter.logo) newErrors.images = "At least one image or logo is required.";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  // Handle saving the form
-  const handleSave = () => {
+  const handleSave = async () => {
     if (validateForm()) {
-      setEditMode(false);
+      try {
+        const formData = new FormData();
+        if (serviceCenter.logo && serviceCenter.logo instanceof File) formData.append("logo", serviceCenter.logo);
+        serviceCenter.images.forEach((file) => {
+          if (file instanceof File) formData.append("images", file);
+        });
+        formData.append("name", serviceCenter.name);
+        formData.append("location", serviceCenter.location);
+        formData.append("latitude", serviceCenter.latitude);
+        formData.append("longitude", serviceCenter.longitude);
+        formData.append("description", serviceCenter.description);
+        formData.append("service_provider1_name", serviceCenter.service_provider1_name);
+        formData.append("service_provider1_contact", serviceCenter.service_provider1_contact);
+        formData.append("service_provider2_name", serviceCenter.service_provider2_name);
+        formData.append("service_provider2_contact", serviceCenter.service_provider2_contact);
+
+        await saveServiceCenterProfile(formData);
+        setEditMode(false);
+        alert("Profile saved successfully!");
+      } catch (error) {
+        console.error("Failed to save profile:", error);
+      }
     }
   };
 
+  const getImageSrc = (image: File | string) => {
+    return image instanceof File ? URL.createObjectURL(image) : image;
+  };
   return (
     <Box sx={{ 
       p: 3, 
@@ -178,10 +160,10 @@ const ServiceCenterProfile = () => {
           <Grid item xs={12}><TextField label="Description" name="description" fullWidth multiline rows={3} variant="outlined" value={serviceCenter.description} onChange={handleChange} disabled={!editMode} error={!!errors.description} helperText={errors.description} /></Grid>
 
           {/* Service Providers */}
-          <Grid item xs={6}><TextField label="Service Provider 1" name="serviceProvider1" fullWidth variant="outlined" value={serviceCenter.serviceProvider1} onChange={handleChange} disabled={!editMode} error={!!errors.serviceProvider1} helperText={errors.serviceProvider1} /></Grid>
-          <Grid item xs={6}><TextField label="Contact Number 1" name="contact1" fullWidth variant="outlined" value={serviceCenter.contact1} onChange={handleChange} disabled={!editMode} error={!!errors.contact1} helperText={errors.contact1} /></Grid>
-          <Grid item xs={6}><TextField label="Service Provider 2" name="serviceProvider2" fullWidth variant="outlined" value={serviceCenter.serviceProvider2} onChange={handleChange} disabled={!editMode} error={!!errors.serviceProvider2} helperText={errors.serviceProvider2} /></Grid>
-          <Grid item xs={6}><TextField label="Contact Number 2" name="contact2" fullWidth variant="outlined" value={serviceCenter.contact2} onChange={handleChange} disabled={!editMode} error={!!errors.contact2} helperText={errors.contact2} /></Grid>
+          <Grid item xs={6}><TextField label="Service Provider 1" name="service_provider1_name" fullWidth variant="outlined" value={serviceCenter.service_provider1_name} onChange={handleChange} disabled={!editMode} error={!!errors.service_provider1_name} helperText={errors.service_provider1_name} /></Grid>
+          <Grid item xs={6}><TextField label="Contact Number 1" name="contact1" fullWidth variant="outlined" value={serviceCenter.service_provider1_contact} onChange={handleChange} disabled={!editMode} error={!!errors.contact1} helperText={errors.contact1} /></Grid>
+          <Grid item xs={6}><TextField label="Service Provider 2" name="service_provider2_name" fullWidth variant="outlined" value={serviceCenter.service_provider2_name} onChange={handleChange} disabled={!editMode} error={!!errors.serviceProvider2} helperText={errors.serviceProvider2} /></Grid>
+          <Grid item xs={6}><TextField label="Contact Number 2" name="contact2" fullWidth variant="outlined" value={serviceCenter.service_provider2_contact} onChange={handleChange} disabled={!editMode} error={!!errors.contact2} helperText={errors.contact2} /></Grid>
 
           {/* Logo Upload */}
           {editMode && (
@@ -217,15 +199,11 @@ const ServiceCenterProfile = () => {
                   }}
                 >
                   <CardMedia 
-                    component="img"
-                    sx={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "contain"
-                    }}
-                    image={serviceCenter.logo}
-                    alt="Service Center Logo"
-                  />
+  component="img"
+  image={serviceCenter.logo ? getImageSrc(serviceCenter.logo) : undefined}
+  alt="Service Center Logo"
+/>
+
                   {editMode && (
                     <CardActions 
                       sx={{ 
@@ -292,14 +270,11 @@ const ServiceCenterProfile = () => {
                       }}
                     >
                       <CardMedia 
-                        component="img"
-                        sx={{
-                          height: "100%",
-                          objectFit: "cover"
-                        }}
-                        image={image}
-                        alt={`uploaded ${index}`}
-                      />
+  component="img"
+  image={getImageSrc(image)} // Use each image in the loop
+  alt={`uploaded ${index}`}
+/>
+
                       {editMode && (
                         <CardActions 
                           sx={{ 
