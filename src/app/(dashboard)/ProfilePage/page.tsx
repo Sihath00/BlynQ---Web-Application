@@ -270,10 +270,10 @@ const ServiceCenterProfile = () => {
                       }}
                     >
                       <CardMedia 
-  component="img"
-  image={getImageSrc(image)} // Use each image in the loop
-  alt={`uploaded ${index}`}
-/>
+                          component="img"
+                          image={getImageSrc(image)} // Use each image in the loop
+                          alt={`uploaded ${index}`}
+                        />
 
                       {editMode && (
                         <CardActions 
