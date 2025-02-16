@@ -4,7 +4,6 @@ import React from 'react'
 const Navbar = () => {
   return (
     <div className='flex items-center justify-between p-4 bg-white'>
-      <span className='hidden md:inline text-[25px] font-bold whitespace-nowrap'>Auto Miraj</span>
       {/* Search Bar*/}
       <div className='relative flex w-[350px] h-[45px]'>
       <Image 
@@ -25,7 +24,7 @@ const Navbar = () => {
             <Image src={"/Bottombar/announcement.png"} alt='' width={20} height={12}></Image>
             </div>
             <div className='flex flex-col'>
-              <span className='text-base whitespace-nowrap leading-3 font-medium'>Sithum Duleka</span>
+              <span className='text-base whitespace-nowrap leading-3 font-medium'>Auto Miraj</span>
               <span className='text-[13px] text-gray-500 text-right '>Admin</span>
             </div>
             <Image src={"/BottomBar/ProfileIcon.png"} alt='' width={36} height={12} className='rounded-full'></Image>
