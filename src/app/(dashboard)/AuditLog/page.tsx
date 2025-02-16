@@ -24,7 +24,7 @@ import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 
 interface AuditLog {
   id: string;
@@ -79,11 +79,37 @@ export default function AuditLogPage() {
   );
 
   // Export to Excel
-  const downloadExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(filteredLogs);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'AuditLogs');
-    XLSX.writeFile(workbook, 'mechanic_audit_logs.xlsx');
+  const downloadExcel = async () => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('AuditLogs');
+  
+    // Define columns
+    worksheet.columns = [
+      { header: 'Employee', key: 'employeeName', width: 20 },
+      { header: 'Start Time', key: 'startTime', width: 15 },
+      { header: 'End Time', key: 'endTime', width: 15 },
+      { header: 'Client', key: 'clientName', width: 20 },
+      { header: 'Service Type', key: 'serviceType', width: 20 },
+      { header: 'Timestamp', key: 'timestamp', width: 20 },
+    ];
+  
+    // Add rows
+    filteredLogs.forEach((log) => {
+      worksheet.addRow(log);
+    });
+  
+    // Generate the Excel file buffer
+    const buffer = await workbook.xlsx.writeBuffer();
+  
+    // Create and download the file
+    const blob = new Blob([buffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+  
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'mechanic_audit_logs.xlsx';
+    link.click();
   };
 
   // Export to PDF
