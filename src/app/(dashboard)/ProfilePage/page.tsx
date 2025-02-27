@@ -12,6 +12,7 @@ import {
   CardMedia,
   CardActions,
   FormHelperText,
+  Grid2,
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { Edit, Save, Delete } from "@mui/icons-material";
@@ -40,13 +41,25 @@ const ServiceCenterProfile = () => {
     const loadProfile = async () => {
       try {
         const data = await fetchServiceCenterProfile();
-        setServiceCenter({ ...data, images: data.images || [], logo: data.logo || null });
+        console.log('Received Profile Data:', data);
+        // Use logo_url from the backend to set the "logo" property in state
+        setServiceCenter({ ...data, images: data.images || [], logo: data.logo_url || null });
       } catch (error) {
         console.error("Failed to load profile:", error);
       }
     };
     loadProfile();
   }, []);
+
+  const loadProfile = async () => {
+    try {
+      const data = await fetchServiceCenterProfile();
+      console.log('Received Profile Data:', data);
+      setServiceCenter({ ...data, images: data.images || [], logo: data.logo_url || null });
+    } catch (error) {
+      console.error('Failed to load profile:', error);
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -199,10 +212,10 @@ const ServiceCenterProfile = () => {
                   }}
                 >
                   <CardMedia 
-  component="img"
-  image={serviceCenter.logo ? getImageSrc(serviceCenter.logo) : undefined}
-  alt="Service Center Logo"
-/>
+                      component="img"
+                      image={serviceCenter.logo ? getImageSrc(serviceCenter.logo) : undefined}
+                      alt="Service Center Logo"
+                    />
 
                   {editMode && (
                     <CardActions 
